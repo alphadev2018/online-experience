@@ -1,39 +1,30 @@
-import React, { useRef } from 'react';
-import { Canvas, useFrame } from 'react-three-fiber';
+import React, { Component } from 'react';
 
-import { OrbitControls } from 'drei';
+import './App.css';
 
-import './App.scss';
+import Home   from './components/Home';
+import Header   from './components/Header';
+import Footer   from './components/Footer';
+import Sidebar   from './components/Sidebar';
 
-const Box = ( ) => {
-    const mesh = useRef(null);
 
-    useFrame(() => mesh.current.rotation.x = mesh.current.rotation.y += 0.01)
+export default class App extends Component {
+	constructor(props) {
+		super(props);
+	}
 
-    return <>
-        <mesh ref={mesh}>
-            <boxBufferGeometry attach='geometry' args={[1,1,1]} />
-            <meshStandardMaterial attach='material' />
-        </mesh>
-    </>;
+	componentDidMount() {
+	}
+
+	render() {
+		return (
+			<div>
+				<Home
+				></Home>
+				<Header></Header>
+				<Footer></Footer>
+				<Sidebar></Sidebar>
+			</div>
+		);
+	}
 }
-
-function App() {
-    return <>
-        <Canvas camera={{position: [-5,2,10], fov: 20}} colorManagement>
-            <ambientLight intensity={0.3} />
-            
-            {/* <group>
-                <mesh receiveShadow rotation={[ -Math.PI / 2, 0, 0]} position={[ 0, -3, 0]}>
-                    <planeBufferGeometry attach='geometry' args={[100,100]} />
-                    <shaderMaterial attach='material' color={'white'}/>
-                </mesh>
-            </group> */}
-
-            <Box />
-            <OrbitControls />
-        </Canvas>
-    </>;
-}
-
-export default App;

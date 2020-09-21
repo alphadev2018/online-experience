@@ -1,0 +1,33 @@
+
+.home{
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  min-height: 600px;
+}
+
+.header{
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 50px;
+  background-color: white;
+  font-size: 32px;
+}
+.footer{
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 50px;
+  background-color: white;
+  font-size: 32px;
+}
+.side{
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 150px;
+  background-color: grey;
+  font-size: 32px;
+}

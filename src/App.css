@@ -1,0 +1,14 @@
+
+html {
+  scroll-behavior: smooth;
+}
+body {
+  margin: 0px;
+  width: 100%;
+  overflow: hidden;
+}
+.first{
+  width: 100vw;
+  height: 100vh;
+  background-color: white;
+}
