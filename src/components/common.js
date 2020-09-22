@@ -1,20 +1,18 @@
 import * as THREE from 'three';
 import {Tween, autoPlay, Easing} from "es6-tween";
 
-const island0 = require("../assets/models/island_0.glb");
-const island1 = require("../assets/models/island_1.glb");
-const island2 = require("../assets/models/island_2.glb");
-const island3 = require("../assets/models/island_3.glb");
-const island4 = require("../assets/models/island_4.glb");
+const island0 = require("../assets/models/island_0.fbx");
+const island1 = require("../assets/models/island_1.fbx");
+const island2 = require("../assets/models/island_2.fbx");
+const island3 = require("../assets/models/island_3.fbx");
 
 autoPlay(true);
 
 export const modelArr = [
-    {file:island0, size:5, pos:{x:0, y:0, z:0}},
-    {file:island1, size:5, pos:{x:-10, y:0, z:-10}},
-    {file:island2, size:5, pos:{x:-10, y:0, z:10}},
-    {file:island3, size:5, pos:{x:10, y:0, z:-10}},
-    {file:island4, size:5, pos:{x:10, y:0, z:10}},
+    {file:island0, size:15, pos:{x:  0, y:0, z:0}},
+    {file:island1, size:15, pos:{x:-20, y:0, z:-20}},
+    {file:island2, size:15, pos:{x: 20, y:0, z:-20}},
+    {file:island3, size:15, pos:{x:  0, y:0, z: 30}},
 ];
 
 export function SetTween (obj, attr, info, easeTime) {
