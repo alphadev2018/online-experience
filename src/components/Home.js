@@ -2,37 +2,22 @@ import React, { Component } from 'react';
 import jQuery from 'jquery';
 import * as THREE from 'three';
 import OrbitControls from 'three-orbitcontrols';
-import FBXLoader from 'three-fbxloader-offical';
+// import FBXLoader from 'three-fbxloader-offical';
+import FBXLoader from "three-fbx-loader";
+import {GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader";
 
-import island0 from "../assets/models/island_0.fbx";
-import island1 from "../assets/models/island_1.fbx";
-import island2 from "../assets/models/island_2.fbx";
-import island3 from "../assets/models/island_3.fbx";
-import island4 from "../assets/models/island_4.fbx";
-
-import markImg from "../assets/images/mark.png";
+import {modelArr, SetTween} from "./common";
 import '../assets/styles/home.css';
-import XXXBK_img from "../assets/images/XXX_BK.jpg";
-import XXXRT_img from "../assets/images/XXX_RT.jpg";
-import XXXLF_img from "../assets/images/XXX_LF.jpg";
-import XXXUP_img from "../assets/images/XXX_UP.jpg";
-import XXXDN_img from "../assets/images/XXX_DN.jpg";
-import XXXFR_img from "../assets/images/XXX_FR.jpg";
-
-import posxImg from "../assets/images/posx.jpg";
-import posyImg from "../assets/images/posy.jpg";
-import poszImg from "../assets/images/posz.jpg";
-import negxImg from "../assets/images/negx.jpg";
-import negyImg from "../assets/images/negy.jpg";
-import negzImg from "../assets/images/negz.jpg";
 
 export default class Home extends Component {
 	constructor(props) {
 		super(props);
 		this.cWidth = jQuery(window).width();  this.mouseX = 0;
 		this.cHeight = jQuery(window).height();this.mouseY = 0;
+		this.raycaster = new THREE.Raycaster(); this.mouse = new THREE.Vector2();
 		this.mainHeight = 10;
 		this.animate = this.animate.bind(this);
+		this.meshArr = []; this.selLandNum = 0; this.cloudArr = [];
 		this.state = { }
 	}
 	
@@ -40,6 +25,13 @@ export default class Home extends Component {
 		this.init();
 		this.animate();
 		this.setCanvasSize();
+		window.addEventListener('resize', this.setCanvasSize);
+		window.addEventListener( 'click', this.mouseClick, false );
+		// window.addEventListener( 'mousemove', this.mouseMove, false );
+		// window.addEventListener("touchstart", this.touchStart, false);
+		// window.addEventListener("touchmove", this.touchMove, false);
+		// window.addEventListener("touchend", this.touchEnd, false);
+		// window.addEventListener("touchcancel", this.touchEnd, false);
 	}
 
 	UNSAFE_componentWillReceiveProps(nextProps) {
@@ -55,6 +47,25 @@ export default class Home extends Component {
 		}
 	}
 
+	mouseClick = (event) => {
+		this.mouse.x = ( event.clientX / this.cWidth ) * 2 - 1;
+		this.mouse.y = - ( event.clientY / this.cHeight ) * 2 + 1;
+
+		this.raycaster.setFromCamera( this.mouse, this.camera );
+		const intersect = this.raycaster.intersectObjects( this.meshArr )[0];
+		if (intersect) {
+			if (intersect.object.landChildNum !== this.selLandNum) {
+				this.selLandNum = intersect.object.landChildNum;
+				const landPos = modelArr[this.selLandNum].pos;
+				SetTween(this.totalGroup, "position", {x:landPos.x * -1, z:landPos.z * -1}, 1000);
+			}
+			// else 
+		}
+		else {
+			
+		}
+	}
+
 	init() {
 		this.renderer = new THREE.WebGLRenderer({antialias:true, alpha:true});
 		this.renderer.setSize(this.cWidth, this.cHeight);
@@ -63,70 +74,70 @@ export default class Home extends Component {
 		this.renderer.setClearColor(0xaef7ff, 1);
 
 		this.camera = new THREE.PerspectiveCamera(60, this.cWidth / this.cHeight, 0.1,  50);
-		this.camera.position.set(-10, 5, -3);
+		this.camera.position.set(-7, 5, 10);
 		this.scene = new THREE.Scene();
-		this.totalGroup = new THREE.Group(); this.scene.add(this.totalGroup);// this.totalGroup.position.y = this.mainHeight * -2;
+		this.totalGroup = new THREE.Group(); this.scene.add(this.totalGroup);
 
 		this.controls = new OrbitControls(this.camera, this.renderer.domElement); // this.controls.enabled = false;
+		this.controls.minDistance = 10; this.controls.maxDistance = 25;
 
 		const ambientLight = new THREE.AmbientLight( 0xFFFFFF, 0.2 ); this.scene.add( ambientLight );
 		this.mainLight = new THREE.DirectionalLight( 0xFFFFFF, 1 ); this.scene.add( this.mainLight );
 		this.mainLight.position.set(-50, 50, 50);
-		this.loadPlane();
-		this.loadModel(island0, 5, {x:0, y:0, z:0});
-		this.loadModel(island1, 5, {x:-10, y:0, z:-10});
-		this.loadModel(island2, 5, {x:-10, y:0, z:10});
-		this.loadModel(island3, 5, {x:10, y:0, z:-10});
-		this.loadModel(island4, 5, {x:10, y:0, z:10});
+		modelArr.forEach((modelInfo, idx) => {
+			this.loadModel(modelInfo, idx);
+		});
+		// this.loadPlane();
 	}
 
 	loadPlane(){
-		// const planeGeo = new THREE.BoxGeometry(this.mainHeight * 10, 0.01, this.mainHeight * 10);
-		// const planeMat = new THREE.MeshPhongMaterial({color:0xAAAAAA});
-		// const planeMesh = new THREE.Mesh(planeGeo, planeMat);
-		// this.totalGroup.add(planeMesh);
+		const testGeo = new THREE.BoxGeometry(2, 3, 4);
+		const testMat = new THREE.MeshPhongMaterial({color:0xFF0000});
+		const testMesh = new THREE.Mesh(testGeo, testMat);
+		var testObj = new THREE.Group(); testObj.add(testMesh);
+		const vPos = new THREE.Box3().setFromObject(testObj);
+		this.totalGroup.add(testObj);
 	}
-	
-	loadModel(loadFile, size, pos) {
+
+	async loadModel(info, idx) {
 		var self = this;
 		// const markMap = new THREE.TextureLoader().load(markImg);
 		// const envMapItem = new THREE.CubeTextureLoader().load( [
 		// 	XXXRT_img, XXXLF_img, XXXUP_img, XXXDN_img, XXXFR_img, XXXBK_img,
 		// 	posxImg, negxImg, posyImg, negyImg, poszImg, negzImg 
 		// ] );
-		// console.log(envMapItem);
-		
-		new FBXLoader().load(loadFile, function (object){
-			// for (let i = object.children.length - 1; i >= 0; i--) {
-			// 	var child = object.children[i];
-			// 	for (let j = child.children.length - 1; j >= 0; j++) {
-			// 		var subChild = child.children[j];
-			// 		if (subChild.type.toLowerCase().indexOf("light") > -1)
-			// 			child.remove(subChild);
-			// 	}
-			// 	if (child.type.toLowerCase().indexOf("light") > -1)
-			// 		object.remove(subChild);
-			// }
-			object.traverse(function (child){
-				if (child.type.toLowerCase().indexOf("light") > -1){
-					child.intensity = 0;
-					// console.log(child);
+		new GLTFLoader().load(info.file, async function (gltf){
+			var object = gltf.scene;
+			object.traverse(function(child) {
+				if (child.name === "propeller") self.propeller = child;
+				else if(child.name.indexOf("cloud") > -1) {
+					child.posVal = Math.round(Math.random() * 100);
+					child.dir = (Math.random() > 0.5)? 1:-1;
+					self.cloudArr.push(child);
 				}
-					
-			});
-			var vSize = new THREE.Box3().setFromObject(object).getSize();
-			// console.log(vSize);
-			const scl = size/vSize.x;
+				if (child instanceof THREE.Mesh) {
+					child.landChildNum = idx; self.meshArr.push(child);
+				}
+			})
+			var vSize = await new THREE.Box3().setFromObject(object).getSize();
+			const scl = info.size/vSize.x;
 			object.scale.set(scl, scl, scl);
-			object.position.set(pos.x, pos.y, pos.z);
+			object.position.set(info.pos.x, info.pos.y, info.pos.z);
+			object.modelNum = idx;
 			self.totalGroup.add(object);
-			console.log(object);
 		});
 	}
 
 	animate () {
 		if (!this.camera || !this.scene) return;
 		requestAnimationFrame(this.animate);
+		if (this.propeller) this.propeller.rotation.y += 0.02;
+		this.cloudArr.forEach(cloud => {
+			cloud.posVal += cloud.dir;
+			cloud.position.x += cloud.dir * 0.01;
+			if (cloud.posVal >= 100) cloud.dir = -1;
+			else if (cloud.posVal <= 0) cloud.dir = 1;
+		});
 		this.renderer.render(this.scene, this.camera);
 	}
 	
