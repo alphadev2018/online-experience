@@ -1,0 +1,31 @@
+.over-pan{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.3);
+    transition: background-color 0.5s;
+}
+.over-pan.hide{
+    background-color: rgba(0, 0, 0, 0);
+}
+
+.button-wrapper{
+    margin-left: calc(50% - 100px);
+    width: 200px;
+}
+.button-wrapper.button_1{
+    margin-top: calc(75vh - 50px);
+}
+.button-wrapper .button{
+    width: 100%;
+    height: 30px;
+    padding: 10px 20px;
+    text-align: center;
+    cursor: pointer;
+    border-radius: 4px;
+    background-color: white;
+    font-size: 24px;
+    font-weight: 500;
+}

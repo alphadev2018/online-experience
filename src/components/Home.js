@@ -2,11 +2,10 @@ import React, { Component } from 'react';
 import jQuery from 'jquery';
 import * as THREE from 'three';
 import OrbitControls from 'three-orbitcontrols';
-// import FBXLoader from 'three-fbxloader-offical';
-// import FBXLoader from "three-fbx-loader";
 import {FBXLoader} from "three/examples/jsm/loaders/FBXLoader";
 
-import {modelArr, SetTween} from "./common";
+import OverPan from "./OverPan";
+import {modelArr, SetTween, easeTime, AnimateReturn, AnimateRotate} from "./common";
 import '../assets/styles/home.css';
 
 export default class Home extends Component {
@@ -15,11 +14,10 @@ export default class Home extends Component {
 		this.cWidth = jQuery(window).width();  this.mouseX = 0;
 		this.cHeight = jQuery(window).height();this.mouseY = 0;
 		this.raycaster = new THREE.Raycaster(); this.mouse = new THREE.Vector2();
-		this.mainHeight = 10;
 		this.animate = this.animate.bind(this);
 		this.meshArr = []; this.selLandNum = 0;
 		this.cloudArr = []; this.windBaseArr = []; this.carArr = []; this.tonArr = [];
-		this.state = { }
+		this.state = { first:true }
 	}
 	
 	componentDidMount() {
@@ -58,7 +56,7 @@ export default class Home extends Component {
 			if (intersect.object.landChildNum !== this.selLandNum) {
 				this.selLandNum = intersect.object.landChildNum;
 				const landPos = modelArr[this.selLandNum].pos;
-				SetTween(this.totalGroup, "position", {x:landPos.x * -1, z:landPos.z * -1}, 1000);
+				SetTween(this.totalGroup, "position", {x:landPos.x * -1, z:landPos.z * -1}, easeTime);
 			}
 			// else 
 		}
@@ -75,11 +73,12 @@ export default class Home extends Component {
 		this.renderer.setClearColor(0xaef7ff, 1);
 
 		this.camera = new THREE.PerspectiveCamera(60, this.cWidth / this.cHeight, 1,  300);
-		this.camera.position.set(0, 5, 10);
+		// this.camera.position.set(0, 5, 10);
+		this.camera.position.set(0, 1.5, 10);
 		this.scene = new THREE.Scene();
-		this.totalGroup = new THREE.Group(); this.scene.add(this.totalGroup);
+		this.totalGroup = new THREE.Group(); this.scene.add(this.totalGroup); this.totalGroup.position.set(0, 0, -70);
 
-		this.controls = new OrbitControls(this.camera, this.renderer.domElement); // this.controls.enabled = false;
+		this.controls = new OrbitControls(this.camera, this.renderer.domElement); this.controls.enabled = false;
 		// this.controls.minDistance = 5; this.controls.maxDistance = 25;
 
 		const ambientLight = new THREE.AmbientLight( 0xFFFFFF, 0.2 ); this.scene.add( ambientLight );
@@ -114,12 +113,12 @@ export default class Home extends Component {
 				if (child.name.indexOf("wind_basic") > -1) self.windBaseArr.push(child);
 				else if (child.name.indexOf("car") > -1) self.carArr.push(child);
 				else if(child.name.indexOf("ton") > -1) {
-					child.rotVal = Math.round(Math.random() * 100);
+					child.curVal = Math.round(Math.random() * 100);
 					child.dir = (Math.random() > 0.5)? 1:-1;
 					self.tonArr.push(child);
 				}
 				else if(child.name.indexOf("cloud") > -1) {
-					child.posVal = Math.round(Math.random() * 100);
+					child.curVal = Math.round(Math.random() * 100);
 					child.dir = (Math.random() > 0.5)? 1:-1;
 					self.cloudArr.push(child);
 				}
@@ -139,32 +138,44 @@ export default class Home extends Component {
 	animate () {
 		if (!this.camera || !this.scene) return;
 		requestAnimationFrame(this.animate);
-		this.windBaseArr.forEach(windBase => {
-			windBase.rotation.y += 0.005;
-			windBase.children[0].rotation.z += 0.02;
-		});
-		this.carArr.forEach(car => {
-			car.rotation.y += 0.005;
-		});
-		this.cloudArr.forEach(cloud => {
-			cloud.posVal += cloud.dir;
-			cloud.position.x += cloud.dir * 0.5;
-			if (cloud.posVal >= 100) cloud.dir = -1;
-			else if (cloud.posVal <= 0) cloud.dir = 1;
-		});
-		this.tonArr.forEach(ton => {
-			ton.rotVal += ton.dir;
-			ton.rotation.y += ton.dir * 0.01;
-			if (ton.rotVal >= 100) ton.dir = -1;
-			else if (ton.rotVal <= 0) ton.dir = 1;
-		});
+		AnimateRotate(this.windBaseArr, "y", 0.005, "wind");
+		AnimateRotate(this.carArr, "y", 0.005, "car");
+		AnimateReturn(this.cloudArr, "position", "x", 0.5);
+		AnimateReturn(this.tonArr, "rotation", "y", 0.01);
+		// this.windBaseArr.forEach(windBase => {
+		// 	windBase.rotation.y += 0.005;
+		// 	windBase.children[0].rotation.z += 0.02;
+		// });
+		// this.carArr.forEach(car => {
+		// 	car.rotation.y += 0.005;
+		// });
+		// this.cloudArr.forEach(cloud => {
+		// 	cloud.posVal += cloud.dir;
+		// 	cloud.position.x += cloud.dir * 0.5;
+		// 	if (cloud.posVal >= 100) cloud.dir = -1;
+		// 	else if (cloud.posVal <= 0) cloud.dir = 1;
+		// });
+		// this.tonArr.forEach(ton => {
+		// 	ton.rotVal += ton.dir;
+		// 	ton.rotation.y += ton.dir * 0.01;
+		// 	if (ton.rotVal >= 100) ton.dir = -1;
+		// 	else if (ton.rotVal <= 0) ton.dir = 1;
+		// });
 		this.renderer.render(this.scene, this.camera);
+	}
+	callClickButton=(str)=>{
+		if (str === "first") {this.setState({first:false}); this.controls.enabled = true; SetTween(this.totalGroup, "position", {x:0, z:0}, easeTime);}
 	}
 	
 	render() {
 		return (
 			<div className="home">
 				<div id="container"></div>
+				{this.state.first &&
+					<OverPan buttonArr={[{label:"Enter Experience", value:"first"}]}
+						callClickButton={this.callClickButton}
+					></OverPan>
+				}
 			</div>
 		)
 	}
