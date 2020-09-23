@@ -18,15 +18,19 @@
 .button-wrapper.button_1{
     margin-top: calc(75vh - 50px);
 }
+.button-wrapper.button_3{
+    margin-top: calc(75vh - 150px);
+}
 .button-wrapper .button{
     width: 100%;
     height: 30px;
+    margin-top: 20px;
     padding: 10px 20px;
     text-align: center;
     cursor: pointer;
     background-color: white;
     font-size: 24px;
-    font-weight: 500;    
+    font-weight: 500;
     border: 1px solid black;
     box-shadow: 2px 2px 0 0px black;
 }

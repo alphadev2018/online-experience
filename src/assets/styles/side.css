@@ -1,0 +1,35 @@
+
+.side{
+	position: absolute;
+	top: 0;
+	right: 20px;
+	height: 100%;
+	width: 40px;
+	font-size: 32px;
+}
+.side .side-item{
+	margin-top: 15px;
+	font-size: 20px;
+	width: 40px;
+	height: 40px;
+	border-radius: 50%;
+	border: 3px solid #0D3954;
+	cursor: pointer;
+}
+
+.side .side-item svg{
+	margin-top: 5px;
+	margin-left: 5px;
+	width: 30px;
+	height: 30px;
+}
+.side .side-item svg path{
+	fill:#0D3954;
+}
+
+.side .side-item.active{
+	border-color: white;
+}
+.side .side-item.active svg path{
+	fill: white;
+}

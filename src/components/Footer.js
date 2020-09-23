@@ -15,10 +15,10 @@ export default class Footer extends Component {
 		return (
 			<div className="footer d-flex">
 				<a className="footer-link" href="#">
-					<i class="fa fa-window-maximize"></i>
+					<i className="fa fa-window-maximize"></i>
 				</a>
 				<a className="footer-link" href="#">
-					<i class="fa fa-volume-down"></i>
+					<i className="fa fa-volume-down"></i>
 				</a>
 			</div>
 		);
