@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import '../assets/styles/home.css';
+import 'assets/styles/home.css';
 
 export default class Footer extends Component {
 	constructor(props) {
@@ -13,8 +13,13 @@ export default class Footer extends Component {
 
 	render() {
 		return (
-			<div className="footer">
-				Footer
+			<div className="footer d-flex">
+				<a className="footer-link" href="#">
+					<i class="fa fa-window-maximize"></i>
+				</a>
+				<a className="footer-link" href="#">
+					<i class="fa fa-volume-down"></i>
+				</a>
 			</div>
 		);
 	}

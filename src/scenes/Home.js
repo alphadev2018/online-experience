@@ -4,9 +4,9 @@ import * as THREE from 'three';
 import OrbitControls from 'three-orbitcontrols';
 import {FBXLoader} from "three/examples/jsm/loaders/FBXLoader";
 
-import OverPan from "./OverPan";
-import {modelArr, SetTween, easeTime, AnimateReturn, AnimateRotate} from "./common";
-import '../assets/styles/home.css';
+import OverPan from "components/OverPan";
+import {modelArr, SetTween, easeTime, AnimateReturn, AnimateRotate} from "common";
+import 'assets/styles/home.css';
 
 export default class Home extends Component {
 	constructor(props) {
@@ -70,7 +70,7 @@ export default class Home extends Component {
 		this.renderer.setSize(this.cWidth, this.cHeight);
 		if (!document.getElementById("container")) return false;
 		document.getElementById("container").appendChild(this.renderer.domElement);
-		this.renderer.setClearColor(0xaef7ff, 1);
+		this.renderer.setClearColor(0x6cb3c5, 1);
 
 		this.camera = new THREE.PerspectiveCamera(60, this.cWidth / this.cHeight, 1,  300);
 		// this.camera.position.set(0, 5, 10);

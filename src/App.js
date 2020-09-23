@@ -1,30 +1,22 @@
 import React, { Component } from 'react';
+import Provider from 'react-redux/es/components/Provider';
+import { BrowserRouter as Router } from 'react-router-dom';
 
-import './App.css';
+import history from './history';
+import store from './store';
+import Layout from './components/Layout';
 
-import Home   from './components/Home';
-import Header   from './components/Header';
-import Footer   from './components/Footer';
-import Sidebar   from './components/Sidebar';
-
+import 'style.css';
 
 export default class App extends Component {
-	constructor(props) {
-		super(props);
-	}
-
-	componentDidMount() {
-	}
 
 	render() {
 		return (
-			<div>
-				<Home
-				></Home>
-				<Header></Header>
-				<Footer></Footer>
-				<Sidebar></Sidebar>
-			</div>
+			<Provider store={store}>
+				<Router history={history}>
+					<Layout />
+				</Router>
+			</Provider>
 		);
 	}
 }

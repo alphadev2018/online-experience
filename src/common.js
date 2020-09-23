@@ -1,10 +1,10 @@
 import * as THREE from 'three';
 import {Tween, autoPlay, Easing} from "es6-tween";
 
-const island0 = require("../assets/models/island_0.fbx");
-const island1 = require("../assets/models/island_1.fbx");
-const island2 = require("../assets/models/island_2.fbx");
-const island3 = require("../assets/models/island_3.fbx");
+const island0 = require("assets/models/island_0.fbx");
+const island1 = require("assets/models/island_1.fbx");
+const island2 = require("assets/models/island_2.fbx");
+const island3 = require("assets/models/island_3.fbx");
 
 autoPlay(true);
 

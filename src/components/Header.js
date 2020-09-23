@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import '../assets/styles/home.css';
+import 'assets/styles/home.css';
 
 export default class Header extends Component {
 	constructor(props) {
@@ -14,7 +14,7 @@ export default class Header extends Component {
 	render() {
 		return (
 			<div className="header">
-				Header
+				Logo here
 			</div>
 		);
 	}

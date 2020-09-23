@@ -11,6 +11,7 @@ export default class OverPan extends Component {
 
 	componentDidMount() {
 	}
+	
 	componentWillReceiveProps(nextProps) {
 		if (this.state.buttonArr !== nextProps.buttonArr) {
 			this.setState({buttonArr:nextProps.buttonArr});
@@ -28,9 +29,9 @@ export default class OverPan extends Component {
 
 	render() {
 		return (
-			<div className={"over-pan "+this.state.hide}>
+			<div className={`over-pan ${this.state.hide}`}>
 				{this.state.buttonArr && this.state.buttonArr.length &&
-					<div className={"button-wrapper button_"+this.state.buttonArr.length}>
+					<div className={`button-wrapper button_${this.state.buttonArr.length}`}>
 						{this.state.buttonArr.map(button =>
 							<div className="button" onClick={()=>this.clickButton(button.value)} key={button.value}>
 								{button.label}
