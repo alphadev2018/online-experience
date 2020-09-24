@@ -14,9 +14,9 @@ export default class Home extends Component {
 		this.cHeight = jQuery(window).height();this.mouseY = 0;
 		this.raycaster = new THREE.Raycaster(); this.mouse = new THREE.Vector2();
 		this.animate = this.animate.bind(this);
-		this.meshArr = []; this.selLandName = modelArr[0].islandName;
+		this.meshArr = []; this.selLandName = "";
 		this.cloudArr = []; this.windBaseArr = []; this.carArr = []; this.tonArr = [];
-		this.state = { menuItem:"", overModal:true }
+		this.state = { overModal:true }
 	}
 	
 	componentDidMount() {
@@ -33,8 +33,7 @@ export default class Home extends Component {
 	}
 
 	UNSAFE_componentWillReceiveProps(nextProps) {
-		if (this.state.menuItem !== nextProps.menuItem) {
-			this.setState({menuItem:nextProps.menuItem});
+		if (this.selLandName !== nextProps.menuItem) {
 			this.gotoIsland(nextProps.menuItem);
 		}
 		if (this.state.overModal !== nextProps.overModal) {
@@ -70,15 +69,35 @@ export default class Home extends Component {
 		else {
 		}
 	}
+
 	gotoIsland=(str)=>{
 		modelArr.forEach(islandItem => {
 			if (islandItem.islandName === str) {
-				this.selLandName = str;
 				const landPos = islandItem.pos;
 				SetTween(this.totalGroup, "position", {x:landPos.x * -1, z:landPos.z * -1}, easeTime);
 			}
 		});
+		if (str === "map") {
+			this.controls.maxDistance = 70;
+			SetTween(this.totalGroup, "position", {x:0, z:0}, easeTime);
+			SetTween(this.camera, "camPos", 60, easeTime);
+			setTimeout(() => {
+				this.controls.minDistance = 50;
+				this.controls.maxPolarAngle = 0.2;
+			}, easeTime);
+		}
+		else if (this.selLandName === "map") {
+			this.controls.minDistance = 5;
+			SetTween(this.camera, "camPos", 2, easeTime);
+			SetTween(this.camera, "position", {x:0, z:10}, easeTime);
+			setTimeout(() => {
+				this.controls.maxDistance = 25;
+				this.controls.maxPolarAngle = Math.PI/2;
+			}, easeTime);
+		}
+		this.selLandName = str;
 	}
+
 	init() {
 		this.renderer = new THREE.WebGLRenderer({antialias:true, alpha:true});
 		this.renderer.setSize(this.cWidth, this.cHeight);
@@ -87,28 +106,17 @@ export default class Home extends Component {
 		this.renderer.setClearColor(0x6cb3c5, 1);
 
 		this.camera = new THREE.PerspectiveCamera(60, this.cWidth / this.cHeight, 1,  300);
-		// this.camera.position.set(0, 5, 10);
 		this.camera.position.set(0, 1.5, 10);
 		this.scene = new THREE.Scene();
 		this.totalGroup = new THREE.Group(); this.scene.add(this.totalGroup); this.totalGroup.position.set(0, 0, -70);
 
 		this.controls = new OrbitControls(this.camera, this.renderer.domElement); // this.controls.enabled = false;
-		// this.controls.minDistance = 5; this.controls.maxDistance = 25;
+		this.controls.minDistance = 5; this.controls.maxDistance = 25; this.controls.maxPolarAngle = Math.PI/2;
 
 		const ambientLight = new THREE.AmbientLight( 0xFFFFFF, 0.2 ); this.scene.add( ambientLight );
 		this.mainLight = new THREE.DirectionalLight( 0xFFFFFF, 1.5 ); this.scene.add( this.mainLight );
 		this.mainLight.position.set(-50, 50, 50);
 		modelArr.forEach((modelInfo, idx) => { this.loadModel(modelInfo, idx); });
-		// this.loadPlane();
-	}
-
-	loadPlane(){
-		const testGeo = new THREE.BoxGeometry(2, 3, 4);
-		const testMat = new THREE.MeshPhongMaterial({color:0xFF0000});
-		const testMesh = new THREE.Mesh(testGeo, testMat);
-		var testObj = new THREE.Group(); testObj.add(testMesh);
-		const vPos = new THREE.Box3().setFromObject(testObj);
-		this.totalGroup.add(testObj);
 	}
 
 	loadModel(info, idx) {
@@ -120,19 +128,14 @@ export default class Home extends Component {
 		// ] );
 
 		new FBXLoader().load(info.file, async function (object){
-
 			object.traverse(function(child) {
 				if (child.name.indexOf("wind_basic") > -1) self.windBaseArr.push(child);
 				else if (child.name.indexOf("car") > -1) self.carArr.push(child);
-				else if(child.name.indexOf("ton") > -1) {
+				else if(child.name.indexOf("ton") > -1 || child.name.indexOf("cloud") > -1) {
 					child.curVal = Math.round(Math.random() * 100);
 					child.dir = (Math.random() > 0.5)? 1:-1;
-					self.tonArr.push(child);
-				}
-				else if(child.name.indexOf("cloud") > -1) {
-					child.curVal = Math.round(Math.random() * 100);
-					child.dir = (Math.random() > 0.5)? 1:-1;
-					self.cloudArr.push(child);
+					if (child.name.indexOf("cloud") > -1) self.cloudArr.push(child);
+					else if (child.name.indexOf("ton") > -1) self.tonArr.push(child);
 				}
 				if (child instanceof THREE.Mesh) {
 					child.landChildName = info.islandName; self.meshArr.push(child);
@@ -154,6 +157,7 @@ export default class Home extends Component {
 		AnimateRotate(this.carArr, "y", 0.005, "car");
 		AnimateReturn(this.cloudArr, "position", "x", 0.5);
 		AnimateReturn(this.tonArr, "rotation", "y", 0.01);
+		this.camera.lookAt( 0, 0, 0 );
 		this.renderer.render(this.scene, this.camera);
 	}
 	

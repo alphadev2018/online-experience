@@ -12,7 +12,7 @@ import 'assets/styles/home.css';
 export default class Sidebar extends Component {
 	constructor(props) {
 		super(props);
-		this.state = {selMenu:"home"}
+		this.state = {selMenu:""}
 	}
 
 	componentDidMount() {
@@ -30,12 +30,11 @@ export default class Sidebar extends Component {
 		setTimeout(() => {
 			this.props.callMenuItem(str);
 		}, 0);
-		
 	}
 
 	render() {
 		return (
-			<div className="side">
+			<div className={`side ${(this.state.selMenu)?"active":""}`}>
 				{menuArr.map(menuItem =>
 					<div className={`side-item ${(this.state.selMenu === menuItem.value)?"active":""}`} onClick={()=>this.clickItem(menuItem.value)} key={menuItem.value}>
 						{menuItem.value === "home" && <MenuHomeIcon></MenuHomeIcon>}

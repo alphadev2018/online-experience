@@ -2,48 +2,112 @@ import React, { Component } from 'react';
 
 import '../assets/styles/overPan.css';
 import {easeTime} from "./common";
-
+import gameImgEasy from "../assets/images/game_easy.png";
+import gameImgMedium from "../assets/images/game_medium.png";
+import gameImgDifficult from "../assets/images/game_difficult.png";
 
 export default class OverPan extends Component {
 	constructor(props) {
 		super(props);
-		this.state = {buttonArr:[], hide:"hide", menuItem:props.menuItem}
+		this.state = {itemArr:[], hide:"hide", menuItem:props.menuItem, overPanClass:""}
 	}
 
 	componentDidMount() {
-		var buttonArr = [];
-		if (this.props.menuItem === "first") buttonArr = [{label:"Enter Experience", value:"first"}];
+		var itemArr = [];
+		if (this.props.menuItem === "first") itemArr = [{type:"button", label:"Enter Experience", value:"first", hide:true}];
 		else if (this.props.menuItem === "game")
-			buttonArr = [
-				{label:"Play", value:"play"},
-				{label:"Leader Boards", value:"leader"},
-				{label:"Rules", value:"rules"}
+			itemArr = [
+				{type:"button", label:"Play", value:"play"},
+				{type:"button", label:"Leader Boards", value:"leader"},
+				{type:"button", label:"Rules", value:"rules", hide:false}
 			];
-		setTimeout(() => {
-			this.setState({hide:"", buttonArr:buttonArr}); 
-		},easeTime);
+		setTimeout(() => { this.setState({hide:"", itemArr:itemArr}); },easeTime);
+	}
+	componentWillUnmount() {
+
 	}
 	
 	componentWillReceiveProps(nextProps) {
 		if (this.state.menuItem !== nextProps.menuItem) {
 			this.setState({menuItem:nextProps.menuItem});
 		}
+		if (this.state.sideItem !== nextProps.sideItem) {
+			this.setState({sideItem:nextProps.sideItem});
+		}
 	}
 
-	clickButton = (str) => {
-		this.setState({hide:"hide"});
-		setTimeout(() => { this.props.callClickButton(str); }, 500);
-}
+	clickButton = (str, hide) => {
+		if (hide) {
+			this.setState({hide:"hide"});
+			setTimeout(() => { this.props.callClickButton(str); }, 500);
+		}
+		if (this.props.menuItem === "game") {
+			if (str === "play") {
+				const itemArr = [
+					{type:"img-button", imgSrc:gameImgEasy, label:"Easy", classStr:"easy", value:"gameEasy"},
+					{type:"img-button", imgSrc:gameImgMedium, label:"Medium", classStr:"medium", value:"gameMedium"},
+					{type:"img-button", imgSrc:gameImgDifficult, label:"Difficult", classStr:"difficult", value:"gameDifficult"},
+				];
+				this.setState({itemArr:itemArr, overPanClass:"game-level"});
+			}
+			else if (str === "leader") {
+
+			}
+			else if (str === "rules") {
+				const itemArr = [
+					{type:"text", label:"After choosing the difficulty level, the player is shown the completed model for a short time period. \n The aim is to build this model from individual pieces in the time frame. Penalites are added for wrong placements etc.", classStr:""},
+					{type:"button", label:"Play", value:"play"}
+				];
+				this.setState({itemArr:itemArr});
+			}
+			else if (str.indexOf("game") > -1) {
+				this.setState({overPanClass:"", itemArr:[]});
+				this.setStartTime();
+			}
+		}
+	}
+
+	setStartTime=()=>{
+		var startTime = 6;
+		var startPlayTime = setInterval(() => {
+			startTime--;
+			if (startTime >= 0) {
+				this.setState({itemArr:[{type:"text", label:startTime.toString()+" ...", classStr:"play-start-time"}]});
+			}
+			else {
+				clearInterval(startPlayTime);
+				this.setState({hide:"hide"});
+				setTimeout(() => { this.props.callClickButton("play"); }, 500);
+			}
+		}, 1000);
+	}
 
 	render() {
-		const buttonLength = this.state.buttonArr.length;
+		const itemLength = this.state.itemArr.length;
 		return (
 			<div className={`over-pan ${this.state.hide}`}>
-				{this.state.buttonArr && buttonLength &&
-					<div className={`button-wrapper button_${buttonLength}`}>
-						{this.state.buttonArr.map(button =>
-							<div className="button" onClick={()=>this.clickButton(button.value)} key={button.value}>
-								{button.label}
+				{itemLength &&
+					<div className={`over-wrapper button_${itemLength} ${this.state.overPanClass}`}>
+						{this.state.itemArr.map((item, idx) =>
+							<div className="over-item" key={idx}>
+								{item.type === "text" &&
+									<div className={"text "+item.classStr}> {item.label} </div>
+								}
+								{item.type === "button" &&
+									<div className="button" onClick={()=>this.clickButton(item.value, item.hide)}>
+										{item.label}
+									</div>
+								}
+								{item.type === "img-button" &&
+									<div className={"img-button "+item.classStr}>
+										<div className="img">
+											<img src={item.imgSrc}></img>
+										</div>
+										<div className="button" onClick={()=>this.clickButton(item.value, item.hide)}>
+											{item.label}
+										</div>
+									</div>
+								}
 							</div>
 						)}
 					</div>

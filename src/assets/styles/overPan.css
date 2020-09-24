@@ -11,21 +11,27 @@
     background-color: rgba(0, 0, 0, 0);
 }
 
-.button-wrapper{
-    margin-left: calc(50% - 100px);
-    width: 200px;
+.over-wrapper{
+    width: 100%;
 }
-.button-wrapper.button_1{
+.over-wrapper.button_1{
     margin-top: calc(75vh - 50px);
 }
-.button-wrapper.button_3{
+.over-wrapper.button_2{
+    margin-top: calc(75vh - 100px);
+}
+.over-wrapper.button_3{
     margin-top: calc(75vh - 150px);
 }
-.button-wrapper .button{
-    width: 100%;
-    height: 30px;
-    margin-top: 20px;
-    padding: 10px 20px;
+.over-wrapper.game-level{
+    margin-left: calc(50% - 360px);
+}
+.over-item .button{
+    width: 180px;
+    height: 25px;
+    margin-left: calc(50% - 100px);
+    margin-top: 15px;
+    padding: 10px;
     text-align: center;
     cursor: pointer;
     background-color: white;
@@ -33,4 +39,39 @@
     font-weight: 500;
     border: 1px solid black;
     box-shadow: 2px 2px 0 0px black;
+}
+.over-item .text{
+    width: 400px;
+    margin-left: calc(50% - 200px);
+    font-size: 20px;
+    color: white;
+}
+.over-pan .text.play-start-time{
+    font-size: 50px;
+    font-weight: 900;
+    text-align: center;
+}
+.over-pan .img-button{
+    width: 240px;
+    float: left;
+}
+.over-pan .img-button .img{
+    margin-left: calc(50% - 80px);
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    border: 2px solid;
+}
+.over-pan .img-button.easy .img{
+    border-color: white;
+}
+.over-pan .img-button.medium .img{
+    border-color: yellow;
+}
+.over-pan .img-button.difficult .img{
+    border-color: red;
+}
+
+.over-pan .img-button .img img{
+    width:100%;
 }

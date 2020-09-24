@@ -30,8 +30,8 @@ export function SetTween (obj, attr, info, easeTime) {
 	//  Linear.None Quadratic, Cubic, Quartic, Quintic, Sinusoidal, Exponential, Circular, Elastic, Back, Bounce
 	const easeType = Easing.Cubic.InOut; //, Easing.Quadratic.Out
 	if      (attr === "scale")    tweenData = {'scale.x': info, 'scale.y': info};
-	else if (attr === "position") tweenData = {'position.x': info.x, 'position.z': info.z };
-	else if (attr === "z")        tweenData = {'position.z': info };
+	else if (attr === "position") tweenData = {'position.x':info.x, 'position.z':info.z };
+	else if (attr === "camPos")   tweenData = {'position.y':info };
 	else if (attr === "near")     tweenData = {'near': info };
 	else if (attr === "color")    tweenData = {'r': info.r, 'g':info.g, 'b':info.b };
 	new Tween(obj).to( tweenData , easeTime ).easing(easeType).start();
