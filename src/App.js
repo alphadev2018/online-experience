@@ -1,8 +1,5 @@
 import React, { Component } from 'react';
 
-import Provider from 'react-redux/es/components/Provider';
-import { BrowserRouter as Router } from 'react-router-dom';
-
 // import './App.css';
 
 import Home   from './components/Home';
@@ -16,14 +13,14 @@ import 'style.css';
 export default class App extends Component {
 	constructor(props) {
 		super(props);
-		this.state={menuItem:"first", first:true, overModal:true};
+		this.state={menuItem:"first", first:true, overModal:true, game:false};
 	}
 
 	componentDidMount() {
 	}
 
 	callMenuItem=(str)=>{
-		this.setState({menuItem:str}, ()=>{
+		this.setState({menuItem:str, game:false}, ()=>{
 			if (str === "game") this.setState({overModal:true});
 		});
 	}
@@ -32,6 +29,7 @@ export default class App extends Component {
 		if (str === "first") {
 			this.setState({menuItem:"home"});
 		}
+		else if (str.indexOf("game") > -1) this.setState({game:true});
 		this.setState({overModal:null});
 	}
 
@@ -39,6 +37,7 @@ export default class App extends Component {
 		return (
 			<div>
 				<Home
+					game={this.state.game}
 					overModal={this.state.overModal}
 					first={this.state.first}
 					menuItem={this.state.menuItem}

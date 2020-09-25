@@ -44,14 +44,14 @@ export default class OverPan extends Component {
 		if (this.props.menuItem === "game") {
 			if (str === "play") {
 				const itemArr = [
-					{type:"img-button", imgSrc:gameImgEasy, label:"Easy", classStr:"easy", value:"gameEasy"},
-					{type:"img-button", imgSrc:gameImgMedium, label:"Medium", classStr:"medium", value:"gameMedium"},
-					{type:"img-button", imgSrc:gameImgDifficult, label:"Difficult", classStr:"difficult", value:"gameDifficult"},
+					{type:"img-button", imgSrc:gameImgEasy, label:"Easy", classStr:"easy", value:"gameEasy", hide:true},
+					{type:"img-button", imgSrc:gameImgMedium, label:"Medium", classStr:"medium", value:"gameMedium", hide:true},
+					{type:"img-button", imgSrc:gameImgDifficult, label:"Difficult", classStr:"difficult", value:"gameDifficult", hide:true},
 				];
 				this.setState({itemArr:itemArr, overPanClass:"game-level"});
 			}
 			else if (str === "leader") {
-
+				console.log("leader");
 			}
 			else if (str === "rules") {
 				const itemArr = [
@@ -60,27 +60,13 @@ export default class OverPan extends Component {
 				];
 				this.setState({itemArr:itemArr});
 			}
-			else if (str.indexOf("game") > -1) {
-				this.setState({overPanClass:"", itemArr:[]});
-				this.setStartTime();
-			}
+			// else if (str.indexOf("game") > -1) {
+			// 	this.setState({overPanClass:"", itemArr:[]});
+			// 	this.setStartTime();
+			// }
 		}
 	}
 
-	setStartTime=()=>{
-		var startTime = 6;
-		var startPlayTime = setInterval(() => {
-			startTime--;
-			if (startTime >= 0) {
-				this.setState({itemArr:[{type:"text", label:startTime.toString()+" ...", classStr:"play-start-time"}]});
-			}
-			else {
-				clearInterval(startPlayTime);
-				this.setState({hide:"hide"});
-				setTimeout(() => { this.props.callClickButton("play"); }, 500);
-			}
-		}, 1000);
-	}
 
 	render() {
 		const itemLength = this.state.itemArr.length;

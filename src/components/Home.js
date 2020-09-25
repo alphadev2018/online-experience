@@ -4,7 +4,7 @@ import * as THREE from 'three';
 import OrbitControls from 'three-orbitcontrols';
 import {FBXLoader} from "three/examples/jsm/loaders/FBXLoader";
 
-import {modelArr, SetTween, easeTime, AnimateReturn, AnimateRotate} from "./common";
+import {modelArr, gameInfoArr, SetTween, easeTime, AnimateReturn, AnimateRotate, gameTime} from "./common";
 import '../assets/styles/home.css';
 
 export default class Home extends Component {
@@ -16,7 +16,8 @@ export default class Home extends Component {
 		this.animate = this.animate.bind(this);
 		this.meshArr = []; this.selLandName = "";
 		this.cloudArr = []; this.windBaseArr = []; this.carArr = []; this.tonArr = [];
-		this.state = { overModal:true }
+		this.state = { overModal:true, gameStatus:null, gameTime:-1 };
+		this.gameMeshArr = [];
 	}
 	
 	componentDidMount() {
@@ -38,6 +39,20 @@ export default class Home extends Component {
 		}
 		if (this.state.overModal !== nextProps.overModal) {
 			this.setState({overModal:nextProps.overModal});
+		}
+		if (!this.state.gameStatus && nextProps.game) {
+			this.setState({gameStatus:"start"});
+			this.gameGroup.visible = true;
+			this.totalGroup.children.forEach(island => {
+				island.visible = (island.islandName === "game");
+			});
+			this.controls.minDistance = 0.1;
+			SetTween(this.camera, "position", {x:-10, z:0}, easeTime);
+			setTimeout(() => { this.controls.minDistance = 5; }, easeTime);
+			this.setStartTime();
+		}
+		else if (this.state.gameStatus && !nextProps.game) {
+			this.setEndGame();
 		}
 	}
 
@@ -64,10 +79,35 @@ export default class Home extends Component {
 				this.gotoIsland(landName);
 				this.props.callMenuItem(landName);
 			}
-			// else 
 		}
 		else {
 		}
+	}
+
+	setEndGame=()=>{
+		this.setState({gameStatus:null});
+		this.gameGroup.visible = false;
+		this.totalGroup.children.forEach(island => { island.visible = true; });
+	}
+
+	setStartTime=()=> {
+		this.setState({gameTime:gameTime+5});
+		var startPlayTime = setInterval(() => {
+			const remainTime = this.state.gameTime;
+			if 		(remainTime > gameTime) { this.setState({gameStatus:"start"}); }
+			else if (remainTime === gameTime) { this.startGame(); this.setState({gameStatus:"process"});}
+			else if (remainTime >=  0) {  }
+			else {this.setEndGame(); clearInterval(startPlayTime);}
+			this.setState({gameTime:remainTime -1});
+		}, 1000);
+	}
+
+	startGame=()=>{
+		this.gameMeshArr = [];
+		var gameModel = this.gameGroup.children[0];
+		gameModel.children.forEach(child => {
+			this.gameMeshArr.push(child);
+		});
 	}
 
 	gotoIsland=(str)=>{
@@ -109,6 +149,7 @@ export default class Home extends Component {
 		this.camera.position.set(0, 1.5, 10);
 		this.scene = new THREE.Scene();
 		this.totalGroup = new THREE.Group(); this.scene.add(this.totalGroup); this.totalGroup.position.set(0, 0, -70);
+		this.gameGroup = new THREE.Group(); this.scene.add(this.gameGroup); this.gameGroup.visible = false;
 
 		this.controls = new OrbitControls(this.camera, this.renderer.domElement); // this.controls.enabled = false;
 		this.controls.minDistance = 5; this.controls.maxDistance = 25; this.controls.maxPolarAngle = Math.PI/2;
@@ -117,16 +158,11 @@ export default class Home extends Component {
 		this.mainLight = new THREE.DirectionalLight( 0xFFFFFF, 1.5 ); this.scene.add( this.mainLight );
 		this.mainLight.position.set(-50, 50, 50);
 		modelArr.forEach((modelInfo, idx) => { this.loadModel(modelInfo, idx); });
+		gameInfoArr.forEach((gameInfo, idx) => { this.loadGameModel(gameInfo, idx); });
 	}
 
-	loadModel(info, idx) {
+	loadModel(info) {
 		var self = this;
-		// const markMap = new THREE.TextureLoader().load(markImg);
-		// const envMapItem = new THREE.CubeTextureLoader().load( [
-		// 	XXXRT_img, XXXLF_img, XXXUP_img, XXXDN_img, XXXFR_img, XXXBK_img,
-		// 	posxImg, negxImg, posyImg, negyImg, poszImg, negzImg 
-		// ] );
-
 		new FBXLoader().load(info.file, async function (object){
 			object.traverse(function(child) {
 				if (child.name.indexOf("wind_basic") > -1) self.windBaseArr.push(child);
@@ -145,8 +181,23 @@ export default class Home extends Component {
 			const scl = info.size/vSize.x;
 			object.scale.set(scl, scl, scl);
 			object.position.set(info.pos.x, info.pos.y, info.pos.z);
-			object.modelNum = info.islandName;
+			object.islandName = info.islandName;
 			self.totalGroup.add(object);
+		});
+	}
+	loadGameModel(info) {
+		var self = this;
+		new FBXLoader().load(info.file, async function (object){
+			object.children.forEach(child => {
+				const childPos = child.position;
+				child.oriPos = {x:childPos.x, y:childPos.y, z:childPos.z};
+			});
+			var vSize = await new THREE.Box3().setFromObject(object).getSize();
+			const scl = info.size/vSize.y;
+			object.scale.set(scl, scl, scl);
+			// object.position.set(info.pos.x, info.pos.y, info.pos.z);
+			object.gameId = info.id;
+			self.gameGroup.add(object);
 		});
 	}
 
@@ -165,6 +216,13 @@ export default class Home extends Component {
 		return (
 			<div className="home">
 				<div id="container"></div>
+				{this.state.gameStatus === "start" && <div className="start-time">{this.state.gameTime - gameTime} ...</div> }
+				{this.state.gameStatus === "process" &&
+					<div className="process-time">
+						<div> Remain Time </div>
+						<div>{this.state.gameTime} second</div>
+					</div>
+				}
 			</div>
 		)
 	}
