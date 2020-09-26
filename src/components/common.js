@@ -1,5 +1,6 @@
 
 import * as THREE from 'three';
+import {FBXLoader} from "three/examples/jsm/loaders/FBXLoader";
 import {Tween, autoPlay, Easing} from "es6-tween";
 
 const island0 = require("assets/models/island_0.fbx");
@@ -12,6 +13,7 @@ const gameModelCrane = require("assets/models/crane.fbx");
 autoPlay(true);
 
 export const easeTime = 1000;
+export const gameTime = 1000;
 export const menuArr = [
 	{label:"Home", 		value:"home"},
 	{label:"Media", 	value:"media"},
@@ -61,4 +63,41 @@ export const gameInfoArr = [
 	{id:"crane", file:gameModelCrane, size:5}
 ]
 
-export const gameTime = 10;
+export function LoadIslandModel(info, self) {
+	new FBXLoader().load(info.file, async function (object){
+		object.traverse(function(child) {
+			if (child.name.indexOf("wind_basic") > -1) self.windBaseArr.push(child);
+			else if (child.name.indexOf("car") > -1) self.carArr.push(child);
+			else if(child.name.indexOf("ton") > -1 || child.name.indexOf("cloud") > -1) {
+				child.curVal = Math.round(Math.random() * 100);
+				child.dir = (Math.random() > 0.5)? 1:-1;
+				if (child.name.indexOf("cloud") > -1) self.cloudArr.push(child);
+				else if (child.name.indexOf("ton") > -1) self.tonArr.push(child);
+			}
+			if (child instanceof THREE.Mesh) {
+				child.landChildName = info.islandName; self.meshArr.push(child);
+			}
+		});
+		var vSize = await new THREE.Box3().setFromObject(object).getSize();
+		const scl = info.size/vSize.x;
+		object.scale.set(scl, scl, scl);
+		object.position.set(info.pos.x, info.pos.y, info.pos.z);
+		object.islandName = info.islandName;
+		self.totalGroup.add(object);
+	});
+}
+
+export function LoadGameModel(info, self) {
+	new FBXLoader().load(info.file, async function (object){
+		object.children.forEach(child => {
+			const childPos = child.position;
+			child.oriPos = {x:childPos.x, y:childPos.y, z:childPos.z};
+		});
+		var vSize = await new THREE.Box3().setFromObject(object).getSize();
+		const scl = info.size/vSize.y;
+		object.scale.set(scl, scl, scl);
+		// object.position.set(info.pos.x, info.pos.y, info.pos.z);
+		object.gameId = info.id;
+		self.gameGroup.add(object);
+	});
+}

@@ -2,9 +2,8 @@ import React, { Component } from 'react';
 import jQuery from 'jquery';
 import * as THREE from 'three';
 import OrbitControls from 'three-orbitcontrols';
-import {FBXLoader} from "three/examples/jsm/loaders/FBXLoader";
 
-import {modelArr, gameInfoArr, SetTween, easeTime, AnimateReturn, AnimateRotate, gameTime} from "./common";
+import {modelArr, gameInfoArr, SetTween, easeTime, AnimateReturn, AnimateRotate, gameTime, LoadIslandModel, LoadGameModel} from "./common";
 import '../assets/styles/home.css';
 
 export default class Home extends Component {
@@ -108,6 +107,13 @@ export default class Home extends Component {
 		gameModel.children.forEach(child => {
 			this.gameMeshArr.push(child);
 		});
+		const dis = 200;
+		this.gameMeshArr.forEach(mesh => {
+			const posX = Math.round(Math.random() * dis) - dis/2;
+			const posZ = Math.round(Math.random() * dis) - dis/2;
+			SetTween(mesh, "position", {x:posX, z:posZ}, easeTime);
+			SetTween(mesh, "camPos", 0, easeTime);
+		});
 	}
 
 	gotoIsland=(str)=>{
@@ -115,6 +121,8 @@ export default class Home extends Component {
 			if (islandItem.islandName === str) {
 				const landPos = islandItem.pos;
 				SetTween(this.totalGroup, "position", {x:landPos.x * -1, z:landPos.z * -1}, easeTime);
+				SetTween(this.totalGroup, "camPos", 0, easeTime);
+				SetTween(this.camera, "camPos", 3, easeTime);
 			}
 		});
 		if (str === "map") {
@@ -128,7 +136,7 @@ export default class Home extends Component {
 		}
 		else if (this.selLandName === "map") {
 			this.controls.minDistance = 5;
-			SetTween(this.camera, "camPos", 2, easeTime);
+			SetTween(this.camera, "camPos", 3, easeTime);
 			SetTween(this.camera, "position", {x:0, z:10}, easeTime);
 			setTimeout(() => {
 				this.controls.maxDistance = 25;
@@ -148,7 +156,7 @@ export default class Home extends Component {
 		this.camera = new THREE.PerspectiveCamera(60, this.cWidth / this.cHeight, 1,  300);
 		this.camera.position.set(0, 1.5, 10);
 		this.scene = new THREE.Scene();
-		this.totalGroup = new THREE.Group(); this.scene.add(this.totalGroup); this.totalGroup.position.set(0, 0, -70);
+		this.totalGroup = new THREE.Group(); this.scene.add(this.totalGroup); this.totalGroup.position.set(0, -5, -70);
 		this.gameGroup = new THREE.Group(); this.scene.add(this.gameGroup); this.gameGroup.visible = false;
 
 		this.controls = new OrbitControls(this.camera, this.renderer.domElement); // this.controls.enabled = false;
@@ -157,48 +165,8 @@ export default class Home extends Component {
 		const ambientLight = new THREE.AmbientLight( 0xFFFFFF, 0.2 ); this.scene.add( ambientLight );
 		this.mainLight = new THREE.DirectionalLight( 0xFFFFFF, 1.5 ); this.scene.add( this.mainLight );
 		this.mainLight.position.set(-50, 50, 50);
-		modelArr.forEach((modelInfo, idx) => { this.loadModel(modelInfo, idx); });
-		gameInfoArr.forEach((gameInfo, idx) => { this.loadGameModel(gameInfo, idx); });
-	}
-
-	loadModel(info) {
-		var self = this;
-		new FBXLoader().load(info.file, async function (object){
-			object.traverse(function(child) {
-				if (child.name.indexOf("wind_basic") > -1) self.windBaseArr.push(child);
-				else if (child.name.indexOf("car") > -1) self.carArr.push(child);
-				else if(child.name.indexOf("ton") > -1 || child.name.indexOf("cloud") > -1) {
-					child.curVal = Math.round(Math.random() * 100);
-					child.dir = (Math.random() > 0.5)? 1:-1;
-					if (child.name.indexOf("cloud") > -1) self.cloudArr.push(child);
-					else if (child.name.indexOf("ton") > -1) self.tonArr.push(child);
-				}
-				if (child instanceof THREE.Mesh) {
-					child.landChildName = info.islandName; self.meshArr.push(child);
-				}
-			});
-			var vSize = await new THREE.Box3().setFromObject(object).getSize();
-			const scl = info.size/vSize.x;
-			object.scale.set(scl, scl, scl);
-			object.position.set(info.pos.x, info.pos.y, info.pos.z);
-			object.islandName = info.islandName;
-			self.totalGroup.add(object);
-		});
-	}
-	loadGameModel(info) {
-		var self = this;
-		new FBXLoader().load(info.file, async function (object){
-			object.children.forEach(child => {
-				const childPos = child.position;
-				child.oriPos = {x:childPos.x, y:childPos.y, z:childPos.z};
-			});
-			var vSize = await new THREE.Box3().setFromObject(object).getSize();
-			const scl = info.size/vSize.y;
-			object.scale.set(scl, scl, scl);
-			// object.position.set(info.pos.x, info.pos.y, info.pos.z);
-			object.gameId = info.id;
-			self.gameGroup.add(object);
-		});
+		modelArr.forEach(modelInfo => { LoadIslandModel(modelInfo, this);  });
+		gameInfoArr.forEach((gameInfo, idx) => { LoadGameModel(gameInfo, this); });
 	}
 
 	animate () {
