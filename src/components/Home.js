@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
 import jQuery from 'jquery';
 import * as THREE from 'three';
-import OrbitControls from 'three-orbitcontrols';
+import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
+import {TransformControls} from 'three/examples/jsm/controls/TransformControls';
+// import OrbitControls from 'three-orbitcontrols';
 
-import {modelArr, gameInfoArr, SetTween, easeTime, AnimateReturn, AnimateRotate, gameTime, LoadIslandModel, LoadGameModel} from "./common";
+import {modelArr, gameInfoArr, SetTween, easeTime, AnimateReturn, AnimateRotate, LoadIslandModel, LoadGameModel, GotoIsland, GetRayCastObject} from "./common";
 import '../assets/styles/home.css';
 
 export default class Home extends Component {
@@ -14,7 +16,7 @@ export default class Home extends Component {
 		this.raycaster = new THREE.Raycaster(); this.mouse = new THREE.Vector2();
 		this.animate = this.animate.bind(this);
 		this.meshArr = []; this.selLandName = "";
-		this.cloudArr = []; this.windBaseArr = []; this.carArr = []; this.tonArr = [];
+		this.cloudArr = []; this.windBaseArr = []; this.carArr = []; this.tonArr = []; this.mouseStatus = "";
 		this.state = { overModal:true, gameStatus:null, gameTime:-1 };
 		this.gameMeshArr = [];
 	}
@@ -25,7 +27,9 @@ export default class Home extends Component {
 		this.setCanvasSize();
 		window.addEventListener('resize', this.setCanvasSize);
 		window.addEventListener( 'click', this.mouseClick, false );
-		// window.addEventListener( 'mousemove', this.mouseMove, false );
+		window.addEventListener( 'pointerdown', this.mouseDown, false );
+		window.addEventListener( 'pointermove', this.mouseMove, false );
+		window.addEventListener( 'pointerup', this.mouseUp, false );
 		// window.addEventListener("touchstart", this.touchStart, false);
 		// window.addEventListener("touchmove", this.touchMove, false);
 		// window.addEventListener("touchend", this.touchEnd, false);
@@ -34,7 +38,7 @@ export default class Home extends Component {
 
 	UNSAFE_componentWillReceiveProps(nextProps) {
 		if (this.selLandName !== nextProps.menuItem) {
-			this.gotoIsland(nextProps.menuItem);
+			GotoIsland(this, nextProps.menuItem);
 		}
 		if (this.state.overModal !== nextProps.overModal) {
 			this.setState({overModal:nextProps.overModal});
@@ -66,21 +70,41 @@ export default class Home extends Component {
 	}
 
 	mouseClick = (event) => {
-		if (this.state.overModal) return;
-		this.mouse.x = ( event.clientX / this.cWidth ) * 2 - 1;
-		this.mouse.y = - ( event.clientY / this.cHeight ) * 2 + 1;
-
-		this.raycaster.setFromCamera( this.mouse, this.camera );
-		const intersect = this.raycaster.intersectObjects( this.meshArr )[0];
+		if (this.state.overModal || this.state.gameStatus === "process") return;
+		const intersect = GetRayCastObject(this, event.clientX, event.clientY, this.meshArr);
 		if (intersect) {
 			const landName = intersect.object.landChildName;
 			if (landName !== this.selLandName) {
-				this.gotoIsland(landName);
+				GotoIsland(this, landName);
 				this.props.callMenuItem(landName);
 			}
 		}
 		else {
 		}
+	}
+
+	mouseDown = (event) => {
+		this.mouseStatus = "down";
+		if (this.state.gameStatus !== "process") return;
+	}
+
+	mouseMove = (event) => {
+		this.mouseStatus = "move";
+		if (this.state.gameStatus !== "process") return;
+	}
+
+	mouseUp = (event) => {
+		if (this.mouseStatus === "down") {
+			if (this.state.gameStatus !== "process") return;
+			const intersect = GetRayCastObject(this, event.clientX, event.clientY, this.gameMeshArr);
+			if (intersect) {
+				this.transform.attach(intersect.object);
+			}
+			else {
+				this.transform.detach();
+			}
+		}
+		this.mouseStatus = "";
 	}
 
 	setEndGame=()=>{
@@ -90,12 +114,12 @@ export default class Home extends Component {
 	}
 
 	setStartTime=()=> {
-		this.setState({gameTime:gameTime+5});
+		this.setState({gameTime:1000+6});
 		var startPlayTime = setInterval(() => {
 			const remainTime = this.state.gameTime;
-			if 		(remainTime > gameTime) { this.setState({gameStatus:"start"}); }
-			else if (remainTime === gameTime) { this.startGame(); this.setState({gameStatus:"process"});}
-			else if (remainTime >=  0) {  }
+			if 		(remainTime > 1000) { this.setState({gameStatus:"start"}); }
+			else if (remainTime === 1000) { this.startGame(); this.setState({gameStatus:"process"});}
+			else if (remainTime > 0) {  }
 			else {this.setEndGame(); clearInterval(startPlayTime);}
 			this.setState({gameTime:remainTime -1});
 		}, 1000);
@@ -104,49 +128,21 @@ export default class Home extends Component {
 	startGame=()=>{
 		this.gameMeshArr = [];
 		var gameModel = this.gameGroup.children[0];
-		gameModel.children.forEach(child => {
-			this.gameMeshArr.push(child);
+		console.log(gameModel);
+		gameModel.children.forEach((child, idx) => {
+			if (child.name !== gameModel.basicModel) this.gameMeshArr.push(child);
 		});
 		const dis = 200;
 		this.gameMeshArr.forEach(mesh => {
-			const posX = Math.round(Math.random() * dis) - dis/2;
-			const posZ = Math.round(Math.random() * dis) - dis/2;
+			const posX = Math.round(Math.random() * dis/10) * 10 - dis/2;
+			const posZ = Math.round(Math.random() * dis/10) * 10 - dis/2;
 			SetTween(mesh, "position", {x:posX, z:posZ}, easeTime);
 			SetTween(mesh, "camPos", 0, easeTime);
 		});
 	}
 
-	gotoIsland=(str)=>{
-		modelArr.forEach(islandItem => {
-			if (islandItem.islandName === str) {
-				const landPos = islandItem.pos;
-				SetTween(this.totalGroup, "position", {x:landPos.x * -1, z:landPos.z * -1}, easeTime);
-				SetTween(this.totalGroup, "camPos", 0, easeTime);
-				SetTween(this.camera, "camPos", 3, easeTime);
-			}
-		});
-		if (str === "map") {
-			this.controls.maxDistance = 70;
-			SetTween(this.totalGroup, "position", {x:0, z:0}, easeTime);
-			SetTween(this.camera, "camPos", 60, easeTime);
-			setTimeout(() => {
-				this.controls.minDistance = 50;
-				this.controls.maxPolarAngle = 0.2;
-			}, easeTime);
-		}
-		else if (this.selLandName === "map") {
-			this.controls.minDistance = 5;
-			SetTween(this.camera, "camPos", 3, easeTime);
-			SetTween(this.camera, "position", {x:0, z:10}, easeTime);
-			setTimeout(() => {
-				this.controls.maxDistance = 25;
-				this.controls.maxPolarAngle = Math.PI/2;
-			}, easeTime);
-		}
-		this.selLandName = str;
-	}
-
 	init() {
+		var self = this;
 		this.renderer = new THREE.WebGLRenderer({antialias:true, alpha:true});
 		this.renderer.setSize(this.cWidth, this.cHeight);
 		if (!document.getElementById("container")) return false;
@@ -161,6 +157,12 @@ export default class Home extends Component {
 
 		this.controls = new OrbitControls(this.camera, this.renderer.domElement); // this.controls.enabled = false;
 		this.controls.minDistance = 5; this.controls.maxDistance = 25; this.controls.maxPolarAngle = Math.PI/2;
+
+        this.transform = new TransformControls( this.camera, this.renderer.domElement ); this.scene.add(this.transform);
+        // this.transform.showZ = false;
+        this.transform.setTranslationSnap(10);
+        this.transform.setSize(0.8);
+        this.transform.addEventListener( 'dragging-changed', function ( event ) { self.controls.enabled = ! event.value; } );
 
 		const ambientLight = new THREE.AmbientLight( 0xFFFFFF, 0.2 ); this.scene.add( ambientLight );
 		this.mainLight = new THREE.DirectionalLight( 0xFFFFFF, 1.5 ); this.scene.add( this.mainLight );
@@ -184,7 +186,7 @@ export default class Home extends Component {
 		return (
 			<div className="home">
 				<div id="container"></div>
-				{this.state.gameStatus === "start" && <div className="start-time">{this.state.gameTime - gameTime} ...</div> }
+				{this.state.gameStatus === "start" && <div className="start-time">{this.state.gameTime - this.totalTime} ...</div> }
 				{this.state.gameStatus === "process" &&
 					<div className="process-time">
 						<div> Remain Time </div>

@@ -13,7 +13,6 @@ const gameModelCrane = require("assets/models/crane.fbx");
 autoPlay(true);
 
 export const easeTime = 1000;
-export const gameTime = 1000;
 export const menuArr = [
 	{label:"Home", 		value:"home"},
 	{label:"Media", 	value:"media"},
@@ -60,7 +59,7 @@ export function AnimateReturn(arr, type, axis, value) {
 }
 
 export const gameInfoArr = [
-	{id:"crane", file:gameModelCrane, size:5}
+	{id:"crane", file:gameModelCrane, size:5, time:500, basicName:"basic_0"}
 ]
 
 export function LoadIslandModel(info, self) {
@@ -98,6 +97,45 @@ export function LoadGameModel(info, self) {
 		object.scale.set(scl, scl, scl);
 		// object.position.set(info.pos.x, info.pos.y, info.pos.z);
 		object.gameId = info.id;
+		object.basicModel = info.basicName;
 		self.gameGroup.add(object);
 	});
+}
+
+export function GotoIsland(self, str) {
+	modelArr.forEach(islandItem => {
+		if (islandItem.islandName === str) {
+			const landPos = islandItem.pos;
+			SetTween(self.totalGroup, "position", {x:landPos.x * -1, z:landPos.z * -1}, easeTime);
+			SetTween(self.totalGroup, "camPos", 0, easeTime);
+			SetTween(self.camera, "camPos", 3, easeTime);
+		}
+	});
+	if (str === "map") {
+		self.controls.maxDistance = 70;
+		SetTween(self.totalGroup, "position", {x:0, z:0}, easeTime);
+		SetTween(self.camera, "camPos", 60, easeTime);
+		setTimeout(() => {
+			self.controls.minDistance = 50;
+			self.controls.maxPolarAngle = 0.2;
+		}, easeTime);
+	}
+	else if (self.selLandName === "map") {
+		self.controls.minDistance = 5;
+		SetTween(self.camera, "camPos", 3, easeTime);
+		SetTween(self.camera, "position", {x:0, z:10}, easeTime);
+		setTimeout(() => {
+			self.controls.maxDistance = 25;
+			self.controls.maxPolarAngle = Math.PI/2;
+		}, easeTime);
+	}
+	self.selLandName = str;
+}
+
+export function GetRayCastObject(self, mouseX, mouseY, meshArr) {
+	self.mouse.x = ( mouseX / self.cWidth ) * 2 - 1;
+	self.mouse.y = - ( mouseY / self.cHeight ) * 2 + 1;
+
+	self.raycaster.setFromCamera( self.mouse, self.camera );
+	return self.raycaster.intersectObjects( meshArr )[0];
 }
