@@ -133,7 +133,8 @@ export function GotoIsland(self, str) {
 		}, easeTime);
 	}
 	self.selLandName = str;
-	self.controls.enabled = true;
+	setTimeout(() => { self.controls.enabled = true; }, easeTime);
+	
 }
 
 export function GetRayCastObject(self, mouseX, mouseY, meshArr) {
