@@ -105,6 +105,7 @@ export function LoadGameModel(info, self) {
 }
 
 export function GotoIsland(self, str) {
+	self.controls.enabled = false;
 	modelArr.forEach(islandItem => {
 		if (islandItem.islandName === str) {
 			const landPos = islandItem.pos;
@@ -132,6 +133,7 @@ export function GotoIsland(self, str) {
 		}, easeTime);
 	}
 	self.selLandName = str;
+	self.controls.enabled = true;
 }
 
 export function GetRayCastObject(self, mouseX, mouseY, meshArr) {
