@@ -35,7 +35,7 @@ export function SetTween (obj, attr, info, easeTime) {
 	if      (attr === "scale")    tweenData = {'scale.x': info, 'scale.y': info};
 	else if (attr === "position") tweenData = {'position.x':info.x, 'position.z':info.z };
 	else if (attr === "camPos")   tweenData = {'position.y':info };
-	else if (attr === "near")     tweenData = {'near': info };
+	else if (attr === "far")      tweenData = {'far': info };
 	else if (attr === "color")    tweenData = {'r': info.r, 'g':info.g, 'b':info.b };
 	new Tween(obj).to( tweenData , easeTime ).easing(easeType).start();
 }
@@ -73,6 +73,8 @@ export function LoadIslandModel(info, self) {
 				if (child.name.indexOf("cloud") > -1) self.cloudArr.push(child);
 				else if (child.name.indexOf("ton") > -1) self.tonArr.push(child);
 			}
+			else if (child.name === "game_pan") child.material.color.setHex(0x336182);
+			else if (child.name.indexOf("gameline") > -1) child.material.color.setHex(0x999999);
 			if (child instanceof THREE.Mesh) {
 				child.landChildName = info.islandName; self.meshArr.push(child);
 			}

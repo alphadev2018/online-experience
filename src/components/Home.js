@@ -38,6 +38,7 @@ export default class Home extends Component {
 
 	UNSAFE_componentWillReceiveProps(nextProps) {
 		if (this.selLandName !== nextProps.menuItem) {
+			if (this.selLandName === "") SetTween(this.scene.fog, "far", 50, easeTime);
 			GotoIsland(this, nextProps.menuItem);
 		}
 		if (this.state.overModal !== nextProps.overModal) {
@@ -52,6 +53,7 @@ export default class Home extends Component {
 			this.controls.minDistance = 0.1;
 			SetTween(this.camera, "position", {x:-10, z:0}, easeTime);
 			setTimeout(() => { this.controls.minDistance = 5; }, easeTime);
+			this.gameNum = 0;
 			this.setStartTime();
 		}
 		else if (this.state.gameStatus && !nextProps.game) {
@@ -75,6 +77,7 @@ export default class Home extends Component {
 		if (intersect) {
 			const landName = intersect.object.landChildName;
 			if (landName !== this.selLandName) {
+				if (landName !== "home" && this.selLandName !== "home") return;
 				GotoIsland(this, landName);
 				this.props.callMenuItem(landName);
 			}
@@ -114,11 +117,12 @@ export default class Home extends Component {
 	}
 
 	setStartTime=()=> {
-		this.setState({gameTime:1000+6});
+		this.totalTime = gameInfoArr[this.gameNum].time;
+		this.setState({gameTime:this.totalTime+1});
 		var startPlayTime = setInterval(() => {
 			const remainTime = this.state.gameTime;
-			if 		(remainTime > 1000) { this.setState({gameStatus:"start"}); }
-			else if (remainTime === 1000) { this.startGame(); this.setState({gameStatus:"process"});}
+			if 		(remainTime > this.totalTime) { this.setState({gameStatus:"start"}); }
+			else if (remainTime === this.totalTime) { this.startGame(); this.setState({gameStatus:"process"});}
 			else if (remainTime > 0) {  }
 			else {this.setEndGame(); clearInterval(startPlayTime);}
 			this.setState({gameTime:remainTime -1});
@@ -127,7 +131,7 @@ export default class Home extends Component {
 
 	startGame=()=>{
 		this.gameMeshArr = [];
-		var gameModel = this.gameGroup.children[0];
+		var gameModel = this.gameGroup.children[this.gameNum];
 		console.log(gameModel);
 		gameModel.children.forEach((child, idx) => {
 			if (child.name !== gameModel.basicModel) this.gameMeshArr.push(child);
@@ -142,16 +146,16 @@ export default class Home extends Component {
 	}
 
 	init() {
-		var self = this;
+		var self = this, backCol = 0x6CB3C5;
 		this.renderer = new THREE.WebGLRenderer({antialias:true, alpha:true});
 		this.renderer.setSize(this.cWidth, this.cHeight);
 		if (!document.getElementById("container")) return false;
 		document.getElementById("container").appendChild(this.renderer.domElement);
-		this.renderer.setClearColor(0x6cb3c5, 1);
+		this.renderer.setClearColor(backCol, 1);
 
 		this.camera = new THREE.PerspectiveCamera(60, this.cWidth / this.cHeight, 1,  300);
 		this.camera.position.set(0, 1.5, 10);
-		this.scene = new THREE.Scene();
+		this.scene = new THREE.Scene(); this.scene.fog = new THREE.Fog(backCol, 0, 200);
 		this.totalGroup = new THREE.Group(); this.scene.add(this.totalGroup); this.totalGroup.position.set(0, -5, -70);
 		this.gameGroup = new THREE.Group(); this.scene.add(this.gameGroup); this.gameGroup.visible = false;
 
