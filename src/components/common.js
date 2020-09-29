@@ -118,6 +118,7 @@ export function GotoIsland(self, str) {
 		self.controls.maxDistance = 70;
 		SetTween(self.totalGroup, "position", {x:0, z:0}, easeTime);
 		SetTween(self.camera, "camPos", 60, easeTime);
+		SetTween(self.scene.fog, "far", 300, easeTime);
 		setTimeout(() => {
 			self.controls.minDistance = 50;
 			self.controls.maxPolarAngle = 0.2;
@@ -127,6 +128,7 @@ export function GotoIsland(self, str) {
 		self.controls.minDistance = 5;
 		SetTween(self.camera, "camPos", 3, easeTime);
 		SetTween(self.camera, "position", {x:0, z:10}, easeTime);
+		SetTween(self.scene.fog, "far", 50, easeTime);
 		setTimeout(() => {
 			self.controls.maxDistance = 25;
 			self.controls.maxPolarAngle = Math.PI/2;

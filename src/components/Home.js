@@ -159,7 +159,7 @@ export default class Home extends Component {
 		this.totalGroup = new THREE.Group(); this.scene.add(this.totalGroup); this.totalGroup.position.set(0, -5, -70);
 		this.gameGroup = new THREE.Group(); this.scene.add(this.gameGroup); this.gameGroup.visible = false;
 
-		this.controls = new OrbitControls(this.camera, this.renderer.domElement); // this.controls.enabled = false;
+		this.controls = new OrbitControls(this.camera, this.renderer.domElement); this.controls.enablePan = false; // this.controls.enabled = false;
 		this.controls.minDistance = 5; this.controls.maxDistance = 25; this.controls.maxPolarAngle = Math.PI/2;
 
         this.transform = new TransformControls( this.camera, this.renderer.domElement ); this.scene.add(this.transform);
