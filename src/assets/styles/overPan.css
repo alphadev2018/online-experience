@@ -46,27 +46,156 @@
     font-size: 20px;
     color: white;
 }
-.over-pan .img-button{
-    width: 240px;
-    float: left;
+
+.over-pan .first-button{
+    margin-left: calc(50% - 50px);
+    background-color: #FAA728;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    border: 5px solid white;
+    cursor: pointer;
+    margin-top: 60vh;
 }
-.over-pan .img-button .img{
-    margin-left: calc(50% - 80px);
+.over-pan .first-button .label{
+    width: 100%;
+    margin-top: 30px;
+    color: white;
+    font-size: 38px;
+    font-weight: 600;
+    text-align: center;
+}
+
+.modal-wrapper{
+    margin-top: calc(50vh - 200px);
+    background-color: rgba(55, 167, 219, 0.8);
+    padding: 30px;
+    border-radius: 5px;
+    border: 2px solid white;
+/* 37A7DB */
+}
+.modal-wrapper.game-menu{
+    margin-left: calc(50% - 225px);
+    width: 420px;
+}
+.modal-wrapper .title{
+    color: white;
+    font-size: 38px;
+    font-weight: 700;
+    margin-bottom: 60px;
+    width: 100%;
+    text-align: center;
+}
+.modal-wrapper .game-menu-item{
+    margin: 20px 100px;
+    height: 44px;
+    width: 200px;
+    border-radius: 5px;
+    border: 1px solid white;
+    background-color: #04628C;
+    position: relative;
+    transition: all 0.5s;
+    cursor: pointer;
+}
+.modal-wrapper .game-menu-item:hover{
+    background-color: #99C65C;
+}
+.modal-wrapper .game-menu-item svg{
+    position: absolute;
+    top: 5px;
+    left: 20px;
+}
+.modal-wrapper .game-menu-item .text{
+    position: absolute;
+    top: 10px;
+    left: 55px;
+    width: calc(100% - 60px);
+    text-align: center;
+    font-size: 20px;
+    font-weight: 700;
+    color: white;
+}
+
+.modal-wrapper.game-level{
+    margin-left: calc(50% - 315px);
+    width: 600px;
+    height: 400px;
+}
+.modal-wrapper .game-level-item{
+    float: left;
+    width: 136px;
+    height: 180px;
+    margin: 15px;
+    padding: 15px;
+    border-radius: 5px;
+    border: 2px solid white;
+    background-color: rgba(55, 167, 219, 0.7);
+    cursor: pointer;
+}
+.modal-wrapper .game-level-item .img{
+    width: 100%;
+}
+.modal-wrapper .game-level-item .img img{
+    width: 100%;
+}
+.modal-wrapper .game-level-item .label{
+    width: 100%;
+    text-align: center;
+    color: white;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.modal-wrapper.game-ready{
+    width: 300px;
+    margin-left: calc(50% - 150px);
+    height: 300px;
+}
+.modal-wrapper.game-ready .start-time{
     width: 160px;
     height: 160px;
     border-radius: 50%;
-    border: 2px solid;
-}
-.over-pan .img-button.easy .img{
-    border-color: white;
-}
-.over-pan .img-button.medium .img{
-    border-color: yellow;
-}
-.over-pan .img-button.difficult .img{
-    border-color: red;
+    border: 1px solid white;
+    background-color: #FAA728;
+    text-align: center;
+    font-size: 130px;
+    font-weight: 900;
+    color: white;
+    margin-top: -50px;
 }
 
-.over-pan .img-button .img img{
-    width:100%;
+.modal-wrapper.game-rule{
+    width: 300px;
+    margin-left: calc(50% - 150px);
+}
+.modal-wrapper.game-rule .game-rule-item{
+    display: none;
+    color: white;
+    font-size: 24px;
+    font-weight: 500;
+}
+.modal-wrapper.game-rule .game-rule-item.show{
+    display: block;
+}
+.modal-wrapper.game-rule .rule-step{
+    height: 50px;
+    width: 100%;
+    position: relative;
+}
+.modal-wrapper.game-rule .rule-step{
+    margin-top: 20px;
+    height: 40px;
+    width: 100%;
+    position: relative;
+}
+.modal-wrapper.game-rule .rule-step .btn-rule {
+    position: absolute;
+    top: 0px;
+    cursor: pointer;
+}
+.modal-wrapper.game-rule .rule-step .btn-rule-pre {
+    left: 0px;
+}
+.modal-wrapper.game-rule .rule-step .btn-rule-next {
+    right: 0px;
 }

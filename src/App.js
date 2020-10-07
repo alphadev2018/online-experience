@@ -44,7 +44,9 @@ export default class App extends Component {
 					callMenuItem={this.callMenuItem}
 				></Home>
 				<Header></Header>
-				<Footer></Footer>
+				<Footer
+					game={this.state.game}
+				></Footer>
 				<Sidebar
 					menuItem={this.state.menuItem}
 					callMenuItem={this.callMenuItem}

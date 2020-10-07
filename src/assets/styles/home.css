@@ -5,13 +5,13 @@
   height: 100vh;
   min-height: 600px;
 }
-.home .start-time{
+/* .home .start-time{
   position: absolute;
   top: 50vh;
   left: calc(50vw - 50px);
   font-size: 50px;
   font-weight: 900;
-}
+} */
 
 .home .process-time{
   position: absolute;

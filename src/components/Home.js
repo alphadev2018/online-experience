@@ -3,10 +3,10 @@ import jQuery from 'jquery';
 import * as THREE from 'three';
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
 import {TransformControls} from 'three/examples/jsm/controls/TransformControls';
-// import OrbitControls from 'three-orbitcontrols';
 
-import {modelArr, gameInfoArr, SetTween, easeTime, AnimateReturn, AnimateRotate, LoadIslandModel, LoadGameModel, GotoIsland, GetRayCastObject} from "./common";
+import {modelArr, gameInfoArr, easeTime, gameReadyTime, SetTween, AnimateReturn, AnimateRotate, LoadIslandModel, LoadGameModel, GotoIsland, GetRayCastObject} from "./common";
 import '../assets/styles/home.css';
+import '../assets/styles/overPan.css';
 
 export default class Home extends Component {
 	constructor(props) {
@@ -30,10 +30,6 @@ export default class Home extends Component {
 		window.addEventListener( 'pointerdown', this.mouseDown, false );
 		window.addEventListener( 'pointermove', this.mouseMove, false );
 		window.addEventListener( 'pointerup', this.mouseUp, false );
-		// window.addEventListener("touchstart", this.touchStart, false);
-		// window.addEventListener("touchmove", this.touchMove, false);
-		// window.addEventListener("touchend", this.touchEnd, false);
-		// window.addEventListener("touchcancel", this.touchEnd, false);
 	}
 
 	UNSAFE_componentWillReceiveProps(nextProps) {
@@ -100,12 +96,8 @@ export default class Home extends Component {
 		if (this.mouseStatus === "down") {
 			if (this.state.gameStatus !== "process") return;
 			const intersect = GetRayCastObject(this, event.clientX, event.clientY, this.gameMeshArr);
-			if (intersect) {
-				this.transform.attach(intersect.object);
-			}
-			else {
-				this.transform.detach();
-			}
+			if (intersect) { this.transform.attach(intersect.object); }
+			else 			{ this.transform.detach(); }
 		}
 		this.mouseStatus = "";
 	}
@@ -118,7 +110,7 @@ export default class Home extends Component {
 
 	setStartTime=()=> {
 		this.totalTime = gameInfoArr[this.gameNum].time;
-		this.setState({gameTime:this.totalTime+1});
+		this.setState({gameTime:this.totalTime+gameReadyTime});
 		var startPlayTime = setInterval(() => {
 			const remainTime = this.state.gameTime;
 			if 		(remainTime > this.totalTime) { this.setState({gameStatus:"start"}); }
@@ -146,7 +138,7 @@ export default class Home extends Component {
 	}
 
 	init() {
-		var self = this, backCol = 0x6CB3C5;
+		var self = this, backCol = 0x3D94CA;//0x6CB3C5;
 		this.renderer = new THREE.WebGLRenderer({antialias:true, alpha:true});
 		this.renderer.setSize(this.cWidth, this.cHeight);
 		if (!document.getElementById("container")) return false;
@@ -159,11 +151,10 @@ export default class Home extends Component {
 		this.totalGroup = new THREE.Group(); this.scene.add(this.totalGroup); this.totalGroup.position.set(0, -5, -70);
 		this.gameGroup = new THREE.Group(); this.scene.add(this.gameGroup); this.gameGroup.visible = false;
 
-		this.controls = new OrbitControls(this.camera, this.renderer.domElement); this.controls.enablePan = false; // this.controls.enabled = false;
+		this.controls = new OrbitControls(this.camera, this.renderer.domElement); this.controls.enablePan = false;
 		this.controls.minDistance = 5; this.controls.maxDistance = 25; this.controls.maxPolarAngle = Math.PI/2;
 
         this.transform = new TransformControls( this.camera, this.renderer.domElement ); this.scene.add(this.transform);
-        // this.transform.showZ = false;
         this.transform.setTranslationSnap(10);
         this.transform.setSize(0.8);
         this.transform.addEventListener( 'dragging-changed', function ( event ) { self.controls.enabled = ! event.value; } );
@@ -171,8 +162,8 @@ export default class Home extends Component {
 		const ambientLight = new THREE.AmbientLight( 0xFFFFFF, 0.2 ); this.scene.add( ambientLight );
 		this.mainLight = new THREE.DirectionalLight( 0xFFFFFF, 1.5 ); this.scene.add( this.mainLight );
 		this.mainLight.position.set(-50, 50, 50);
-		modelArr.forEach(modelInfo => { LoadIslandModel(modelInfo, this);  });
-		gameInfoArr.forEach((gameInfo, idx) => { LoadGameModel(gameInfo, this); });
+		modelArr.forEach(modelInfo => { LoadIslandModel(modelInfo, this); });
+		gameInfoArr.forEach(gameInfo => { LoadGameModel(gameInfo, this); });
 	}
 
 	animate () {
@@ -190,7 +181,14 @@ export default class Home extends Component {
 		return (
 			<div className="home">
 				<div id="container"></div>
-				{this.state.gameStatus === "start" && <div className="start-time">{this.state.gameTime - this.totalTime} ...</div> }
+				{this.state.gameStatus === "start" &&
+					<div className="over-pan">
+						<div className="modal-wrapper game-ready">
+							<div className="title">Get ready ...</div>
+							<div className="start-time">{this.state.gameTime - this.totalTime}</div>
+						</div>
+					</div>
+				}
 				{this.state.gameStatus === "process" &&
 					<div className="process-time">
 						<div> Remain Time </div>

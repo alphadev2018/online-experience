@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 104 103" width="104" height="103">
+	<defs>
+		<clipPath clipPathUnits="userSpaceOnUse" id="cp1">
+			<path d="M-867 -868L1053 -868L1053 212L-867 212Z" />
+		</clipPath>
+		<linearGradient id="grd1" gradientUnits="userSpaceOnUse"  x1="46" y1="78" x2="46" y2="13.999">
+			<stop offset="0" stop-color="#faa21b"  />
+			<stop offset="1" stop-color="#fbb549"  />
+		</linearGradient>
+	</defs>
+	<style>
+		tspan { white-space:pre }
+		.shp0 { fill: #cdeaf7;stroke: #ffffff;stroke-width: 2 } 
+		.shp1 { fill: url(#grd1);stroke: #ffffff;stroke-width: 2 } 
+		.shp2 { fill: #ffffff } 
+	</style>
+	<g id="Web 1920 – 79" clip-path="url(#cp1)">
+		<g id="Group 654">
+			<g id="Group 649">
+				<path id="Ellipse 110" class="shp0" d="M46 8C67.01 8 84 24.99 84 46C84 67.01 67.01 84 46 84C24.99 84 8 67.01 8 46C8 24.99 24.99 8 46 8Z" />
+				<path id="Path 92" class="shp1" d="M46 78C28.33 78 14 63.67 14 46C14 28.33 28.33 14 46 14C63.67 14 78 28.33 78 46C78 63.67 63.67 78 46 78Z" />
+				<path id="Rotate_Left_Icon" class="shp2" d="M26.1 37.6L29.93 26.9C30.14 26.31 30.63 25.88 31.24 25.76C31.85 25.63 32.48 25.81 32.97 26.25L35 28.11C35.04 28.07 35.08 28.03 35.13 27.99C42.53 22.29 53.67 22.74 60.5 29.01C67.83 35.74 67.83 46.7 60.5 53.43C60.09 53.8 59.56 53.99 59.02 53.99C58.48 53.99 57.95 53.8 57.54 53.43L56.8 52.75C55.98 52 55.98 50.79 56.8 50.04C62.09 45.19 62.08 37.28 56.78 32.42C51.84 27.89 44.1 27.51 38.69 31.51L40.67 33.33C41.15 33.77 41.35 34.35 41.21 34.92C41.14 35.21 40.98 35.47 40.75 35.68C40.54 35.88 40.27 36.02 39.97 36.11L28.31 39.63C27.62 39.84 26.94 39.71 26.48 39.28C26.02 38.85 25.88 38.23 26.1 37.6Z" />
+			</g>
+		</g>
+	</g>
+</svg>

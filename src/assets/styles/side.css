@@ -2,40 +2,52 @@
 .side{
 	position: absolute;
 	top: 0;
-	right: -60px;
+	right: 100px;
 	height: 100%;
-	width: 40px;
+	width: 64px;
 	font-size: 32px;
 	transition: all 0.5s;
 }
-.side.active{
-	right: 20px;
+
+.side .side-bar{
+	margin-top: 50px;
+	width: 60px;
+	border-radius: 30px;
+	border: 2px solid white;
+	background-color: rgba(61, 148, 202, 0.8);
+
 }
-.side .side-item{
-	margin-top: 15px;
+
+.side-bar .side-item{
+	margin: 15px 7px;
 	font-size: 20px;
-	width: 40px;
-	height: 40px;
+	width: 46px;
+	height: 46px;
 	border-radius: 50%;
-	border: 3px solid #0D3954;
+	overflow: hidden;
 	cursor: pointer;
 	transition: all 0.5s;
 }
+.side-bar .side-item .home0{
+	transform: translate(-39px, -5px);
+}
+.side-bar .side-item .home1{
+	transform: translate(-51px, -6px);
+}
+.side-bar .side-item .home2{
+	transform: translate(-5px, -6px);
+}
 
-.side .side-item svg{
+.side-bar.side-bar-bottom .side-item svg{
+	transform: translate(-6px, -6px);
+}
+.side .side-item img{
 	margin-top: 5px;
 	margin-left: 5px;
 	width: 30px;
 	height: 30px;
 }
-.side .side-item svg path{
-	fill:#0D3954;
-	transition: all 0.5s;
-}
 
 .side .side-item.active{
-	border-color: white;
-}
-.side .side-item.active svg path{
-	fill: white;
+	/* border-color: white; */
 }

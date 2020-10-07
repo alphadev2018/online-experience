@@ -1,0 +1,31 @@
+
+.life-lines{
+    position: absolute;
+    bottom: 50px;
+    left: 50px;
+}
+.life-lines .title{
+    font-size: 30px;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 15px;
+    margin-left: 20px;
+}
+.life-lines .life-btn-wrapper{
+    border-radius: 40px;
+    height: 80px;
+    border: 2px solid white;
+    background-color: #046692;
+}
+.life-lines .life-btn-wrapper .life-item{
+    margin: 15px;
+    width: 56px;
+    height: 43px;
+    color: white;
+    font-size: 14px;
+    border-radius: 50%;
+    background-color: #2A9BCE;
+    padding-top: 13px;
+    float: left;
+    text-align: center;
+}

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 import 'assets/styles/home.css';
+import {ReactComponent as MainLogoIcon} from "../assets/images/main-logo.svg";
 
 export default class Header extends Component {
 	constructor(props) {
@@ -14,7 +15,8 @@ export default class Header extends Component {
 	render() {
 		return (
 			<div className="header">
-				Logo here
+				<MainLogoIcon className="logo-icon"></MainLogoIcon>
+				<div className="logo-label">AUTODESK CONSTRUCTION CLOUD</div>
 			</div>
 		);
 	}

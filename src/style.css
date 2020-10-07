@@ -11,3 +11,10 @@ body {
   height: 100vh;
   background-color: white;
 }
+.header .logo-icon{
+  float: left;
+  margin-right: 30px;
+}
+.header .logo-label{
+  margin-top: 5px;
+}
