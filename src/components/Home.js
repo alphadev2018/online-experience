@@ -191,8 +191,7 @@ export default class Home extends Component {
 				}
 				{this.state.gameStatus === "process" &&
 					<div className="process-time">
-						<div> Remain Time </div>
-						<div>{this.state.gameTime} second</div>
+						<div className="label">{this.state.gameTime}</div>
 					</div>
 				}
 			</div>

@@ -9,23 +9,30 @@
     font-weight: 700;
     color: white;
     margin-bottom: 15px;
-    margin-left: 20px;
+    margin-left: 80px;
 }
 .life-lines .life-btn-wrapper{
-    border-radius: 40px;
-    height: 80px;
+    border-radius: 48px;
+    height: 96px;
     border: 2px solid white;
-    background-color: #046692;
+    background-image: linear-gradient(rgb(5, 109, 156), rgb(3, 79, 114));
 }
 .life-lines .life-btn-wrapper .life-item{
     margin: 15px;
-    width: 56px;
-    height: 43px;
+    width: 68px;
+    height: 56px;
     color: white;
     font-size: 14px;
     border-radius: 50%;
     background-color: #2A9BCE;
-    padding-top: 13px;
+    background-image: linear-gradient(rgb(55, 167, 219), rgb(11, 105, 146));
+    font-family: Artifakt;
+    padding-top: 12px;
     float: left;
     text-align: center;
+    cursor: pointer;
+}
+.life-lines .life-btn-wrapper .life-item:hover{
+    background-color: #99C65C;
+    background-image: linear-gradient(#99C65C, #99C65C);
 }

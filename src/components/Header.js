@@ -16,7 +16,6 @@ export default class Header extends Component {
 		return (
 			<div className="header">
 				<MainLogoIcon className="logo-icon"></MainLogoIcon>
-				<div className="logo-label">AUTODESK CONSTRUCTION CLOUD</div>
 			</div>
 		);
 	}

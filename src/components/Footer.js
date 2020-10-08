@@ -21,7 +21,9 @@ export default class Footer extends Component {
 			this.setState({game:nextProps.game});
 		}
 	}
-
+	clickItem=(str)=>{
+		console.log(str);
+	}
 
 	render() {
 		const {game}=this.state;

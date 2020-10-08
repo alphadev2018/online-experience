@@ -9,6 +9,7 @@ import Sidebar   from './components/Sidebar';
 import OverPan from "./components/OverPan";
 
 import 'style.css';
+import { easeTime } from './components/common';
 
 export default class App extends Component {
 	constructor(props) {
@@ -21,7 +22,10 @@ export default class App extends Component {
 
 	callMenuItem=(str)=>{
 		this.setState({menuItem:str, game:false}, ()=>{
-			if (str === "game") this.setState({overModal:true});
+			if (str === "game") 
+			setTimeout(() => {
+				this.setState({overModal:true});
+			}, easeTime);
 		});
 	}
 

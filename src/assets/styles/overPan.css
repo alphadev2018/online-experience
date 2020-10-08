@@ -48,10 +48,10 @@
 }
 
 .over-pan .first-button{
-    margin-left: calc(50% - 50px);
+    margin-left: calc(50% - 65px);
     background-color: #FAA728;
-    width: 100px;
-    height: 100px;
+    width: 130px;
+    height: 130px;
     border-radius: 50%;
     border: 5px solid white;
     cursor: pointer;
@@ -61,22 +61,22 @@
     width: 100%;
     margin-top: 30px;
     color: white;
-    font-size: 38px;
-    font-weight: 600;
+    font-family: calibri_bold;
+    font-size: 56px;
     text-align: center;
 }
 
 .modal-wrapper{
     margin-top: calc(50vh - 200px);
-    background-color: rgba(55, 167, 219, 0.8);
-    padding: 30px;
+    background-image: linear-gradient(rgba(55, 167, 219, 0.9), rgba(11, 105, 146, 0.9));
+    padding: 20px;
     border-radius: 5px;
     border: 2px solid white;
 /* 37A7DB */
 }
 .modal-wrapper.game-menu{
-    margin-left: calc(50% - 225px);
-    width: 420px;
+    margin-left: calc(50% - 260px);
+    width: 480px;
 }
 .modal-wrapper .title{
     color: white;
@@ -87,18 +87,19 @@
     text-align: center;
 }
 .modal-wrapper .game-menu-item{
-    margin: 20px 100px;
+    margin: 20px;
+    margin-left: calc(50% - 100px);
     height: 44px;
     width: 200px;
     border-radius: 5px;
     border: 1px solid white;
-    background-color: #04628C;
+    background-image: linear-gradient(rgb(5, 109, 156), rgb(3, 79, 114));
     position: relative;
     transition: all 0.5s;
     cursor: pointer;
 }
 .modal-wrapper .game-menu-item:hover{
-    background-color: #99C65C;
+    background-image: linear-gradient(#99C65C, #99C65C);
 }
 .modal-wrapper .game-menu-item svg{
     position: absolute;
@@ -129,8 +130,11 @@
     padding: 15px;
     border-radius: 5px;
     border: 2px solid white;
-    background-color: rgba(55, 167, 219, 0.7);
+    background-image: linear-gradient(rgba(55, 167, 219, 0.9), rgb(11, 105, 146, 0.9));
     cursor: pointer;
+}
+.modal-wrapper .game-level-item:hover{
+    background-image: linear-gradient(#99C65C, #99C65C);
 }
 .modal-wrapper .game-level-item .img{
     width: 100%;
@@ -161,18 +165,17 @@
     font-size: 130px;
     font-weight: 900;
     color: white;
-    margin-top: -50px;
+    margin-left: calc(50% - 80px);
 }
 
 .modal-wrapper.game-rule{
-    width: 300px;
-    margin-left: calc(50% - 150px);
+    width: 400px;
+    margin-left: calc(50% - 200px);
 }
 .modal-wrapper.game-rule .game-rule-item{
     display: none;
     color: white;
-    font-size: 24px;
-    font-weight: 500;
+    font-size: 20px;
 }
 .modal-wrapper.game-rule .game-rule-item.show{
     display: block;
@@ -198,4 +201,8 @@
 }
 .modal-wrapper.game-rule .rule-step .btn-rule-next {
     right: 0px;
+}
+.modal-wrapper.game-rule .game-menu-item .text {
+    width: 100%;
+    left: 0;
 }

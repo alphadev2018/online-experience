@@ -3,36 +3,27 @@ import * as THREE from 'three';
 import {FBXLoader} from "three/examples/jsm/loaders/FBXLoader";
 import {Tween, autoPlay, Easing} from "es6-tween";
 
-import menuMediaImg from '../assets/images/menu_media.png';
-import menuConductiveImg from '../assets/images/menu_conductive.png';
-import menuGameImg from '../assets/images/menu_game.png';
-import menuMapImg from '../assets/images/menu_map.png';
-
-import menuHome0Img from '../assets/images/menu_home_0.png';
-import menuHome1Img from '../assets/images/menu_home_1.png';
-import menuHome2Img from '../assets/images/menu_home_2.png';
-
-
 const island0 = require("assets/models/island_0.fbx");
 const island1 = require("assets/models/island_1.fbx");
 const island2 = require("assets/models/island_4.fbx");
 const island3 = require("assets/models/island_3.fbx");
 
 const gameModelCrane = require("assets/models/crane.fbx");
+const gameModelBridge = require("assets/models/bridge.fbx");
 
 autoPlay(true);
 
 export const easeTime = 1000, gameReadyTime = 5;
 export const menuHomeArr=[
-	{label:"home0", value:"home0", img:menuHome0Img},
-	{label:"home1", value:"home1", img:menuHome1Img},
-	{label:"home2", value:"home2", img:menuHome2Img}
+	{label:"home0", value:"home0"},
+	{label:"home1", value:"home1"},
+	{label:"home2", value:"home2"}
 ];
 export const menuArr = [
-	{label:"Media", 	value:"media", img:menuMediaImg},
-	{label:"Conductive",value:"conductive", img:menuConductiveImg},
-	{label:"Game", 		value:"game", img:menuGameImg},
-	{label:"Map", 		value:"map", img:menuMapImg}
+	{label:"Media", 	value:"media"},
+	{label:"Conductive",value:"conductive"},
+	{label:"Game", 		value:"game"},
+	{label:"Map", 		value:"map"}
 ];
 export const modelArr = [
 	{file:island0, size:15, pos:{x:  0, y:0, z:  0}, islandName:"home"},
@@ -41,7 +32,8 @@ export const modelArr = [
 	{file:island3, size:15, pos:{x:  0, y:0, z:-30}, islandName:menuArr[1].value},
 ];
 export const gameInfoArr = [
-	{id:"crane", file:gameModelCrane, size:5, time:500, basicName:"basic_0"}
+	{id:"bridge", file:gameModelBridge, size:3, time:500, basicName:"Support_0"},
+	// {id:"crane", file:gameModelCrane, size:5, time:500, basicName:"basic_0"}
 ]
 
 export function SetTween (obj, attr, info, easeTime) {
@@ -114,6 +106,7 @@ export function LoadGameModel(info, self) {
 		object.children.forEach(child => {
 			const childPos = child.position;
 			child.oriPos = {x:childPos.x, y:childPos.y, z:childPos.z};
+			if (child.name.indexOf("Suspenders") > -1) child.material.color.setHex(0xA75A00);
 		});
 		var vSize = await new THREE.Box3().setFromObject(object).getSize();
 		const scl = info.size/vSize.y;

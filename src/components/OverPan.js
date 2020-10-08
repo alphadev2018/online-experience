@@ -16,7 +16,7 @@ export default class OverPan extends Component {
 		super(props);
 		this.gameMenuArr = [
 			{type:"button", label:"Play", value:"play"},
-			{type:"button", label:"Leader Boards", value:"leader"},
+			{type:"button", label:"Leader Boards", value:"play"},
 			{type:"button", label:"Rules", value:"rule", hide:false}
 		];
 		this.gameLevelArr = [
@@ -75,7 +75,7 @@ export default class OverPan extends Component {
 								{item.value === "play" && <GamePlayIcon></GamePlayIcon>}
 								{item.value === "leader" && <GameLeaderIcon></GameLeaderIcon>}
 								{item.value === "rule" && <GameRuleIcon></GameRuleIcon>}
-								<div className={"text "+item.classStr}> {item.label} </div>
+								<div className="text"> {item.label} </div>
 							</div>
 						)}
 					</div>
@@ -106,6 +106,9 @@ export default class OverPan extends Component {
 						<div className="rule-step">
 							<BtnPreIcon className="btn-rule btn-rule-pre" onClick={()=>this.setRuleStepNum(-1)}></BtnPreIcon>
 							<BtnNextIcon className="btn-rule btn-rule-next" onClick={()=>this.setRuleStepNum(1)}></BtnNextIcon>
+						</div>
+						<div className="game-menu-item" onClick={()=>this.clickButton("play", false)}>
+							<div className="text">Play</div>
 						</div>
 					</div>
 				}

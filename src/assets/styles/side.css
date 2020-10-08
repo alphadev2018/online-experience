@@ -1,8 +1,8 @@
 
 .side{
 	position: absolute;
-	top: 0;
-	right: 100px;
+	top: 120px;
+	right: 40px;
 	height: 100%;
 	width: 64px;
 	font-size: 32px;
@@ -14,8 +14,7 @@
 	width: 60px;
 	border-radius: 30px;
 	border: 2px solid white;
-	background-color: rgba(61, 148, 202, 0.8);
-
+	background-color: rgba(4, 102, 146, 0.9);
 }
 
 .side-bar .side-item{

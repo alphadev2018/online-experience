@@ -18,3 +18,19 @@ body {
 .header .logo-label{
   margin-top: 5px;
 }
+
+@font-face {
+  font-family: calibri_bold;
+  src: url("./assets/fonts/Calibri_Bold.TTF");
+}
+@font-face {
+  font-family: Artifakt;
+  src: url("./assets/fonts/Artifakt.ttf");
+}
+@font-face {
+  font-family: Artifakt_Bold;
+  src: url("./assets/fonts/Artifakt_Bold.otf");
+}
+*{
+  font-family: Artifakt_Bold;
+}
