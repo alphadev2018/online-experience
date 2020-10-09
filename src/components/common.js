@@ -32,8 +32,8 @@ export const modelArr = [
 	{file:island3, size:15, pos:{x:  0, y:0, z:-30}, islandName:menuArr[1].value},
 ];
 export const gameInfoArr = [
-	{id:"bridge", file:gameModelBridge, size:3, time:500, basicName:"Support_0"},
-	// {id:"crane", file:gameModelCrane, size:5, time:500, basicName:"basic_0"}
+	{id:"bridge", file:gameModelBridge, size:2, time:500, basicName:"Support_0", snapDis:40},
+	{id:"crane", file:gameModelCrane, size:5, time:500, basicName:"basic_0", snapDis:10}
 ]
 
 export function SetTween (obj, attr, info, easeTime) {
@@ -68,7 +68,7 @@ export function AnimateReturn(arr, type, axis, value) {
 export function LoadIslandModel(info, self) {
 	new FBXLoader().load(info.file, async function (object){
 		object.traverse(function(child) {
-			if (info.islandName === "game") console.log(child.name);
+			if (info.islandName === "game" && child.name === "rect__FFFFFF") {child.visible = false;}
 			if (child.name.indexOf("wind_basic") > -1) self.windBaseArr.push(child);
 			else if (child.name.indexOf("car") > -1) self.carArr.push(child);
 			else if(child.name.indexOf("ton") > -1 || child.name.indexOf("cloud") > -1) {
@@ -77,14 +77,11 @@ export function LoadIslandModel(info, self) {
 				if (child.name.indexOf("cloud") > -1) self.cloudArr.push(child);
 				else if (child.name.indexOf("ton") > -1) self.tonArr.push(child);
 			}
-			// else if (child.name === "game_pan") child.material.color.setHex(0x336182);
-			// else if (child.name.indexOf("gameline") > -1) child.material.color.setHex(0x999999);
 			if (child instanceof THREE.Mesh) {
 				child.landChildName = info.islandName; self.meshArr.push(child);
 			}
 			if (child.name.indexOf("__") > -1) {
 				const colVal = child.name.split("__")[1];
-				console.log(colVal);
 				child.material = new THREE.MeshPhongMaterial({color:"#"+colVal});
 				if (child.name.indexOf("trans")>-1) {
 					child.material.transparent=true; child.material.opacity=0.7;
@@ -106,7 +103,8 @@ export function LoadGameModel(info, self) {
 		object.children.forEach(child => {
 			const childPos = child.position;
 			child.oriPos = {x:childPos.x, y:childPos.y, z:childPos.z};
-			if (child.name.indexOf("Suspenders") > -1) child.material.color.setHex(0xA75A00);
+			if 		(child.name.indexOf("Suspenders") > -1) child.material.color.setHex(0xA75A00);
+			else if (child.name.indexOf("Road") > -1) child.material.color.setHex(0x666666);
 		});
 		var vSize = await new THREE.Box3().setFromObject(object).getSize();
 		const scl = info.size/vSize.y;
@@ -114,6 +112,9 @@ export function LoadGameModel(info, self) {
 		// object.position.set(info.pos.x, info.pos.y, info.pos.z);
 		object.gameId = info.id;
 		object.basicModel = info.basicName;
+		object.areaDis = 8 / scl;
+		object.snapDis = info.snapDis;
+		console.log(object.areaDis);
 		self.gameGroup.add(object);
 	});
 }
@@ -158,4 +159,28 @@ export function GetRayCastObject(self, mouseX, mouseY, meshArr) {
 
 	self.raycaster.setFromCamera( self.mouse, self.camera );
 	return self.raycaster.intersectObjects( meshArr )[0];
+}
+
+export function CheckGameModel(children) {
+	var checkVal = true, keyArr = [{name:"Road", y:120}, {name:"Support", y:0}, {name:"Suspenders", y:120}], posZArr=[-480, 0, 480];
+	// children.forEach(child => {
+	// 	if (child.name.indexOf("Support") > -1) {
+	// 		console.log(child.position);
+	// 	}
+	// });
+	var modelCount = 0;
+	posZArr.forEach(posZ => {
+		keyArr.forEach(key => {
+			var subCheckVal = false;
+			children.forEach(child => {
+				if (child.name.indexOf(key.name) > -1) {
+					const {x, y, z} = child.position;
+					if (x === 0 && y === key.y && z === posZ) subCheckVal = true;
+				}
+			});
+			if (subCheckVal === false) checkVal = false;
+			else {modelCount++;}
+		});
+	});
+	return checkVal;
 }

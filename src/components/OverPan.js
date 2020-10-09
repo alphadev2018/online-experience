@@ -16,7 +16,7 @@ export default class OverPan extends Component {
 		super(props);
 		this.gameMenuArr = [
 			{type:"button", label:"Play", value:"play"},
-			{type:"button", label:"Leader Boards", value:"play"},
+			{type:"button", label:"Leader Boards", value:"leader"},
 			{type:"button", label:"Rules", value:"rule", hide:false}
 		];
 		this.gameLevelArr = [
@@ -28,8 +28,16 @@ export default class OverPan extends Component {
 			"1. this is first game rule. first game rule is simple and not difficult",
 			"2. this is second game rule. second game rule is a little difficult",
 			"3. this is third game rule. third game rule is very difficult and complex",
-		]
-		this.state = {itemArr:[], hide:"hide", menuItem:props.menuItem, overPanClass:"", gameRuleNum:0};
+		];
+		this.leaderColumns = [{ Header: 'Position', accessor: 'no'},
+							{ Header: 'Time taken', accessor: 'name' },
+							{ Header: 'Score', accessor: 'score' }] ;
+		this.leaderBoardArr = [];
+		for (let i = 0; i < 7; i++) {
+			this.leaderBoardArr[i] = {no:i+1, name:"Person_"+i, score:Math.round(Math.random() * 300)};
+		}
+		this.state = {itemArr:[], hide:"hide", modalInfo:props.modalInfo, overPanClass:"", gameRuleNum:0};
+		console.log(props.modalInfo);
 	}
 
 	componentDidMount() {
@@ -46,7 +54,7 @@ export default class OverPan extends Component {
 			this.setState({hide:"hide"});
 			setTimeout(() => { this.props.callClickButton(str); }, 500);
 		}
-		this.setState({menuItem:str});
+		this.setState({modalInfo:str});
 		if (str === "rule") this.setState({gameRuleNum:0});
 	}
 
@@ -58,16 +66,16 @@ export default class OverPan extends Component {
 	}
 
 	render() {
-		const {menuItem, gameRuleNum} = this.state;
+		const {modalInfo, gameRuleNum} = this.state;
 		const itemLength = this.state.itemArr.length;
 		return (
 			<div className={`over-pan ${this.state.hide}`}>
-				{menuItem === "first" &&
+				{modalInfo === "first" &&
 					<div className={"first-button"} onClick={()=>this.clickButton("first", true)}>
 						<div className="label">Enter</div>
 					</div>
 				}
-				{menuItem === "game" &&
+				{modalInfo === "game" &&
 					<div className="modal-wrapper game-menu">
 						<div className="title">Play - Built to Successeed</div>
 						{this.gameMenuArr.map((item, idx) =>
@@ -80,7 +88,7 @@ export default class OverPan extends Component {
 						)}
 					</div>
 				}
-				{menuItem === "play" &&
+				{modalInfo === "play" &&
 					<div className="modal-wrapper game-level">
 						<div className="title">Choose Difficulty</div>
 						{this.gameLevelArr.map((item, idx) =>
@@ -95,7 +103,7 @@ export default class OverPan extends Component {
 						)}
 					</div>
 				}
-				{menuItem === "rule" &&
+				{modalInfo === "rule" &&
 					<div className="modal-wrapper game-rule">
 						<div className="title">Game Rules</div>
 						{this.gameRuleArr.map((item, idx) =>
@@ -109,6 +117,52 @@ export default class OverPan extends Component {
 						</div>
 						<div className="game-menu-item" onClick={()=>this.clickButton("play", false)}>
 							<div className="text">Play</div>
+						</div>
+					</div>
+				}
+				{(modalInfo === "success" || modalInfo === "autoBuild" || modalInfo === "timeOut") &&
+					<div className="modal-wrapper game-end">
+						<div className="title">
+							{modalInfo === "success" && "Success Game"}
+							{modalInfo === "autoBuild" && "End auto build"}
+							{modalInfo === "timeOut" && "Time Up"}
+						</div>
+						<div className="game-result">
+							{modalInfo === "success" && "Success Game"}
+							{modalInfo === "autoBuild" && "End auto build"}
+							{modalInfo === "timeOut" && "Time Up"}
+						</div>
+						<div className="game-button">
+							<div className="game-menu-item left" onClick={()=>this.clickButton("play", false)}>
+								Play Again
+							</div>
+							<div className="game-menu-item right" onClick={()=>this.clickButton("leader", false)}>
+								LeaderBoard
+							</div>
+						</div>
+					</div>
+				}
+				{modalInfo === "leader" &&
+					<div className="modal-wrapper leader-board">
+						<div className="title">Leaderboard</div>
+						<div className="leader-content">
+							<div className="leader-line th">
+								<div className="no leader-cell">Position</div>
+								<div className="name leader-cell">Time Taken</div>
+								<div className="score leader-cell">Score</div>
+							</div>
+							{this.leaderBoardArr.map((item, idx) =>
+								<div className="leader-line">
+									<div className="no leader-cell">{item.no}</div>
+									<div className="name leader-cell">{item.name}</div>
+									<div className="score leader-cell">{item.score}</div>
+								</div>
+							)}
+						</div>
+						<div className="game-button">
+							<div className="game-menu-item center" onClick={()=>this.clickButton("play", false)}>
+								Play Again
+							</div>
 						</div>
 					</div>
 				}

@@ -4,7 +4,7 @@ import * as THREE from 'three';
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
 import {TransformControls} from 'three/examples/jsm/controls/TransformControls';
 
-import {modelArr, gameInfoArr, easeTime, gameReadyTime, SetTween, AnimateReturn, AnimateRotate, LoadIslandModel, LoadGameModel, GotoIsland, GetRayCastObject} from "./common";
+import {modelArr, gameInfoArr, easeTime, gameReadyTime, SetTween, AnimateReturn, AnimateRotate, LoadIslandModel, LoadGameModel, GotoIsland, GetRayCastObject, CheckGameModel} from "./common";
 import '../assets/styles/home.css';
 import '../assets/styles/overPan.css';
 
@@ -17,7 +17,7 @@ export default class Home extends Component {
 		this.animate = this.animate.bind(this);
 		this.meshArr = []; this.selLandName = "";
 		this.cloudArr = []; this.windBaseArr = []; this.carArr = []; this.tonArr = []; this.mouseStatus = "";
-		this.state = { overModal:true, gameStatus:null, gameTime:-1 };
+		this.state = { overModal:true, gameStatus:null, gameTime:-1, autoBuild:false };
 		this.gameMeshArr = [];
 	}
 	
@@ -42,18 +42,25 @@ export default class Home extends Component {
 		}
 		if (!this.state.gameStatus && nextProps.game) {
 			this.setState({gameStatus:"start"});
-			this.gameGroup.visible = true;
 			this.totalGroup.children.forEach(island => {
 				island.visible = (island.islandName === "game");
 			});
 			this.controls.minDistance = 0.1;
 			SetTween(this.camera, "position", {x:-10, z:0}, easeTime);
 			setTimeout(() => { this.controls.minDistance = 5; }, easeTime);
+			this.gameGroup.visible = true;
 			this.gameNum = 0;
+			this.gameGroup.children.forEach((gameModel, idx) => {
+				gameModel.visible = (idx === this.gameNum)?true:false;
+			});
 			this.setStartTime();
 		}
 		else if (this.state.gameStatus && !nextProps.game) {
 			this.setEndGame();
+		}
+		if (this.state.autoBuild !== nextProps.autoBuild) {
+			this.setState({autoBuild:nextProps.autoBuild});
+			if (nextProps.autoBuild) this.setAutoBuild();
 		}
 	}
 
@@ -93,11 +100,17 @@ export default class Home extends Component {
 	}
 
 	mouseUp = (event) => {
+		if (this.state.gameStatus !== "process") return;
 		if (this.mouseStatus === "down") {
-			if (this.state.gameStatus !== "process") return;
 			const intersect = GetRayCastObject(this, event.clientX, event.clientY, this.gameMeshArr);
 			if (intersect) { this.transform.attach(intersect.object); }
 			else 			{ this.transform.detach(); }
+		}
+		else {
+			const checkGame = CheckGameModel(this.gameGroup.children[this.gameNum].children);
+			if (checkGame) {
+				this.props.callGameResult("success", this.totalTime - this.state.gameTime);
+			}
 		}
 		this.mouseStatus = "";
 	}
@@ -116,7 +129,11 @@ export default class Home extends Component {
 			if 		(remainTime > this.totalTime) { this.setState({gameStatus:"start"}); }
 			else if (remainTime === this.totalTime) { this.startGame(); this.setState({gameStatus:"process"});}
 			else if (remainTime > 0) {  }
-			else {this.setEndGame(); clearInterval(startPlayTime);}
+			else {
+				this.setEndGame();
+				this.props.callGameResult("timeOut", this.totalTime - this.state.gameTime);
+				clearInterval(startPlayTime);
+			}
 			this.setState({gameTime:remainTime -1});
 		}, 1000);
 	}
@@ -124,17 +141,32 @@ export default class Home extends Component {
 	startGame=()=>{
 		this.gameMeshArr = [];
 		var gameModel = this.gameGroup.children[this.gameNum];
-		console.log(gameModel);
 		gameModel.children.forEach((child, idx) => {
 			if (child.name !== gameModel.basicModel) this.gameMeshArr.push(child);
 		});
-		const dis = 200;
+		const dis = gameModel.areaDis, snapDis = gameModel.snapDis;
+		this.transform.setTranslationSnap(snapDis)
 		this.gameMeshArr.forEach(mesh => {
-			const posX = Math.round(Math.random() * dis/10) * 10 - dis/2;
-			const posZ = Math.round(Math.random() * dis/10) * 10 - dis/2;
+			const posX = Math.round(Math.random() * dis/snapDis) * snapDis - dis/2;
+			const posZ = Math.round(Math.random() * dis/snapDis) * snapDis - dis/2;
 			SetTween(mesh, "position", {x:posX, z:posZ}, easeTime);
 			SetTween(mesh, "camPos", 0, easeTime);
 		});
+	}
+
+	setAutoBuild=()=>{
+		var childArr = this.gameGroup.children[this.gameNum].children;
+		for (let i = 0; i < childArr.length; i++) {
+			setTimeout(() => {
+				const oriPos = childArr[i].oriPos;
+				SetTween(childArr[i], "position", {x:oriPos.x, z:oriPos.z}, easeTime);
+				SetTween(childArr[i], "camPos", oriPos.y, easeTime);
+			}, i * easeTime / 2);
+		}
+		setTimeout(() => {
+			this.setEndGame();
+			this.props.callGameResult("autoBuild", this.totalTime - this.state.gameTime);
+		}, childArr.length * easeTime / 2 + 1000);
 	}
 
 	init() {

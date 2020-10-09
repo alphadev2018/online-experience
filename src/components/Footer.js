@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import gameImgMedium from "../assets/images/game_medium.png";
 
 import 'assets/styles/footer.css';
 
@@ -10,7 +11,7 @@ export default class Footer extends Component {
 			{label:"Design Reveal", value:"design"},
 			{label:"Auto complete", value:"auto"},
 		]
-		this.state = {game:false};
+		this.state = {game:false, selButton:null};
 	}
 
 	componentDidMount() {
@@ -22,11 +23,20 @@ export default class Footer extends Component {
 		}
 	}
 	clickItem=(str)=>{
-		console.log(str);
+		if (str === "auto") {
+			this.props.callAutoBuild();
+		}
+		else {
+			if (this.state.selButton) return;
+			this.setState({selButton:str});
+			setTimeout(() => {
+				this.setState({selButton:null});
+			}, 3000);
+		}
 	}
 
 	render() {
-		const {game}=this.state;
+		const {game, selButton}=this.state;
 		return (
 			<div className="footer">
 				{game === true &&
@@ -39,6 +49,18 @@ export default class Footer extends Component {
 								</div>
 							)}
 						</div>
+					</div>
+				}
+				{selButton === "assist" &&
+					<div className="image-wrapper assist">
+						<div className="label">Team Assist</div>
+						<img src={gameImgMedium}></img>
+					</div>
+				}
+				{selButton === "design" &&
+					<div className="image-wrapper design">
+						<div className="label">Design Reveal</div>
+						<img src={gameImgMedium}></img>
 					</div>
 				}
 			</div>
