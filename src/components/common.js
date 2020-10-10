@@ -9,7 +9,10 @@ const island2 = require("assets/models/island_4.fbx");
 const island3 = require("assets/models/island_3.fbx");
 
 const gameModelCrane = require("assets/models/crane.fbx");
+const gameModelBuilding = require("assets/models/building.fbx");
 const gameModelBridge = require("assets/models/bridge.fbx");
+const gameModelStadium = require("assets/models/stadium.fbx");
+const gameModelTest = require("assets/models/test.fbx");
 
 autoPlay(true);
 
@@ -32,8 +35,9 @@ export const modelArr = [
 	{file:island3, size:15, pos:{x:  0, y:0, z:-30}, islandName:menuArr[1].value},
 ];
 export const gameInfoArr = [
+	{id:"building", file:gameModelBuilding, size:5, time:100, basicName:"", snapDis:40},
 	{id:"bridge", file:gameModelBridge, size:2, time:500, basicName:"Support_0", snapDis:40},
-	{id:"crane", file:gameModelCrane, size:5, time:500, basicName:"basic_0", snapDis:10}
+	{id:"stadium", file:gameModelStadium, size:2, time:500, basicName:"Asphalt", snapDis:10}
 ]
 
 export function SetTween (obj, attr, info, easeTime) {
@@ -85,7 +89,6 @@ export function LoadIslandModel(info, self) {
 				child.material = new THREE.MeshPhongMaterial({color:"#"+colVal});
 				if (child.name.indexOf("trans")>-1) {
 					child.material.transparent=true; child.material.opacity=0.7;
-					console.log(child);
 				}
 			}
 		});
@@ -100,11 +103,18 @@ export function LoadIslandModel(info, self) {
 
 export function LoadGameModel(info, self) {
 	new FBXLoader().load(info.file, async function (object){
+		console.log(object);
+		if (info.id === "test") console.log(object);
 		object.children.forEach(child => {
 			const childPos = child.position;
 			child.oriPos = {x:childPos.x, y:childPos.y, z:childPos.z};
 			if 		(child.name.indexOf("Suspenders") > -1) child.material.color.setHex(0xA75A00);
 			else if (child.name.indexOf("Road") > -1) child.material.color.setHex(0x666666);
+			if (child.material.length) {
+				child.material.forEach(mat => {
+					if (mat.name.indexOf("0x") > -1) mat.color.setHex("0x"+mat.name.substring(2));
+				});
+			}
 		});
 		var vSize = await new THREE.Box3().setFromObject(object).getSize();
 		const scl = info.size/vSize.y;

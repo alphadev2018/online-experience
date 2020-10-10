@@ -39,7 +39,7 @@ export default class Footer extends Component {
 		const {game, selButton}=this.state;
 		return (
 			<div className="footer">
-				{game === true &&
+				{game !== false &&
 					<div className="life-lines">
 						<div className="title">Life Lines</div>
 						<div className="life-btn-wrapper">

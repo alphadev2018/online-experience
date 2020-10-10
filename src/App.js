@@ -14,28 +14,28 @@ import { easeTime } from './components/common';
 export default class App extends Component {
 	constructor(props) {
 		super(props);
-		this.state={menuItem:"first", modalInfo:"first", first:true, game:false, gameResult:null, autoBuild:false};
+		this.state={menuItem:"first", modalInfo:"first", first:true, selGame:false, gameResult:null, autoBuild:false};
 	}
 
 	componentDidMount() {
 	}
 
 	callMenuItem=(str)=>{
-		this.setState({menuItem:str, game:false}, ()=>{
+		this.setState({menuItem:str, selGame:false}, ()=>{
 			if (str === "game") 
 				setTimeout(() => { this.setState({modalInfo:"game"}); }, easeTime);
 		});
 	}
 
 	callGameResult=(status, time)=>{
-		this.setState({modalInfo:status, game:false, modalDetailInfo:{time}, autoBuild:false});
+		this.setState({modalInfo:status, selGame:false, modalDetailInfo:{time}, autoBuild:false});
 	}
 
 	callModalButton=(str)=>{
 		if (str === "first") {
 			this.setState({menuItem:"home"});
 		}
-		else if (str.indexOf("game") > -1) this.setState({game:true});
+		else if (str.indexOf("game") > -1) this.setState({selGame:str});
 		this.setState({modalInfo:false});
 	}
 
@@ -43,7 +43,7 @@ export default class App extends Component {
 		return (
 			<div>
 				<Home
-					game={this.state.game}
+					game={this.state.selGame}
 					overModal={this.state.modalInfo}
 					first={this.state.first}
 					menuItem={this.state.menuItem}
@@ -53,7 +53,7 @@ export default class App extends Component {
 				></Home>
 				<Header></Header>
 				<Footer
-					game={this.state.game}
+					game={this.state.selGame}
 					callAutoBuild={()=>this.setState({autoBuild:true})}
 				></Footer>
 				<Sidebar

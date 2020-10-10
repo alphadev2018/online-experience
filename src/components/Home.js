@@ -49,7 +49,10 @@ export default class Home extends Component {
 			SetTween(this.camera, "position", {x:-10, z:0}, easeTime);
 			setTimeout(() => { this.controls.minDistance = 5; }, easeTime);
 			this.gameGroup.visible = true;
-			this.gameNum = 0;
+			if 		(nextProps.game === "gameEasy") 	this.gameNum = 0;
+			else if (nextProps.game === "gameMedium") 	this.gameNum = 1;
+			else if (nextProps.game === "gameDifficult")this.gameNum = 2;
+
 			this.gameGroup.children.forEach((gameModel, idx) => {
 				gameModel.visible = (idx === this.gameNum)?true:false;
 			});
