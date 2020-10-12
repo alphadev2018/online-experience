@@ -180,7 +180,7 @@ export default class Home extends Component {
 		document.getElementById("container").appendChild(this.renderer.domElement);
 		this.renderer.setClearColor(backCol, 1);
 
-		this.camera = new THREE.PerspectiveCamera(60, this.cWidth / this.cHeight, 1,  300);
+		this.camera = new THREE.PerspectiveCamera(60, this.cWidth / this.cHeight, 1, 500);
 		this.camera.position.set(0, 1.5, 10);
 		this.scene = new THREE.Scene(); this.scene.fog = new THREE.Fog(backCol, 0, 200);
 		this.totalGroup = new THREE.Group(); this.scene.add(this.totalGroup); this.totalGroup.position.set(0, -5, -70);
@@ -204,10 +204,10 @@ export default class Home extends Component {
 	animate () {
 		if (!this.camera || !this.scene) return;
 		requestAnimationFrame(this.animate);
-		AnimateRotate(this.windBaseArr, "y", 0.005, "wind");
-		AnimateRotate(this.carArr, "y", 0.005, "car");
-		AnimateReturn(this.cloudArr, "position", "x", 0.5);
-		AnimateReturn(this.tonArr, "rotation", "y", 0.01);
+		// AnimateRotate(this.windBaseArr, "y", 0.005, "wind");
+		// AnimateRotate(this.carArr, "y", 0.005, "car");
+		// AnimateReturn(this.cloudArr, "position", "x", 0.5);
+		// AnimateReturn(this.tonArr, "rotation", "y", 0.01);
 		this.camera.lookAt( 0, 0, 0 );
 		this.renderer.render(this.scene, this.camera);
 	}

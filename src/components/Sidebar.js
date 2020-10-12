@@ -29,7 +29,7 @@ export default class Sidebar extends Component {
 	}
 
 	clickItem=(str)=>{
-		if (str.indexOf("home") > -1) str = "home";
+		// if (str.indexOf("home") > -1) str = "home";
 		if (this.state.selMenu === str) return;
 		this.setState({selMenu:str});
 		setTimeout(() => {

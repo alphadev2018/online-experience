@@ -3,7 +3,10 @@ import * as THREE from 'three';
 import {FBXLoader} from "three/examples/jsm/loaders/FBXLoader";
 import {Tween, autoPlay, Easing} from "es6-tween";
 
-const island0 = require("assets/models/island_0.fbx");
+// const island0 = require("assets/models/island_0.fbx");
+const islandHome0 = require("assets/models/island_home_0.fbx");
+const islandHome1 = require("assets/models/island_home_1.fbx");
+const islandHome2 = require("assets/models/island_home_2.fbx");
 const island1 = require("assets/models/island_1.fbx");
 const island2 = require("assets/models/island_4.fbx");
 const island3 = require("assets/models/island_3.fbx");
@@ -29,10 +32,13 @@ export const menuArr = [
 	{label:"Map", 		value:"map"}
 ];
 export const modelArr = [
-	{file:island0, size:15, pos:{x:  0, y:0, z:  0}, islandName:"home"},
-	{file:island1, size:15, pos:{x: 20, y:0, z: 20}, islandName:menuArr[0].value},
-	{file:island2, size:15, pos:{x:-20, y:0, z: 20}, islandName:menuArr[2].value},
-	{file:island3, size:15, pos:{x:  0, y:0, z:-30}, islandName:menuArr[1].value},
+	// {file:island0, size:20, pos:{x:  0, y:0, z:  0}, islandName:"home"},
+	{file:islandHome0, size:20, pos:{x: 20, y:0, z: 20}, islandName:menuHomeArr[0].value},
+	{file:islandHome1, size:20, pos:{x:-20, y:0, z: 20}, islandName:menuHomeArr[1].value},
+	{file:islandHome2, size:20, pos:{x:  0, y:0, z:-30}, islandName:menuHomeArr[2].value},
+	{file:island1, size:15, pos:{x: 40, y:0, z: 40}, islandName:menuArr[0].value},
+	{file:island2, size:15, pos:{x:-40, y:0, z: 40}, islandName:menuArr[2].value},
+	{file:island3, size:15, pos:{x:  0, y:0, z:-60}, islandName:menuArr[1].value},
 ];
 export const gameInfoArr = [
 	{id:"building", file:gameModelBuilding, size:5, time:100, basicName:"", snapDis:40},
@@ -93,17 +99,18 @@ export function LoadIslandModel(info, self) {
 			}
 		});
 		var vSize = await new THREE.Box3().setFromObject(object).getSize();
-		const scl = info.size/vSize.x;
+		const scl = (info.islandName === "home1")?0.003:info.size/vSize.x;
+		// const scl = info.size/vSize.x;
 		object.scale.set(scl, scl, scl);
 		object.position.set(info.pos.x, info.pos.y, info.pos.z);
 		object.islandName = info.islandName;
 		self.totalGroup.add(object);
+		if (info.islandName === "home1") console.log(object);
 	});
 }
 
 export function LoadGameModel(info, self) {
 	new FBXLoader().load(info.file, async function (object){
-		console.log(object);
 		if (info.id === "test") console.log(object);
 		object.children.forEach(child => {
 			const childPos = child.position;

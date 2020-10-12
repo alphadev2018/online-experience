@@ -33,7 +33,7 @@ export default class App extends Component {
 
 	callModalButton=(str)=>{
 		if (str === "first") {
-			this.setState({menuItem:"home"});
+			this.setState({menuItem:"home0"});
 		}
 		else if (str.indexOf("game") > -1) this.setState({selGame:str});
 		this.setState({modalInfo:false});
