@@ -9,8 +9,6 @@ import {modelArr, gameInfoArr, easeTime, gameReadyTime, SetTween, AnimateReturn,
 import '../assets/styles/home.css';
 import '../assets/styles/overPan.css';
 
-const fbxIsland = require("assets/models/APAC_custom.fbx");
-
 export default class Home extends Component {
 	constructor(props) {
 		super(props);
@@ -21,7 +19,7 @@ export default class Home extends Component {
 		this.meshArr = []; this.selLandName = "";
 		this.cloudArr = []; this.windBaseArr = []; this.carArr = []; this.tonArr = []; this.mouseStatus = "";
 		this.state = { overModal:true, gameStatus:null, gameTime:-1, autoBuild:false };
-		this.gameMeshArr = [];
+		this.gameMeshArr = []; this.gameIslandPlane = null; this.gameIslandLine = null;
 	}
 	
 	componentDidMount() {
@@ -55,11 +53,22 @@ export default class Home extends Component {
 			if 		(nextProps.game === "gameEasy") 	this.gameNum = 0;
 			else if (nextProps.game === "gameMedium") 	this.gameNum = 1;
 			else if (nextProps.game === "gameDifficult")this.gameNum = 2;
+			if (this.gameNum === 1) {
+				this.gameIslandPlane.material = new THREE.MeshPhongMaterial({transparent:true, opacity:0.7, color:0x083D8A});
+			}
+			else {
+				this.gameIslandPlane.material = new THREE.MeshPhongMaterial({color:0x7E9E3A});
+			}
+
 
 			this.gameGroup.children.forEach((gameModel, idx) => {
 				gameModel.visible = (idx === this.gameNum)?true:false;
 			});
-			this.setStartTime();
+			this.totalTime = gameInfoArr[this.gameNum].time;
+			this.setState({gameTime:this.totalTime+gameReadyTime, gameStatus:"start"}, ()=>{
+				this.setStartTime();
+			});
+			
 		}
 		else if (this.state.gameStatus && !nextProps.game) {
 			this.setEndGame();
@@ -125,22 +134,24 @@ export default class Home extends Component {
 		this.setState({gameStatus:null});
 		this.gameGroup.visible = false;
 		this.totalGroup.children.forEach(island => { island.visible = true; });
+		this.transform.detach();
 	}
 
 	setStartTime=()=> {
-		this.totalTime = gameInfoArr[this.gameNum].time;
-		this.setState({gameTime:this.totalTime+gameReadyTime});
-		var startPlayTime = setInterval(() => {
+		if (!this.state.gameStatus) return;
+		setTimeout(() => {
 			const remainTime = this.state.gameTime;
-			if 		(remainTime > this.totalTime) { this.setState({gameStatus:"start"}); }
-			else if (remainTime === this.totalTime) { this.startGame(); this.setState({gameStatus:"process"});}
-			else if (remainTime > 0) {  }
-			else {
+			if (remainTime <= 0) {
 				this.setEndGame();
 				this.props.callGameResult("timeOut", this.totalTime - this.state.gameTime);
-				clearInterval(startPlayTime);
 			}
-			this.setState({gameTime:remainTime -1});
+			else {
+				if		(remainTime > this.totalTime) { this.setState({gameStatus:"start"}); }
+				else if (remainTime === this.totalTime) { this.startGame(); this.setState({gameStatus:"process"});}
+				else if (remainTime > 0) {  }
+				this.setState({gameTime:remainTime -1});
+				this.setStartTime();
+			}
 		}, 1000);
 	}
 
@@ -176,7 +187,6 @@ export default class Home extends Component {
 	}
 
 	loadIslandModel=(info)=>{
-		var self = this;
 		new FBXLoader().load(info.file, (object)=>{
 			object.children.forEach(child => {
 				if (info.islandName === "game" && child.name === "rect__FFFFFF") {child.visible = false;}
@@ -186,8 +196,9 @@ export default class Home extends Component {
 				if (child.name.indexOf("__") > -1) {
 					const colVal = child.name.split("__")[1];
 					child.material = new THREE.MeshPhongMaterial({color:"#"+colVal});
-					if (child.name.indexOf("trans")>-1) {
-						child.material.transparent=true; child.material.opacity=0.7;
+					if (info.islandName === "game") {
+						if (child.name.indexOf("trans")>-1) this.gameIslandPlane = child;
+						else if (child.name.indexOf("line")>-1) this.gameIslandLine = child;
 					}
 				}
 				else if (child.name.indexOf("multi_mat") > -1) {
@@ -199,7 +210,7 @@ export default class Home extends Component {
 			var vSize = new THREE.Box3().setFromObject(object).getSize();
 			var scl = info.size/vSize.x;
 			if 		(info.islandName === "home0") { scl = 0.12; }
-			else if (info.islandName === "home1") { scl = 0.1; console.log(object); }
+			else if (info.islandName === "home1") { scl = 0.1; }
 			else if (info.islandName === "home2") { scl = 0.1; }
 			// const scl = info.size/vSize.x;
 			object.scale.set(scl, scl, scl);

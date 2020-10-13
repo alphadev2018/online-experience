@@ -36,7 +36,6 @@ export default class OverPan extends Component {
 			this.leaderBoardArr[i] = {no:i+1, name:"Person_"+i, score:Math.round(Math.random() * 300)};
 		}
 		this.state = {itemArr:[], hide:"hide", modalInfo:props.modalInfo, overPanClass:"", gameRuleNum:0};
-		console.log(props.modalInfo);
 	}
 
 	componentDidMount() {
@@ -134,6 +133,23 @@ export default class OverPan extends Component {
 							{modalInfo === "timeOut" && 
 								<div className="game-result-timeOut">
 									<div className="title">Your Scored 50 points</div>
+									<div className="half-row">
+										<div className="half-part half-left">Time taken</div>
+										<div className="half-part half-right">Time taken</div>
+									</div>
+									<div className="half-row">
+										<div className="half-part half-left">Difficulty</div>
+										<div className="half-part half-right">Hard</div>
+									</div>
+									<div className="half-row">
+										<div className="half-part half-left">Completion amount</div>
+										<div className="half-part half-right">20%</div>
+									</div>
+									<div className="half-row">
+										<div className="half-part half-left">Wrong moves</div>
+										<div className="half-part half-right">4</div>
+									</div>
+									<div className="label">You could improve this by using</div>
 								</div>
 							}
 						</div>
@@ -157,7 +173,7 @@ export default class OverPan extends Component {
 								<div className="score leader-cell">Score</div>
 							</div>
 							{this.leaderBoardArr.map((item, idx) =>
-								<div className="leader-line">
+								<div className="leader-line" key={idx}>
 									<div className="no leader-cell">{item.no}</div>
 									<div className="name leader-cell">{item.name}</div>
 									<div className="score leader-cell">{item.score}</div>

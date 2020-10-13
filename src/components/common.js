@@ -1,7 +1,6 @@
 
 import * as THREE from 'three';
 import {FBXLoader} from "three/examples/jsm/loaders/FBXLoader";
-import {GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader";
 import {Tween, autoPlay, Easing} from "es6-tween";
 
 // const island0 = require("assets/models/island_0.fbx");
@@ -42,7 +41,7 @@ export const modelArr = [
 	{file:island3, size:15, pos:{x:  0, y:0, z:-60}, islandName:menuArr[1].value},
 ];
 export const gameInfoArr = [
-	{id:"building", file:gameModelBuilding, size:5, time:100, basicName:"", snapDis:40},
+	{id:"building", file:gameModelBuilding, size:5, time:3, basicName:"", snapDis:40},
 	{id:"bridge", file:gameModelBridge, size:2, time:500, basicName:"Support_0", snapDis:40},
 	{id:"stadium", file:gameModelStadium, size:2, time:500, basicName:"Asphalt", snapDis:10}
 ]

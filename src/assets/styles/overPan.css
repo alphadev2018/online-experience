@@ -218,8 +218,29 @@
 }
 .modal-wrapper.game-end .game-result{
     color: white;
-
 }
+.modal-wrapper.game-end .game-result .half-row{
+    height: 40px;
+}
+.modal-wrapper.game-end .game-result .half-part{
+    width: calc(50% - 20px);
+    padding: 0px 10px;
+    height: 100%;
+    float: left;
+}
+.modal-wrapper.game-end .game-result .half-left{
+    text-align: right;
+    font-weight: 300;
+}
+.modal-wrapper.game-end .game-result .half-right{
+    text-align: left;
+    font-weight: 600;
+}
+.modal-wrapper.game-end .game-result .label{
+    width: 100%;
+    text-align: center;
+}
+
 .modal-wrapper .game-button{
     position: relative;
     width: 100%;
