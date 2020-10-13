@@ -20,14 +20,14 @@
 .life-lines .life-btn-wrapper .life-item{
     margin: 15px;
     width: 68px;
-    height: 56px;
+    height: 52px;
     color: white;
-    font-size: 14px;
+    font-size: 12px;
     border-radius: 50%;
     background-color: #2A9BCE;
     background-image: linear-gradient(rgb(55, 167, 219), rgb(11, 105, 146));
     font-family: Artifakt;
-    padding-top: 12px;
+    padding-top: 16px;
     float: left;
     text-align: center;
     cursor: pointer;

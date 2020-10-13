@@ -23,7 +23,7 @@
 		tspan { white-space:pre }
 		.shp0 { fill: url(#grd1);stroke: #ffffff;paint-order:stroke fill markers;stroke-width: 2 } 
 		.shp1 { fill: url(#grd2);stroke: #ffffff;paint-order:stroke fill markers;stroke-width: 2 } 
-		.shp2 { fill: url(#grd3);stroke: #ffffff;paint-order:stroke fill markers;stroke-width: 2 } 
+		.hover { fill: url(#grd3);stroke: #ffffff;paint-order:stroke fill markers;stroke-width: 2 } 
 		.shphome0 { fill: #ffffff } 
 	</style>
 	<g id="Web 1920 – 60" clip-path="url(#home0cp1)">
@@ -31,7 +31,7 @@
 			<g id="Group 201">
 				<path id="Ellipse 46" class="shp0" d="M60 50C47.83 50 38 40.17 38 28C38 15.83 47.83 6 60 6C72.17 6 82 15.83 82 28C82 40.17 72.17 50 60 50Z" />
 				<path id="Ellipse 47" class="shp1" d="M60 50C47.83 50 38 40.17 38 28C38 15.83 47.83 6 60 6C72.17 6 82 15.83 82 28C82 40.17 72.17 50 60 50Z" />
-				<path id="Ellipse 48" class="shp2" d="M60 50C47.83 50 38 40.17 38 28C38 15.83 47.83 6 60 6C72.17 6 82 15.83 82 28C82 40.17 72.17 50 60 50Z" />
+				<path id="Ellipse 48" class="hover" d="M60 50C47.83 50 38 40.17 38 28C38 15.83 47.83 6 60 6C72.17 6 82 15.83 82 28C82 40.17 72.17 50 60 50Z" />
 				<g id="Group 200">
 					<g id="Group 199" clip-path="url(#homecp2)">
 						<g id="Group 198">

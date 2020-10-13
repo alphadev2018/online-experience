@@ -23,7 +23,7 @@
 		tspan { white-space:pre }
 		.shp0 { fill: url(#grd1);stroke: #ffffff;paint-order:stroke fill markers;stroke-width: 2 } 
 		.shp1 { fill: url(#grd2);stroke: #ffffff;paint-order:stroke fill markers;stroke-width: 2 } 
-		.shp2 { fill: url(#grd3);stroke: #ffffff;paint-order:stroke fill markers;stroke-width: 2 } 
+		.hover { fill: url(#grd3);stroke: #ffffff;paint-order:stroke fill markers;stroke-width: 2 } 
 		.shp3 { fill: #ffffff } 
 	</style>
 	<g id="Web 1920 – 60" clip-path="url(#cp1)">
@@ -31,7 +31,7 @@
 			<g id="Group 193">
 				<path id="Ellipse 38" class="shp0" d="M29 50.99C16.83 50.99 7 41.16 7 28.99C7 16.83 16.83 6.99 29 6.99C41.17 6.99 51 16.83 51 28.99C51 41.16 41.17 50.99 29 50.99Z" />
 				<path id="Ellipse 39" class="shp1" d="M29 50.99C16.83 50.99 7 41.16 7 28.99C7 16.83 16.83 6.99 29 6.99C41.17 6.99 51 16.83 51 28.99C51 41.16 41.17 50.99 29 50.99Z" />
-				<path id="Ellipse 40" class="shp2" d="M29 50.99C16.83 50.99 7 41.16 7 28.99C7 16.83 16.83 6.99 29 6.99C41.17 6.99 51 16.83 51 28.99C51 41.16 41.17 50.99 29 50.99Z" />
+				<path id="Ellipse 40" class="hover" d="M29 50.99C16.83 50.99 7 41.16 7 28.99C7 16.83 16.83 6.99 29 6.99C41.17 6.99 51 16.83 51 28.99C51 41.16 41.17 50.99 29 50.99Z" />
 				<g id="Group 192">
 					<g id="Group 191" clip-path="url(#cp2)">
 						<g id="Group 190">

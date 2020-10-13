@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 
 import '../assets/styles/overPan.css';
-import {easeTime} from "./common";
 import {ReactComponent as GamePlayIcon} from "../assets/images/game_modal_play.svg";
 import {ReactComponent as GameLeaderIcon} from "../assets/images/game_modal_leader.svg";
 import {ReactComponent as GameRuleIcon} from "../assets/images/game_modal_rule.svg";
@@ -16,7 +15,7 @@ export default class OverPan extends Component {
 		super(props);
 		this.gameMenuArr = [
 			{type:"button", label:"Play", value:"play"},
-			{type:"button", label:"Leader Boards", value:"leader"},
+			{type:"button", label:"Leaderboard", value:"leader"},
 			{type:"button", label:"Rules", value:"rule", hide:false}
 		];
 		this.gameLevelArr = [
@@ -77,12 +76,14 @@ export default class OverPan extends Component {
 				}
 				{modalInfo === "game" &&
 					<div className="modal-wrapper game-menu">
-						<div className="title">Play - Built to Successeed</div>
+						<div className="title">Built to Succeed</div>
 						{this.gameMenuArr.map((item, idx) =>
 							<div className="game-menu-item" key={idx} onClick={()=>this.clickButton(item.value, false)}>
-								{item.value === "play" && <GamePlayIcon></GamePlayIcon>}
-								{item.value === "leader" && <GameLeaderIcon></GameLeaderIcon>}
-								{item.value === "rule" && <GameRuleIcon></GameRuleIcon>}
+								<div className="game-menu-icon">
+									{item.value === "play" && <GamePlayIcon></GamePlayIcon>}
+									{item.value === "leader" && <GameLeaderIcon></GameLeaderIcon>}
+									{item.value === "rule" && <GameRuleIcon></GameRuleIcon>}
+								</div>
 								<div className="text"> {item.label} </div>
 							</div>
 						)}
@@ -130,7 +131,11 @@ export default class OverPan extends Component {
 						<div className="game-result">
 							{modalInfo === "success" && "Success Game"}
 							{modalInfo === "autoBuild" && "End auto build"}
-							{modalInfo === "timeOut" && "Time Up"}
+							{modalInfo === "timeOut" && 
+								<div className="game-result-timeOut">
+									<div className="title">Your Scored 50 points</div>
+								</div>
+							}
 						</div>
 						<div className="game-button">
 							<div className="game-menu-item left" onClick={()=>this.clickButton("play", false)}>

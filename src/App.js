@@ -24,6 +24,7 @@ export default class App extends Component {
 		this.setState({menuItem:str, selGame:false}, ()=>{
 			if (str === "game") 
 				setTimeout(() => { this.setState({modalInfo:"game"}); }, easeTime);
+			else this.setState({modalInfo:false});
 		});
 	}
 

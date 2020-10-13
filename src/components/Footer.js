@@ -7,9 +7,12 @@ export default class Footer extends Component {
 	constructor(props) {
 		super(props);
 		this.footerBtnArr = [
-			{label:"Team Assist", value:"assist"},
-			{label:"Design Reveal", value:"design"},
-			{label:"Auto complete", value:"auto"},
+			// {label:"Team Assist", value:"assist"},
+			// {label:"Design Reveal", value:"design"},
+			// {label:"Auto complete", value:"auto"},
+			{label:["Team", "Assist"], value:"assist"},
+			{label:["Design", "Reveal"], value:"design"},
+			{label:["Auto", "complete"], value:"auto"},
 		]
 		this.state = {game:false, selButton:null};
 	}
@@ -45,7 +48,9 @@ export default class Footer extends Component {
 						<div className="life-btn-wrapper">
 							{this.footerBtnArr.map(item =>
 								<div className={`life-item `} onClick={()=>this.clickItem(item.value)} key={item.value}>
-									{item.label}
+									<div>{item.label[0]}</div>
+									<div>{item.label[1]}</div>
+									{/* {item.label} */}
 								</div>
 							)}
 						</div>

@@ -1,21 +1,22 @@
 
 import * as THREE from 'three';
 import {FBXLoader} from "three/examples/jsm/loaders/FBXLoader";
+import {GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader";
 import {Tween, autoPlay, Easing} from "es6-tween";
 
 // const island0 = require("assets/models/island_0.fbx");
-const islandHome0 = require("assets/models/island_home_0.fbx");
-const islandHome1 = require("assets/models/island_home_1.fbx");
-const islandHome2 = require("assets/models/island_home_2.fbx");
+const islandHome0 = require("assets/models/EMEA_custom.fbx");
+const islandHome1 = require("assets/models/APAC_custom.fbx");
+const islandHome2 = require("assets/models/AMERACAS_custom.fbx");
 const island1 = require("assets/models/island_1.fbx");
 const island2 = require("assets/models/island_4.fbx");
 const island3 = require("assets/models/island_3.fbx");
+
 
 const gameModelCrane = require("assets/models/crane.fbx");
 const gameModelBuilding = require("assets/models/building.fbx");
 const gameModelBridge = require("assets/models/bridge.fbx");
 const gameModelStadium = require("assets/models/stadium.fbx");
-const gameModelTest = require("assets/models/test.fbx");
 
 autoPlay(true);
 
@@ -33,7 +34,7 @@ export const menuArr = [
 ];
 export const modelArr = [
 	// {file:island0, size:20, pos:{x:  0, y:0, z:  0}, islandName:"home"},
-	{file:islandHome0, size:20, pos:{x: 20, y:0, z: 20}, islandName:menuHomeArr[0].value},
+	{file:islandHome0, size:12, pos:{x: 20, y:0, z: 20}, islandName:menuHomeArr[0].value},
 	{file:islandHome1, size:20, pos:{x:-20, y:0, z: 20}, islandName:menuHomeArr[1].value},
 	{file:islandHome2, size:20, pos:{x:  0, y:0, z:-30}, islandName:menuHomeArr[2].value},
 	{file:island1, size:15, pos:{x: 40, y:0, z: 40}, islandName:menuArr[0].value},
@@ -105,13 +106,12 @@ export function LoadIslandModel(info, self) {
 		object.position.set(info.pos.x, info.pos.y, info.pos.z);
 		object.islandName = info.islandName;
 		self.totalGroup.add(object);
-		if (info.islandName === "home1") console.log(object);
+		// if (info.islandName === "home1") console.log(object);
 	});
 }
 
 export function LoadGameModel(info, self) {
 	new FBXLoader().load(info.file, async function (object){
-		if (info.id === "test") console.log(object);
 		object.children.forEach(child => {
 			const childPos = child.position;
 			child.oriPos = {x:childPos.x, y:childPos.y, z:childPos.z};
@@ -131,7 +131,6 @@ export function LoadGameModel(info, self) {
 		object.basicModel = info.basicName;
 		object.areaDis = 8 / scl;
 		object.snapDis = info.snapDis;
-		console.log(object.areaDis);
 		self.gameGroup.add(object);
 	});
 }

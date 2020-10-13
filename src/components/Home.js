@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
 import jQuery from 'jquery';
 import * as THREE from 'three';
+import {FBXLoader} from "three/examples/jsm/loaders/FBXLoader";
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
 import {TransformControls} from 'three/examples/jsm/controls/TransformControls';
 
 import {modelArr, gameInfoArr, easeTime, gameReadyTime, SetTween, AnimateReturn, AnimateRotate, LoadIslandModel, LoadGameModel, GotoIsland, GetRayCastObject, CheckGameModel} from "./common";
 import '../assets/styles/home.css';
 import '../assets/styles/overPan.css';
+
+const fbxIsland = require("assets/models/APAC_custom.fbx");
 
 export default class Home extends Component {
 	constructor(props) {
@@ -172,6 +175,41 @@ export default class Home extends Component {
 		}, childArr.length * easeTime / 2 + 1000);
 	}
 
+	loadIslandModel=(info)=>{
+		var self = this;
+		new FBXLoader().load(info.file, (object)=>{
+			object.children.forEach(child => {
+				if (info.islandName === "game" && child.name === "rect__FFFFFF") {child.visible = false;}
+				if (child instanceof THREE.Mesh) {
+					child.landChildName = info.islandName; this.meshArr.push(child);
+				}
+				if (child.name.indexOf("__") > -1) {
+					const colVal = child.name.split("__")[1];
+					child.material = new THREE.MeshPhongMaterial({color:"#"+colVal});
+					if (child.name.indexOf("trans")>-1) {
+						child.material.transparent=true; child.material.opacity=0.7;
+					}
+				}
+				else if (child.name.indexOf("multi_mat") > -1) {
+					child.material[0].color.setHex(0x775935);
+					child.material[1].color.setHex(0xA78868);
+					child.material[2].color.setHex(0x5C7725);
+				}
+			});
+			var vSize = new THREE.Box3().setFromObject(object).getSize();
+			var scl = info.size/vSize.x;
+			if 		(info.islandName === "home0") { scl = 0.12; }
+			else if (info.islandName === "home1") { scl = 0.1; console.log(object); }
+			else if (info.islandName === "home2") { scl = 0.1; }
+			// const scl = info.size/vSize.x;
+			object.scale.set(scl, scl, scl);
+			object.position.set(info.pos.x, info.pos.y, info.pos.z);
+			object.islandName = info.islandName;
+			this.totalGroup.add(object);
+			// if (info.islandName === "home1") console.log(object);
+		});
+	}
+
 	init() {
 		var self = this, backCol = 0x3D94CA;//0x6CB3C5;
 		this.renderer = new THREE.WebGLRenderer({antialias:true, alpha:true});
@@ -194,10 +232,10 @@ export default class Home extends Component {
         this.transform.setSize(0.8);
         this.transform.addEventListener( 'dragging-changed', function ( event ) { self.controls.enabled = ! event.value; } );
 
-		const ambientLight = new THREE.AmbientLight( 0xFFFFFF, 0.2 ); this.scene.add( ambientLight );
-		this.mainLight = new THREE.DirectionalLight( 0xFFFFFF, 1.5 ); this.scene.add( this.mainLight );
+		const ambientLight = new THREE.AmbientLight( 0xFFFFFF, 0.4 ); this.scene.add( ambientLight );
+		this.mainLight = new THREE.DirectionalLight( 0xFFFFFF, 2 ); this.scene.add( this.mainLight );
 		this.mainLight.position.set(-50, 50, 50);
-		modelArr.forEach(modelInfo => { LoadIslandModel(modelInfo, this); });
+		modelArr.forEach(modelInfo => { this.loadIslandModel(modelInfo, this); });
 		gameInfoArr.forEach(gameInfo => { LoadGameModel(gameInfo, this); });
 	}
 
