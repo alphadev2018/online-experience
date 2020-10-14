@@ -66,6 +66,14 @@ export default class OverPan extends Component {
 	render() {
 		const {modalInfo, gameRuleNum} = this.state;
 		const itemLength = this.state.itemArr.length;
+		var totalTime, gameTime, level, gamePro;
+		if (this.props && this.props.modalDetailInfo) {
+			const detailInfo = this.props.modalDetailInfo;
+			totalTime = detailInfo.totalTime;
+			gameTime = detailInfo.gameTime;
+			level = detailInfo.level;
+			gamePro = detailInfo.gamePro;
+		}
 		return (
 			<div className={`over-pan ${this.state.hide}`}>
 				{modalInfo === "first" &&
@@ -128,30 +136,30 @@ export default class OverPan extends Component {
 							{modalInfo === "timeOut" && "Time Up"}
 						</div>
 						<div className="game-result">
-							{modalInfo === "success" && "Success Game"}
-							{modalInfo === "autoBuild" && "End auto build"}
-							{modalInfo === "timeOut" && 
-								<div className="game-result-timeOut">
-									<div className="title">Your Scored 50 points</div>
-									<div className="half-row">
-										<div className="half-part half-left">Time taken</div>
-										<div className="half-part half-right">Time taken</div>
-									</div>
-									<div className="half-row">
-										<div className="half-part half-left">Difficulty</div>
-										<div className="half-part half-right">Hard</div>
-									</div>
-									<div className="half-row">
-										<div className="half-part half-left">Completion amount</div>
-										<div className="half-part half-right">20%</div>
-									</div>
-									<div className="half-row">
-										<div className="half-part half-left">Wrong moves</div>
-										<div className="half-part half-right">4</div>
-									</div>
-									<div className="label">You could improve this by using</div>
+							<div className="game-result-timeOut">
+								<div className="title">Your Scored {this.props.modalDetailInfo.gameTime} points</div>
+								<div className="half-row">
+									<div className="half-part half-left">Time taken</div>
+									<div className="half-part half-right">{totalTime - gameTime} s</div>
 								</div>
-							}
+								<div className="half-row">
+									<div className="half-part half-left">Difficulty</div>
+									<div className="half-part half-right">
+										{level === "gameEasy" && "Easy"}
+										{level === "gameMedium" && "Medium"}
+										{level === "gameDifficult" && "Hard"}
+									</div>
+								</div>
+								<div className="half-row">
+									<div className="half-part half-left">Completion amount</div>
+									<div className="half-part half-right">{gamePro} %</div>
+								</div>
+								<div className="half-row">
+									<div className="half-part half-left">Wrong moves</div>
+									<div className="half-part half-right">4</div>
+								</div>
+								<div className="label">You could improve this by using</div>
+							</div>
 						</div>
 						<div className="game-button">
 							<div className="game-menu-item left" onClick={()=>this.clickButton("play", false)}>

@@ -65,7 +65,7 @@ export default class Home extends Component {
 				gameModel.visible = (idx === this.gameNum)?true:false;
 			});
 			this.totalTime = gameInfoArr[this.gameNum].time;
-			this.setState({gameTime:this.totalTime+gameReadyTime, gameStatus:"start"}, ()=>{
+			this.setState({gameTime:this.totalTime+gameReadyTime, gameStatus:"start", gamePro:0}, ()=>{
 				this.setStartTime();
 			});
 			
@@ -122,9 +122,11 @@ export default class Home extends Component {
 			else 			{ this.transform.detach(); }
 		}
 		else {
-			const checkGame = CheckGameModel(this.gameGroup.children[this.gameNum].children);
-			if (checkGame) {
-				this.props.callGameResult("success", this.totalTime - this.state.gameTime);
+			const checkGamePro = CheckGameModel(this.gameGroup.children, this.gameNum);
+			this.setState({gamePro:checkGamePro});
+			console.log(checkGamePro);
+			if (checkGamePro === 100) {
+				this.props.callGameResult("success", this.totalTime, this.state.gameTime, checkGamePro);
 			}
 		}
 		this.mouseStatus = "";
@@ -143,7 +145,7 @@ export default class Home extends Component {
 			const remainTime = this.state.gameTime;
 			if (remainTime <= 0) {
 				this.setEndGame();
-				this.props.callGameResult("timeOut", this.totalTime - this.state.gameTime);
+				this.props.callGameResult("timeOut", this.totalTime, this.state.gameTime, this.state.gamePro);
 			}
 			else {
 				if		(remainTime > this.totalTime) { this.setState({gameStatus:"start"}); }
@@ -182,16 +184,18 @@ export default class Home extends Component {
 		}
 		setTimeout(() => {
 			this.setEndGame();
-			this.props.callGameResult("autoBuild", this.totalTime - this.state.gameTime);
+			this.props.callGameResult("autoBuild", this.totalTime, this.state.gameTime, this.state.gamePro);
 		}, childArr.length * easeTime / 2 + 1000);
 	}
 
 	loadIslandModel=(info)=>{
 		new FBXLoader().load(info.file, (object)=>{
 			object.children.forEach(child => {
-				if (info.islandName === "game" && child.name === "rect__FFFFFF") {child.visible = false;}
+				if (info.islandName === "game") console.log(child.name)
+				if (info.islandName === "game" && (child.name === "rect__FFFFFF" || child.name === "plane__000000") ) {child.visible = false;}
 				if (child instanceof THREE.Mesh) {
 					child.landChildName = info.islandName; this.meshArr.push(child);
+					if (info.islandName === "game") child.receiveShadow = true;
 				}
 				if (child.name.indexOf("__") > -1) {
 					const colVal = child.name.split("__")[1];
@@ -217,7 +221,6 @@ export default class Home extends Component {
 			object.position.set(info.pos.x, info.pos.y, info.pos.z);
 			object.islandName = info.islandName;
 			this.totalGroup.add(object);
-			// if (info.islandName === "home1") console.log(object);
 		});
 	}
 
@@ -228,6 +231,8 @@ export default class Home extends Component {
 		if (!document.getElementById("container")) return false;
 		document.getElementById("container").appendChild(this.renderer.domElement);
 		this.renderer.setClearColor(backCol, 1);
+		this.renderer.shadowMap.enabled = true;
+		this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
 		this.camera = new THREE.PerspectiveCamera(60, this.cWidth / this.cHeight, 1, 500);
 		this.camera.position.set(0, 1.5, 10);
@@ -246,6 +251,7 @@ export default class Home extends Component {
 		const ambientLight = new THREE.AmbientLight( 0xFFFFFF, 0.4 ); this.scene.add( ambientLight );
 		this.mainLight = new THREE.DirectionalLight( 0xFFFFFF, 2 ); this.scene.add( this.mainLight );
 		this.mainLight.position.set(-50, 50, 50);
+		this.mainLight.castShadow = true;
 		modelArr.forEach(modelInfo => { this.loadIslandModel(modelInfo, this); });
 		gameInfoArr.forEach(gameInfo => { LoadGameModel(gameInfo, this); });
 	}

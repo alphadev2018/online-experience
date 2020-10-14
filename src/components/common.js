@@ -4,11 +4,11 @@ import {FBXLoader} from "three/examples/jsm/loaders/FBXLoader";
 import {Tween, autoPlay, Easing} from "es6-tween";
 
 // const island0 = require("assets/models/island_0.fbx");
-const islandHome0 = require("assets/models/EMEA_custom.fbx");
+const islandHome0 = require("assets/models/EMEA_custom_test.fbx");
 const islandHome1 = require("assets/models/APAC_custom.fbx");
 const islandHome2 = require("assets/models/AMERACAS_custom.fbx");
+const islandGame = require("assets/models/island_game.fbx");
 const island1 = require("assets/models/island_1.fbx");
-const island2 = require("assets/models/island_4.fbx");
 const island3 = require("assets/models/island_3.fbx");
 
 
@@ -32,18 +32,17 @@ export const menuArr = [
 	{label:"Map", 		value:"map"}
 ];
 export const modelArr = [
-	// {file:island0, size:20, pos:{x:  0, y:0, z:  0}, islandName:"home"},
 	{file:islandHome0, size:12, pos:{x: 20, y:0, z: 20}, islandName:menuHomeArr[0].value},
 	{file:islandHome1, size:20, pos:{x:-20, y:0, z: 20}, islandName:menuHomeArr[1].value},
 	{file:islandHome2, size:20, pos:{x:  0, y:0, z:-30}, islandName:menuHomeArr[2].value},
-	{file:island1, size:15, pos:{x: 40, y:0, z: 40}, islandName:menuArr[0].value},
-	{file:island2, size:15, pos:{x:-40, y:0, z: 40}, islandName:menuArr[2].value},
-	{file:island3, size:15, pos:{x:  0, y:0, z:-60}, islandName:menuArr[1].value},
+	{file:islandGame,  size:15, pos:{x:-40, y:0, z: 40}, islandName:menuArr[2].value},
+	{file:island1, 	   size:15, pos:{x: 40, y:0, z: 40}, islandName:menuArr[0].value},
+	{file:island3,     size:15, pos:{x:  0, y:0, z:-60}, islandName:menuArr[1].value},
 ];
 export const gameInfoArr = [
-	{id:"building", file:gameModelBuilding, size:5, time:3, basicName:"", snapDis:40},
+	{id:"building", file:gameModelBuilding, size:5, time:100, basicName:"", snapDis:100},
 	{id:"bridge", file:gameModelBridge, size:2, time:500, basicName:"Support_0", snapDis:40},
-	{id:"stadium", file:gameModelStadium, size:2, time:500, basicName:"Asphalt", snapDis:10}
+	{id:"stadium", file:gameModelStadium, size:2, time:500, basicName:"Asphalt", snapDis:60}
 ]
 
 export function SetTween (obj, attr, info, easeTime) {
@@ -114,12 +113,19 @@ export function LoadGameModel(info, self) {
 		object.children.forEach(child => {
 			const childPos = child.position;
 			child.oriPos = {x:childPos.x, y:childPos.y, z:childPos.z};
+			child.castShadow = true;
+			child.receiveShadow = true;
 			if 		(child.name.indexOf("Suspenders") > -1) child.material.color.setHex(0xA75A00);
 			else if (child.name.indexOf("Road") > -1) child.material.color.setHex(0x666666);
 			if (child.material.length) {
 				child.material.forEach(mat => {
 					if (mat.name.indexOf("0x") > -1) mat.color.setHex("0x"+mat.name.substring(2));
 				});
+			}
+			else child.material.side = THREE.DoubleSide;
+			if (child.name.indexOf("__") > -1) {
+				const colVal = child.name.split("__")[1];
+				child.material = new THREE.MeshPhongMaterial({color:"#"+colVal});
 			}
 		});
 		var vSize = await new THREE.Box3().setFromObject(object).getSize();
@@ -176,26 +182,36 @@ export function GetRayCastObject(self, mouseX, mouseY, meshArr) {
 	return self.raycaster.intersectObjects( meshArr )[0];
 }
 
-export function CheckGameModel(children) {
-	var checkVal = true, keyArr = [{name:"Road", y:120}, {name:"Support", y:0}, {name:"Suspenders", y:120}], posZArr=[-480, 0, 480];
-	// children.forEach(child => {
-	// 	if (child.name.indexOf("Support") > -1) {
-	// 		console.log(child.position);
-	// 	}
-	// });
-	var modelCount = 0;
-	posZArr.forEach(posZ => {
-		keyArr.forEach(key => {
-			var subCheckVal = false;
-			children.forEach(child => {
-				if (child.name.indexOf(key.name) > -1) {
-					const {x, y, z} = child.position;
-					if (x === 0 && y === key.y && z === posZ) subCheckVal = true;
-				}
+export function CheckGameModel(model, num) {
+	var children = model[num].children, checkVal = true, remainCount = 0;;
+	if (num === 1) {
+		var keyArr = [{name:"Road", y:120}, {name:"Support", y:0}, {name:"Suspenders", y:120}], posZArr=[-480, 0, 480];
+		posZArr.forEach(posZ => {
+			keyArr.forEach(key => {
+				var subCheckVal = false;
+				children.forEach(child => {
+					if (child.name.indexOf(key.name) > -1) {
+						const {x, y, z} = child.position;
+						if (x === 0 && y === key.y && z === posZ) subCheckVal = true;
+					}
+				});
+				if (subCheckVal === false) remainCount++;
 			});
-			if (subCheckVal === false) checkVal = false;
-			else {modelCount++;}
 		});
-	});
-	return checkVal;
+	}
+	else {
+		children.forEach(item => {
+			const oriPos = item.oriPos, curPos = item.position;
+			var subCheckVal = true;
+			["x", "y", "z"].forEach(axis => {
+				if (oriPos[axis] !== curPos[axis]) subCheckVal = false;
+			});
+			if (subCheckVal === false) {
+				console.log(oriPos);
+				console.log(curPos);
+				remainCount++;
+			}
+		});
+	}
+	return 100 - Math.round(remainCount / children.length * 100);
 }

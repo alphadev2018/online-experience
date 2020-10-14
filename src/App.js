@@ -28,8 +28,8 @@ export default class App extends Component {
 		});
 	}
 
-	callGameResult=(status, time)=>{
-		this.setState({modalInfo:status, selGame:false, modalDetailInfo:{time}, autoBuild:false});
+	callGameResult=(status, totalTime, gameTime, gamePro)=>{
+		this.setState({modalInfo:status, selGame:false, modalDetailInfo:{totalTime, gameTime, level:this.state.selGame, gamePro}, autoBuild:false});
 	}
 
 	callModalButton=(str)=>{

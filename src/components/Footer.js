@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
+import gameImgEasy from "../assets/images/game_easy.png";
 import gameImgMedium from "../assets/images/game_medium.png";
+import gameImgDifficult from "../assets/images/game_difficult.png";
 
 import 'assets/styles/footer.css';
 
@@ -13,8 +15,10 @@ export default class Footer extends Component {
 			{label:["Team", "Assist"], value:"assist"},
 			{label:["Design", "Reveal"], value:"design"},
 			{label:["Auto", "complete"], value:"auto"},
-		]
-		this.state = {game:false, selButton:null};
+		];
+		this.state = {game:false, selButton:null, gameNum:-1};
+		// this.gamePreImg = [gameImgEasy, gameImgMedium, gameImgDifficult];
+		this.gamePreImg = {gameEasy:gameImgEasy, gameMedium:gameImgMedium, gameDifficult:gameImgDifficult};
 	}
 
 	componentDidMount() {
@@ -59,13 +63,13 @@ export default class Footer extends Component {
 				{selButton === "assist" &&
 					<div className="image-wrapper assist">
 						<div className="label">Team Assist</div>
-						<img src={gameImgMedium}></img>
+						<img src={this.gamePreImg[game]}></img>
 					</div>
 				}
 				{selButton === "design" &&
 					<div className="image-wrapper design">
 						<div className="label">Design Reveal</div>
-						<img src={gameImgMedium}></img>
+						<img src={this.gamePreImg[game]}></img>
 					</div>
 				}
 			</div>
