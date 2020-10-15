@@ -5,11 +5,11 @@ import {Tween, autoPlay, Easing} from "es6-tween";
 
 // const island0 = require("assets/models/island_0.fbx");
 const islandHome0 = require("assets/models/EMEA_custom_test.fbx");
-const islandHome1 = require("assets/models/APAC_custom.fbx");
-const islandHome2 = require("assets/models/AMERACAS_custom.fbx");
+const islandHome1 = require("assets/models/APAC_custom_test.fbx");
+const islandHome2 = require("assets/models/AMERACAS_custom_test.fbx");
 const islandGame = require("assets/models/island_game.fbx");
 const island1 = require("assets/models/island_1.fbx");
-const island3 = require("assets/models/island_3.fbx");
+// const island3 = require("assets/models/island_3.fbx");
 
 
 const gameModelCrane = require("assets/models/crane.fbx");
@@ -27,17 +27,17 @@ export const menuHomeArr=[
 ];
 export const menuArr = [
 	{label:"Media", 	value:"media"},
-	{label:"Conductive",value:"conductive"},
 	{label:"Game", 		value:"game"},
-	{label:"Map", 		value:"map"}
+	{label:"Map", 		value:"map"},
+	{label:"Conductive",value:"conductive"}
 ];
 export const modelArr = [
 	{file:islandHome0, size:12, pos:{x: 20, y:0, z: 20}, islandName:menuHomeArr[0].value},
 	{file:islandHome1, size:20, pos:{x:-20, y:0, z: 20}, islandName:menuHomeArr[1].value},
 	{file:islandHome2, size:20, pos:{x:  0, y:0, z:-30}, islandName:menuHomeArr[2].value},
-	{file:islandGame,  size:15, pos:{x:-40, y:0, z: 40}, islandName:menuArr[2].value},
-	{file:island1, 	   size:15, pos:{x: 40, y:0, z: 40}, islandName:menuArr[0].value},
-	{file:island3,     size:15, pos:{x:  0, y:0, z:-60}, islandName:menuArr[1].value},
+	{file:islandGame,  size:15, pos:{x: 25, y:0, z:-25}, islandName:menuArr[1].value},
+	{file:island1, 	   size:15, pos:{x:-25, y:0, z:-25}, islandName:menuArr[0].value},
+	// {file:island3,     size:15, pos:{x:  0, y:0, z: 35}, islandName:menuArr[1].value},
 ];
 export const gameInfoArr = [
 	{id:"building", file:gameModelBuilding, size:5, time:100, basicName:"", snapDis:100},
@@ -151,12 +151,12 @@ export function GotoIsland(self, str) {
 		}
 	});
 	if (str === "map") {
-		self.controls.maxDistance = 70;
+		self.controls.maxDistance = 120;
 		SetTween(self.totalGroup, "position", {x:0, z:0}, easeTime);
-		SetTween(self.camera, "camPos", 60, easeTime);
-		SetTween(self.scene.fog, "far", 300, easeTime);
+		SetTween(self.camera, "camPos", 90, easeTime);
+		SetTween(self.scene.fog, "far", 500, easeTime);
 		setTimeout(() => {
-			self.controls.minDistance = 50;
+			self.controls.minDistance = 80;
 			self.controls.maxPolarAngle = 0.2;
 		}, easeTime);
 	}

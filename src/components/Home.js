@@ -213,9 +213,9 @@ export default class Home extends Component {
 			});
 			var vSize = new THREE.Box3().setFromObject(object).getSize();
 			var scl = info.size/vSize.x;
-			if 		(info.islandName === "home0") { scl = 0.12; }
-			else if (info.islandName === "home1") { scl = 0.1; }
-			else if (info.islandName === "home2") { scl = 0.1; }
+			if 		(info.islandName === "home0") { scl = 0.09; }
+			else if (info.islandName === "home1") { scl = 0.09; }
+			else if (info.islandName === "home2") { scl = 0.09; }
 			// const scl = info.size/vSize.x;
 			object.scale.set(scl, scl, scl);
 			object.position.set(info.pos.x, info.pos.y, info.pos.z);
@@ -248,8 +248,8 @@ export default class Home extends Component {
         this.transform.setSize(0.8);
         this.transform.addEventListener( 'dragging-changed', function ( event ) { self.controls.enabled = ! event.value; } );
 
-		const ambientLight = new THREE.AmbientLight( 0xFFFFFF, 0.4 ); this.scene.add( ambientLight );
-		this.mainLight = new THREE.DirectionalLight( 0xFFFFFF, 2 ); this.scene.add( this.mainLight );
+		const ambientLight = new THREE.AmbientLight( 0xFFFFFF, 0.3 ); this.scene.add( ambientLight );
+		this.mainLight = new THREE.DirectionalLight( 0xFFFFFF, 1.5 ); this.scene.add( this.mainLight );
 		this.mainLight.position.set(-50, 50, 50);
 		this.mainLight.castShadow = true;
 		modelArr.forEach(modelInfo => { this.loadIslandModel(modelInfo, this); });

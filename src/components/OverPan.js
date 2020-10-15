@@ -78,6 +78,7 @@ export default class OverPan extends Component {
 			<div className={`over-pan ${this.state.hide}`}>
 				{modalInfo === "first" &&
 					<div className={"first-button"} onClick={()=>this.clickButton("first", true)}>
+						<div className="back-yellow"></div>
 						<div className="label">Enter</div>
 					</div>
 				}

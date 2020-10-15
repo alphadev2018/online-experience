@@ -49,16 +49,30 @@
 }
 
 .over-pan .first-button{
+    position: relative;
     margin-left: calc(50% - 65px);
-    background-color: #FAA728;
     width: 130px;
     height: 130px;
     border-radius: 50%;
+    overflow: hidden;
     border: 5px solid white;
     cursor: pointer;
     margin-top: 60vh;
 }
+.over-pan .first-button .back-yellow{
+    position: absolute;
+    top: 130px;
+    left: 0;
+    background-color: #FAA728;
+    width: 130px;
+    height: 130px;
+    transition: top 0.5s;
+}
+.over-pan .first-button:hover .back-yellow{
+    top: 0px;
+}
 .over-pan .first-button .label{
+    position: absolute;
     width: 100%;
     margin-top: 30px;
     color: white;
@@ -114,9 +128,9 @@
 .modal-wrapper .game-menu-item .text{
     position: absolute;
     top: 10px;
-    left: 55px;
+    left: 63px;
     width: calc(100% - 60px);
-    text-align: center;
+    text-align: left;
     font-size: 20px;
     font-weight: 700;
     color: white;

@@ -24,6 +24,7 @@ export default class App extends Component {
 		this.setState({menuItem:str, selGame:false}, ()=>{
 			if (str === "game") 
 				setTimeout(() => { this.setState({modalInfo:"game"}); }, easeTime);
+			else if (str === "conductive") window.open("https://www.autodesk.com/autodesk-university/", "_blank"); 
 			else this.setState({modalInfo:false});
 		});
 	}

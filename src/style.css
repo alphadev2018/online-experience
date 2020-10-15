@@ -14,6 +14,7 @@ body {
 .header .logo-icon{
   float: left;
   margin-right: 30px;
+  transform: scale(0.8) translate(-20px, 10px);
 }
 .header .logo-label{
   margin-top: 5px;
