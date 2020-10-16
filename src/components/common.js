@@ -3,6 +3,10 @@ import * as THREE from 'three';
 import {FBXLoader} from "three/examples/jsm/loaders/FBXLoader";
 import {Tween, autoPlay, Easing} from "es6-tween";
 
+import hotImgEMEA from "../assets/images/hot_EMEA.png";
+import hotImgACPA from "../assets/images/hot_ACPA.png";
+import hotImgAMERICA from "../assets/images/hot_AMERICA.png";
+
 // const island0 = require("assets/models/island_0.fbx");
 const islandHome0 = require("assets/models/EMEA_custom_test.fbx");
 const islandHome1 = require("assets/models/APAC_custom_test.fbx");
@@ -16,6 +20,8 @@ const gameModelCrane = require("assets/models/crane.fbx");
 const gameModelBuilding = require("assets/models/building.fbx");
 const gameModelBridge = require("assets/models/bridge.fbx");
 const gameModelStadium = require("assets/models/stadium.fbx");
+
+export const hotNameArr = ["EMEA", "AMERICA", "ACPA"];
 
 autoPlay(true);
 
@@ -104,7 +110,6 @@ export function LoadIslandModel(info, self) {
 		object.position.set(info.pos.x, info.pos.y, info.pos.z);
 		object.islandName = info.islandName;
 		self.totalGroup.add(object);
-		// if (info.islandName === "home1") console.log(object);
 	});
 }
 
@@ -214,4 +219,22 @@ export function CheckGameModel(model, num) {
 		});
 	}
 	return 100 - Math.round(remainCount / children.length * 100);
+}
+
+export const hotModalInfo={
+	ACPA:{
+		title:"ACPA hot modal title",
+		content:"ACPA hot modal title",
+		img:hotImgACPA
+	},
+	EMEA:{
+		title:"EMEA hot modal title",
+		content:"EMEA hot modal content",
+		img:hotImgEMEA
+	},
+	AMERICA:{
+		title:"AMERICA hot modal title",
+		content:"AMERICA hot modal content",
+		img:hotImgAMERICA
+	}
 }

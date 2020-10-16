@@ -357,3 +357,38 @@
     text-align: center;
     color: white;
 }
+
+.modal-wrapper.hotspot {
+    width: 600px;
+    height: 400px;
+    margin-left: calc(50% - 300px);
+    position: relative;
+}
+
+.modal-wrapper.hotspot .sub-content .description{
+    width: 360px;
+    float: left;
+    color: white;
+}
+.modal-wrapper.hotspot .sub-content .image{
+    width: 200px;
+    padding: 10px;
+    float: left;
+}
+.modal-wrapper.hotspot .sub-content .image img{
+    width: calc(100% - 20px);
+}
+.modal-wrapper.hotspot .sub-content .image .game-menu-item .text{
+    left: 50px;
+}
+.modal-wrapper.hotspot .close-hot{
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 30px;
+    cursor: pointer;
+    opacity: 0.8;
+}
+.modal-wrapper.hotspot .close-hot img{
+    width: 100%;
+}

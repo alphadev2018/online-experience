@@ -5,7 +5,7 @@ import {FBXLoader} from "three/examples/jsm/loaders/FBXLoader";
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
 import {TransformControls} from 'three/examples/jsm/controls/TransformControls';
 
-import {modelArr, gameInfoArr, easeTime, gameReadyTime, SetTween, AnimateReturn, AnimateRotate, LoadGameModel, GotoIsland, GetRayCastObject, CheckGameModel} from "./common";
+import {modelArr, gameInfoArr, easeTime, gameReadyTime, SetTween, AnimateReturn, AnimateRotate, LoadGameModel, GotoIsland, GetRayCastObject, CheckGameModel, hotNameArr} from "./common";
 import '../assets/styles/home.css';
 import '../assets/styles/overPan.css';
 
@@ -19,8 +19,9 @@ export default class Home extends Component {
 		this.meshArr = []; this.selLandName = "";
 		this.cloudArr = []; this.windBaseArr = []; this.ballonArr = []; this.tonArr = []; this.roundPlayArr = [];
 		this.mouseStatus = "";
-		this.state = { overModal:true, gameStatus:null, gameTime:-1, autoBuild:false };
+		this.state = { overModal:true, gameStatus:null, gameTime:-1, autoBuild:false, selHot:"" };
 		this.gameMeshArr = []; this.gameIslandPlane = null; this.gameIslandLine = null;
+		this.hotMeshArr = []; this.hotOverArr = [];
 	}
 	
 	componentDidMount() {
@@ -92,16 +93,16 @@ export default class Home extends Component {
 
 	mouseClick = (event) => {
 		if (this.state.overModal || this.state.gameStatus === "process") return;
+		const hotIntersect = GetRayCastObject(this, event.clientX, event.clientY, this.hotMeshArr);
 		const intersect = GetRayCastObject(this, event.clientX, event.clientY, this.meshArr);
-		if (intersect) {
+		if (hotIntersect) this.props.callHotSpot(intersect.object.hotStr);
+		else if (intersect) {
 			const landName = intersect.object.landChildName;
 			if (landName !== this.selLandName) {
 				if (landName !== "home" && this.selLandName !== "home") return;
 				GotoIsland(this, landName);
 				this.props.callMenuItem(landName);
 			}
-		}
-		else {
 		}
 	}
 
@@ -111,6 +112,18 @@ export default class Home extends Component {
 	}
 
 	mouseMove = (event) => {
+		const intersect = GetRayCastObject(this, event.clientX, event.clientY, this.hotMeshArr);
+		if (intersect) {
+			const hotStr = intersect.object.hotStr;
+			this.setHotMeshCol(this.hotMeshArr, hotStr, 0xFF8888, 0xFFFFFF);
+			this.setHotMeshCol(this.hotOverArr, hotStr, 0xFFFF00, 0xFF0000);
+			document.getElementById("container").style.cursor = "pointer";
+		}
+		else {
+			this.setHotMeshCol(this.hotMeshArr, "", 0xFF8888, 0xFFFFFF);
+			this.setHotMeshCol(this.hotOverArr, "", 0xFFFF00, 0xFF0000);
+			document.getElementById("container").style.cursor = "default";
+		}
 		this.mouseStatus = "move";
 		if (this.state.gameStatus !== "process") return;
 	}
@@ -131,6 +144,13 @@ export default class Home extends Component {
 			}
 		}
 		this.mouseStatus = "";
+	}
+
+	setHotMeshCol=(arr, str, overCol, noCol)=>{
+		arr.forEach(mesh => {
+			if (mesh.hotStr === str) mesh.material.color.setHex(overCol);
+			else mesh.material.color.setHex(noCol);
+		});
 	}
 
 	setEndGame=()=>{
@@ -192,8 +212,6 @@ export default class Home extends Component {
 	loadIslandModel=(info)=>{
 		new FBXLoader().load(info.file, (object)=>{
 			object.children.forEach(child => {
-				if (info.islandName === "game") console.log(child.name)
-				if (info.islandName === "game" && (child.name === "rect__FFFFFF" || child.name === "plane__000000") ) {child.visible = false;}
 				if (child instanceof THREE.Mesh) {
 					child.landChildName = info.islandName; this.meshArr.push(child);
 					if (info.islandName === "game") child.receiveShadow = true;
@@ -201,15 +219,11 @@ export default class Home extends Component {
 				if (child.name.indexOf("__") > -1) {
 					const colVal = child.name.split("__")[1];
 					child.material = new THREE.MeshPhongMaterial({color:"#"+colVal});
+					if (child.name === "rect__FFFFFF" || child.name === "plane__000000") {child.visible = false;}
 					if (info.islandName === "game") {
 						if (child.name.indexOf("trans")>-1) this.gameIslandPlane = child;
 						else if (child.name.indexOf("line")>-1) this.gameIslandLine = child;
 					}
-				}
-				else if (child.name.indexOf("multi_mat") > -1) {
-					child.material[0].color.setHex(0x775935);
-					child.material[1].color.setHex(0xA78868);
-					child.material[2].color.setHex(0x5C7725);
 				}
 				if 		(child.name.indexOf("wind_group") > -1) this.windBaseArr.push(child);
 				else if(child.name.indexOf("crane") > -1 || child.name.indexOf("cloud") > -1) {
@@ -220,6 +234,10 @@ export default class Home extends Component {
 				}
 				else if (child.name.indexOf("roundPlay") > -1) this.roundPlayArr.push(child);
 				else if (child.name.indexOf("ballon") > -1) this.ballonArr.push(child);
+				hotNameArr.forEach(str => {
+					if (child.name === "hot_"+str+"_hover") {child.hotStr=str; this.hotOverArr.push(child);}
+					else if (child.name === "hot_"+str) {child.hotStr=str; this.hotMeshArr.push(child);}
+				});
 			});
 			var vSize = new THREE.Box3().setFromObject(object).getSize();
 			var scl = info.size/vSize.x;
@@ -271,7 +289,7 @@ export default class Home extends Component {
 		requestAnimationFrame(this.animate);
 		AnimateRotate(this.windBaseArr, "y", 0.005, "wind");
 		AnimateRotate(this.roundPlayArr, "x", 0.005);
-		AnimateReturn(this.cloudArr, "position", "x", 0.5);
+		AnimateReturn(this.cloudArr, "position", "x", 0.05);
 		AnimateReturn(this.tonArr, "rotation", "y", 0.01);
 		this.camera.lookAt( 0, 0, 0 );
 		this.renderer.render(this.scene, this.camera);
@@ -296,6 +314,7 @@ export default class Home extends Component {
 						<div className="label">{this.state.gameTime}</div>
 					</div>
 				}
+				<div id="test_hotspot"></div>
 			</div>
 		)
 	}

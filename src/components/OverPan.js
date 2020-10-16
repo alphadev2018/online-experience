@@ -12,6 +12,9 @@ import {ReactComponent as BtnLeaderboardIcon} from "../assets/images/btn_leaderb
 import gameImgEasy from "../assets/images/game_easy.png";
 import gameImgMedium from "../assets/images/game_medium.png";
 import gameImgDifficult from "../assets/images/game_difficult.png";
+import closeImg from "../assets/images/close.png";
+
+import {hotModalInfo} from "./common";
 
 export default class OverPan extends Component {
 	constructor(props) {
@@ -69,13 +72,14 @@ export default class OverPan extends Component {
 	render() {
 		const {modalInfo, gameRuleNum} = this.state;
 		const itemLength = this.state.itemArr.length;
-		var totalTime, gameTime, level, gamePro;
+		var totalTime, gameTime, level, gamePro, hotStr="";
 		if (this.props && this.props.modalDetailInfo) {
 			const detailInfo = this.props.modalDetailInfo;
 			totalTime = detailInfo.totalTime;
 			gameTime = detailInfo.gameTime;
 			level = detailInfo.level;
 			gamePro = detailInfo.gamePro;
+			hotStr = detailInfo;
 		}
 		return (
 			<div className={`over-pan ${this.state.hide}`}>
@@ -204,6 +208,23 @@ export default class OverPan extends Component {
 							<div className="game-menu-item center" onClick={()=>this.clickButton("play", false)}>
 								Play Again
 							</div>
+						</div>
+					</div>
+				}
+				{modalInfo === "hotSpot" &&
+					<div className="modal-wrapper hotspot">
+						<div className="title">{hotModalInfo[hotStr].title}</div>
+						<div className="sub-content">
+							<div className="description">{hotModalInfo[hotStr].content}</div>
+							<div className="image">
+								<img src={hotModalInfo[hotStr].img}></img>
+								<div className="game-menu-item">
+									<div className="text">Learn more</div>
+								</div>
+							</div>
+						</div>
+						<div className="close-hot" onClick={()=>this.clickButton("", true)}>
+							<img src={closeImg}></img>
 						</div>
 					</div>
 				}

@@ -29,6 +29,11 @@ export default class App extends Component {
 		});
 	}
 
+	callHotSpot=(str)=>{
+		console.log(str);
+		this.setState({modalInfo:"hotSpot", modalDetailInfo:str});
+	}
+
 	callGameResult=(status, totalTime, gameTime, gamePro)=>{
 		this.setState({modalInfo:status, selGame:false, modalDetailInfo:{totalTime, gameTime, level:this.state.selGame, gamePro}, autoBuild:false});
 	}
@@ -52,6 +57,7 @@ export default class App extends Component {
 					autoBuild={this.state.autoBuild}
 					callMenuItem={this.callMenuItem}
 					callGameResult={this.callGameResult}
+					callHotSpot={this.callHotSpot}
 				></Home>
 				<Header></Header>
 				<Footer
