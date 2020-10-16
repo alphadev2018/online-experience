@@ -6,6 +6,9 @@ import {ReactComponent as GameLeaderIcon} from "../assets/images/game_modal_lead
 import {ReactComponent as GameRuleIcon} from "../assets/images/game_modal_rule.svg";
 import {ReactComponent as BtnPreIcon} from "../assets/images/btn_pre.svg";
 import {ReactComponent as BtnNextIcon} from "../assets/images/btn_next.svg";
+import {ReactComponent as BtnPlayIcon} from "../assets/images/btn_play.svg";
+import {ReactComponent as BtnRuleIcon} from "../assets/images/btn_rules.svg";
+import {ReactComponent as BtnLeaderboardIcon} from "../assets/images/btn_leaderboard.svg";
 import gameImgEasy from "../assets/images/game_easy.png";
 import gameImgMedium from "../assets/images/game_medium.png";
 import gameImgDifficult from "../assets/images/game_difficult.png";
@@ -88,9 +91,9 @@ export default class OverPan extends Component {
 						{this.gameMenuArr.map((item, idx) =>
 							<div className="game-menu-item" key={idx} onClick={()=>this.clickButton(item.value, false)}>
 								<div className="game-menu-icon">
-									{item.value === "play" && <GamePlayIcon></GamePlayIcon>}
-									{item.value === "leader" && <GameLeaderIcon></GameLeaderIcon>}
-									{item.value === "rule" && <GameRuleIcon></GameRuleIcon>}
+									{item.value === "play" && <BtnPlayIcon></BtnPlayIcon>}
+									{item.value === "leader" && <BtnLeaderboardIcon></BtnLeaderboardIcon>}
+									{item.value === "rule" && <BtnRuleIcon></BtnRuleIcon>}
 								</div>
 								<div className="text"> {item.label} </div>
 							</div>

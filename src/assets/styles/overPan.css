@@ -56,6 +56,7 @@
     border-radius: 50%;
     overflow: hidden;
     border: 5px solid white;
+    box-shadow: 0 1px 1px rgba(0,0,0,0.25), 0 2px 2px rgba(0,0,0,0.2), 0 4px 4px rgba(0,0,0,0.15), 0 8px 8px rgba(0,0,0,0.1), 0 16px 16px rgba(0,0,0,0.05);
     cursor: pointer;
     margin-top: 60vh;
 }
@@ -73,11 +74,12 @@
 }
 .over-pan .first-button .label{
     position: absolute;
-    width: 100%;
-    margin-top: 30px;
+    width: 100%;    
+    transform: translateY(-50%);
+    top: 50%;
     color: white;
     font-family: calibri_bold;
-    font-size: 56px;
+    font-size: 50px;
     text-align: center;
 }
 
@@ -115,12 +117,15 @@
 }
 .modal-wrapper .game-menu-item .game-menu-icon{
     position: absolute;
-    top: 5px;
     left: 15px;
     width: 32px;
     height: 32px;
-    border: 2px solid white;
     border-radius: 50%;
+    transform: translateY(-50%);
+    top: 50%;
+}
+.modal-wrapper .game-menu-item .game-menu-icon svg{
+    margin: -50px -30px;
 }
 .modal-wrapper .game-menu-item:hover{
     background-image: linear-gradient(#99C65C, #99C65C);
