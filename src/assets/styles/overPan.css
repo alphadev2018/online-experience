@@ -84,15 +84,20 @@
 }
 
 .modal-wrapper{
-    margin-top: calc(50vh - 200px);
+    /* margin-top: calc(50vh - 200px); */
     background-image: linear-gradient(rgba(55, 167, 219, 0.9), rgba(11, 105, 146, 0.9));
     padding: 20px;
     border-radius: 5px;
     border: 2px solid white;
+    
+    position: absolute;
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
 /* 37A7DB */
 }
 .modal-wrapper.game-menu{
-    margin-left: calc(50% - 260px);
+    /* margin-left: calc(50% - 260px); */
     width: 480px;
 }
 .modal-wrapper .title{
@@ -142,7 +147,7 @@
 }
 
 .modal-wrapper.game-level{
-    margin-left: calc(50% - 414px);
+    /* margin-left: calc(50% - 414px); */
     width: 828px;
     height: 330px;
 }
@@ -179,35 +184,47 @@
 }
 
 .modal-wrapper.game-ready{
-    width: 240px;
-    margin-left: calc(50% - 120px);
-    height: 280px;
-    margin-top: calc(50vh + 50px);
+    width: 380px;
+    height: 500px;
+    /* margin-left: calc(50% - 120px); */
+    /* margin-top: calc(50vh + 50px); */
 }
 .modal-wrapper.game-ready .title{
-    margin-bottom: 20px;
+    /* margin-bottom: 20px; */
+    margin-top: 10px;
+    font-size: 60px;
+    font-weight: 400;
 }
 .modal-wrapper.game-ready .start-time{
-    width: 150px;
-    height: 150px;
+    width: 250px;
+    height: 250px;
     border-radius: 50%;
-    border: 1px solid white;
+    border: 2px solid white;
     background-color: #FAA728;
-    margin-left: calc(50% - 80px);
-    box-shadow: 2px 5px #146480;
+    /* margin-left: calc(50% - 80px); */
+    /* box-shadow: 2px 5px #146480; */
+    box-shadow: 0 1px 1px rgba(0,0,0,0.25), 0 2px 2px rgba(0,0,0,0.2), 0 4px 4px rgba(0,0,0,0.15), 0 8px 8px rgba(0,0,0,0.1), 0 16px 16px rgba(0,0,0,0.05);
     margin-top: 40px;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
 }
 .modal-wrapper.game-ready .start-time .game-ready-label{
-    margin-top: 17px;
+    /* margin-top: 17px; */
     text-align: center;
-    font-size: 90px;
+    font-size: 120px;
     font-weight: 700;
     color: white;
+    position: absolute;
+    transform: translate(-50%, -50%);
+    top: 50%;
+    left: 50%;
 }
 
 .modal-wrapper.game-rule{
     width: 400px;
-    margin-left: calc(50% - 200px);
+    /* margin-left: calc(50% - 200px); */
     padding: 40px;
 }
 .modal-wrapper.game-rule .game-rule-item{
@@ -263,7 +280,7 @@
 
 .modal-wrapper.game-end {
     width: 500px;
-    margin-left: calc(50% - 250px);
+    /* margin-left: calc(50% - 250px); */
 }
 .modal-wrapper.game-end .game-result{
     color: white;
@@ -336,7 +353,7 @@
 
 .modal-wrapper.leader-board{
     width: 500px;
-    margin-left: calc(50% - 250px);
+    /* margin-left: calc(50% - 250px); */
     position: relative;
 }
 

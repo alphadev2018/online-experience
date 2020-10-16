@@ -48,7 +48,7 @@ export default class Footer extends Component {
 			<div className="footer">
 				{game !== false &&
 					<div className="life-lines">
-						<div className="title">Life Lines</div>
+						<div className="title">Lifelines</div>
 						<div className="life-btn-wrapper">
 							{this.footerBtnArr.map(item =>
 								<div className={`life-item `} onClick={()=>this.clickItem(item.value)} key={item.value}>
