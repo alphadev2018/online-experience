@@ -137,16 +137,20 @@
 }
 
 .modal-wrapper.game-level{
-    margin-left: calc(50% - 315px);
-    width: 600px;
-    height: 400px;
+    margin-left: calc(50% - 414px);
+    width: 828px;
+    height: 330px;
+}
+.modal-wrapper.game-level .game-level-title{
+    font-size: 32px;
+    margin-bottom: 30px;
 }
 .modal-wrapper .game-level-item{
     float: left;
-    width: 136px;
-    height: 180px;
-    margin: 15px;
-    padding: 15px;
+    width: 150px;
+    height: 220px;
+    margin: 0px 20px;
+    padding: 0px 40px;
     border-radius: 5px;
     border: 2px solid white;
     background-image: linear-gradient(rgba(55, 167, 219, 0.9), rgb(11, 105, 146, 0.9));
@@ -170,26 +174,36 @@
 }
 
 .modal-wrapper.game-ready{
-    width: 300px;
-    margin-left: calc(50% - 150px);
-    height: 300px;
+    width: 240px;
+    margin-left: calc(50% - 120px);
+    height: 280px;
+    margin-top: calc(50vh + 50px);
+}
+.modal-wrapper.game-ready .title{
+    margin-bottom: 20px;
 }
 .modal-wrapper.game-ready .start-time{
-    width: 140px;
-    height: 140px;
+    width: 150px;
+    height: 150px;
     border-radius: 50%;
     border: 1px solid white;
     background-color: #FAA728;
+    margin-left: calc(50% - 80px);
+    box-shadow: 2px 5px #146480;
+    margin-top: 40px;
+}
+.modal-wrapper.game-ready .start-time .game-ready-label{
+    margin-top: 17px;
     text-align: center;
-    font-size: 110px;
-    font-weight: 900;
+    font-size: 90px;
+    font-weight: 700;
     color: white;
-    margin-left: calc(50% - 70px);
 }
 
 .modal-wrapper.game-rule{
     width: 400px;
     margin-left: calc(50% - 200px);
+    padding: 40px;
 }
 .modal-wrapper.game-rule .game-rule-item{
     display: none;
@@ -199,16 +213,31 @@
 .modal-wrapper.game-rule .game-rule-item.show{
     display: block;
 }
-.modal-wrapper.game-rule .rule-step{
-    height: 50px;
+.modal-wrapper.game-rule .game-rule-item .rule-img{
     width: 100%;
-    position: relative;
+    height: 100px;
 }
 .modal-wrapper.game-rule .rule-step{
     margin-top: 20px;
     height: 40px;
     width: 100%;
     position: relative;
+}
+.modal-wrapper.game-rule .rule-step .dot-wrapper{
+    position: absolute;
+    top: 10px;
+    left: calc(50% - 50px);
+}
+.modal-wrapper.game-rule .rule-step .dot-wrapper .game-rule-dot{
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 2px solid white;
+    float: left;
+    margin-left: 20px;
+}
+.modal-wrapper.game-rule .rule-step .dot-wrapper .game-rule-dot.active{
+    background-color: white;
 }
 .modal-wrapper.game-rule .rule-step .btn-rule {
     position: absolute;
@@ -222,6 +251,7 @@
     right: 0px;
 }
 .modal-wrapper.game-rule .game-menu-item .text {
+    text-align: center;
     width: 100%;
     left: 0;
 }
@@ -232,6 +262,26 @@
 }
 .modal-wrapper.game-end .game-result{
     color: white;
+}
+.modal-wrapper.game-end .game-result .single{
+    width: 100%;
+    text-align: center;
+}
+.modal-wrapper.game-end .game-result .sub-title{
+    font-family: calibri_bold;
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 10px;
+    margin-top: -40px;
+}
+.modal-wrapper.game-end .game-result .assemble{
+    margin: 23px;
+    font-size: 24px;
+}
+.modal-wrapper.game-end .game-result .media-link{
+    padding: 10px 5px;
+    width: 230px;
+    height: 23px;
 }
 .modal-wrapper.game-end .game-result .half-row{
     height: 40px;

@@ -99,7 +99,7 @@ export default class OverPan extends Component {
 				}
 				{modalInfo === "play" &&
 					<div className="modal-wrapper game-level">
-						<div className="title">Choose Difficulty</div>
+						<div className="title game-level-title">Choose Difficulty</div>
 						{this.gameLevelArr.map((item, idx) =>
 							<div className="game-level-item" key={idx} onClick={()=>this.clickButton(item.value, true)}>
 								<div className="img">
@@ -117,12 +117,18 @@ export default class OverPan extends Component {
 						<div className="title">Game Rules</div>
 						{this.gameRuleArr.map((item, idx) =>
 							<div className={`game-rule-item ${gameRuleNum===idx?"show":""}`} key={idx}>
-								<div className={"text"}> {item} </div>
+								<div className="text"> {item} </div>
+								<div className="rule-img"></div>
 							</div>
 						)}
 						<div className="rule-step">
 							<BtnPreIcon className="btn-rule btn-rule-pre" onClick={()=>this.setRuleStepNum(-1)}></BtnPreIcon>
 							<BtnNextIcon className="btn-rule btn-rule-next" onClick={()=>this.setRuleStepNum(1)}></BtnNextIcon>
+							<div className="dot-wrapper">
+								{this.gameRuleArr.map((item, idx) =>
+									<div className={`game-rule-dot ${gameRuleNum===idx?"active":""}`} key={idx}></div>
+								)}
+							</div>
 						</div>
 						<div className="game-menu-item" onClick={()=>this.clickButton("play", false)}>
 							<div className="text">Play</div>
@@ -138,7 +144,7 @@ export default class OverPan extends Component {
 						</div>
 						<div className="game-result">
 							<div className="game-result-timeOut">
-								<div className="title">Your Scored {this.props.modalDetailInfo.gameTime} points</div>
+								<div className="single sub-title">You Scored {this.props.modalDetailInfo.gameTime} points</div>
 								<div className="half-row">
 									<div className="half-part half-left">Time taken</div>
 									<div className="half-part half-right">{totalTime - gameTime} s</div>
@@ -160,6 +166,8 @@ export default class OverPan extends Component {
 									<div className="half-part half-right">4</div>
 								</div>
 								<div className="label">You could improve this by using</div>
+								<div className="single assemble">Assemble</div>
+								<div className="single game-menu-item media-link">Link to product media library</div>
 							</div>
 						</div>
 						<div className="game-button">

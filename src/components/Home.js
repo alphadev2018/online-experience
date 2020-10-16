@@ -275,7 +275,9 @@ export default class Home extends Component {
 					<div className="over-pan">
 						<div className="modal-wrapper game-ready">
 							<div className="title">Get ready ...</div>
-							<div className="start-time">{this.state.gameTime - this.totalTime}</div>
+							<div className="start-time">
+								<div className="game-ready-label">{this.state.gameTime - this.totalTime}</div>
+							</div>
 						</div>
 					</div>
 				}
