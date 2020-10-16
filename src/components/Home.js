@@ -5,7 +5,7 @@ import {FBXLoader} from "three/examples/jsm/loaders/FBXLoader";
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
 import {TransformControls} from 'three/examples/jsm/controls/TransformControls';
 
-import {modelArr, gameInfoArr, easeTime, gameReadyTime, SetTween, AnimateReturn, AnimateRotate, LoadIslandModel, LoadGameModel, GotoIsland, GetRayCastObject, CheckGameModel} from "./common";
+import {modelArr, gameInfoArr, easeTime, gameReadyTime, SetTween, AnimateReturn, AnimateRotate, LoadGameModel, GotoIsland, GetRayCastObject, CheckGameModel} from "./common";
 import '../assets/styles/home.css';
 import '../assets/styles/overPan.css';
 
@@ -17,7 +17,8 @@ export default class Home extends Component {
 		this.raycaster = new THREE.Raycaster(); this.mouse = new THREE.Vector2();
 		this.animate = this.animate.bind(this);
 		this.meshArr = []; this.selLandName = "";
-		this.cloudArr = []; this.windBaseArr = []; this.carArr = []; this.tonArr = []; this.mouseStatus = "";
+		this.cloudArr = []; this.windBaseArr = []; this.ballonArr = []; this.tonArr = []; this.roundPlayArr = [];
+		this.mouseStatus = "";
 		this.state = { overModal:true, gameStatus:null, gameTime:-1, autoBuild:false };
 		this.gameMeshArr = []; this.gameIslandPlane = null; this.gameIslandLine = null;
 	}
@@ -210,6 +211,15 @@ export default class Home extends Component {
 					child.material[1].color.setHex(0xA78868);
 					child.material[2].color.setHex(0x5C7725);
 				}
+				if 		(child.name.indexOf("wind_group") > -1) this.windBaseArr.push(child);
+				else if(child.name.indexOf("crane") > -1 || child.name.indexOf("cloud") > -1) {
+					child.curVal = Math.round(Math.random() * 100);
+					child.dir = (Math.random() > 0.5)? 1:-1;
+					if (child.name.indexOf("cloud") > -1) this.cloudArr.push(child);
+					else if (child.name.indexOf("crane") > -1) this.tonArr.push(child);
+				}
+				else if (child.name.indexOf("roundPlay") > -1) this.roundPlayArr.push(child);
+				else if (child.name.indexOf("ballon") > -1) this.ballonArr.push(child);
 			});
 			var vSize = new THREE.Box3().setFromObject(object).getSize();
 			var scl = info.size/vSize.x;
@@ -259,10 +269,10 @@ export default class Home extends Component {
 	animate () {
 		if (!this.camera || !this.scene) return;
 		requestAnimationFrame(this.animate);
-		// AnimateRotate(this.windBaseArr, "y", 0.005, "wind");
-		// AnimateRotate(this.carArr, "y", 0.005, "car");
-		// AnimateReturn(this.cloudArr, "position", "x", 0.5);
-		// AnimateReturn(this.tonArr, "rotation", "y", 0.01);
+		AnimateRotate(this.windBaseArr, "y", 0.005, "wind");
+		AnimateRotate(this.roundPlayArr, "x", 0.005);
+		AnimateReturn(this.cloudArr, "position", "x", 0.5);
+		AnimateReturn(this.tonArr, "rotation", "y", 0.01);
 		this.camera.lookAt( 0, 0, 0 );
 		this.renderer.render(this.scene, this.camera);
 	}
