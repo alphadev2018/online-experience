@@ -9,28 +9,37 @@
     font-weight: 700;
     color: white;
     margin-bottom: 15px;
-    margin-left: 80px;
+    /* margin-left: 80px; */
+    text-align: center;
+    position: relative;
 }
 .life-lines .life-btn-wrapper{
     border-radius: 48px;
     height: 96px;
     border: 2px solid white;
     background-image: linear-gradient(rgb(5, 109, 156), rgb(3, 79, 114));
+    box-shadow: 0 1px 1px rgba(0,0,0,0.25), 0 2px 2px rgba(0,0,0,0.2), 0 4px 4px rgba(0,0,0,0.15), 0 8px 8px rgba(0,0,0,0.1), 0 16px 16px rgba(0,0,0,0.05);
 }
 .life-lines .life-btn-wrapper .life-item{
-    margin: 15px;
+    margin: 12px;
     width: 68px;
-    height: 52px;
+    height: 68px;
     color: white;
-    font-size: 12px;
+    font-size: 15px;
     border-radius: 50%;
     background-color: #2A9BCE;
     background-image: linear-gradient(rgb(55, 167, 219), rgb(11, 105, 146));
-    font-family: Artifakt;
-    padding-top: 16px;
+    box-shadow: 0 1px 1px rgba(0,0,0,0.25), 0 2px 2px rgba(0,0,0,0.2), 0 4px 4px rgba(0,0,0,0.15), 0 8px 8px rgba(0,0,0,0.1), 0 16px 16px rgba(0,0,0,0.05);
+    /* font-family: Artifakt; */
+    /* padding-top: 16px; */
     float: left;
     text-align: center;
     cursor: pointer;
+    border: 2px solid white;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 .life-lines .life-btn-wrapper .life-item:hover{
     background-color: #99C65C;

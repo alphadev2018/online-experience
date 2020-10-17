@@ -1,13 +1,13 @@
 
 .side{
 	position: absolute;
-	top: 120px;
 	right: -70px;
-	height: 100%;
 	width: 64px;
 	font-size: 32px;
 	transition: all 0.5s;
 	z-index: 3;
+	transform: translateY(-50%);
+	top: 50%;
 }
 
 .side.active{
@@ -20,6 +20,7 @@
 	border-radius: 30px;
 	border: 2px solid white;
 	background-color: rgba(4, 102, 146, 0.9);
+	box-shadow: 0 1px 1px rgba(0,0,0,0.25), 0 2px 2px rgba(0,0,0,0.2), 0 4px 4px rgba(0,0,0,0.15), 0 8px 8px rgba(0,0,0,0.1), 0 16px 16px rgba(0,0,0,0.05);
 }
 
 .side-bar .side-item{
@@ -32,6 +33,7 @@
 	overflow: hidden;
 	cursor: pointer;
 	transition: all 0.5s;
+	box-shadow: 0 1px 1px rgba(0,0,0,0.25), 0 2px 2px rgba(0,0,0,0.2), 0 4px 4px rgba(0,0,0,0.15), 0 8px 8px rgba(0,0,0,0.1), 0 16px 16px rgba(0,0,0,0.05);
 }
 .side-bar .side-item .home0{
 	transform: translate(-37px, -5px);
