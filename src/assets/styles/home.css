@@ -25,6 +25,25 @@
   margin-top: 10px;
 }
 
+.home .step{
+  position: absolute;
+  bottom: 20px;
+  left: calc(50% - 50px);
+}
+.home .step .step-item{
+  float: left;
+  width: 70px;
+  margin: 50px;
+  cursor: pointer;
+}
+.home .step .step-item.disable{
+  opacity: 0.2;
+  cursor: default;
+}
+.home .step .step-item img{
+  width: 100%;
+}
+
 /* header */
 .header{
   position: absolute;

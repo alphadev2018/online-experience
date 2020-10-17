@@ -8,7 +8,7 @@ import hotImgACPA from "../assets/images/hot_ACPA.png";
 import hotImgAMERICA from "../assets/images/hot_AMERICA.png";
 
 // const island0 = require("assets/models/island_0.fbx");
-const islandHome0 = require("assets/models/EMEA_custom_test.fbx");
+const islandHome0 = require("assets/models/building.fbx");//EMEA_custom_test
 const islandHome1 = require("assets/models/APAC_custom_test.fbx");
 const islandHome2 = require("assets/models/AMERACAS_custom_test.fbx");
 const islandGame = require("assets/models/island_game.fbx");
@@ -25,7 +25,7 @@ export const hotNameArr = ["EMEA", "AMERICA", "ACPA"];
 
 autoPlay(true);
 
-export const easeTime = 1000, gameReadyTime = 5;
+export const easeTime = 1000, gameReadyTime = 1;
 export const menuHomeArr=[
 	{label:"home0", value:"home0"},
 	{label:"home1", value:"home1"},
@@ -57,7 +57,7 @@ export function SetTween (obj, attr, info, easeTime) {
    	// .repeat(Infinity)  .yoyo(true)
 	const easeType = Easing.Cubic.InOut; //, Easing.Quadratic.Out
 	if      (attr === "scale")    tweenData = {'scale.x': info, 'scale.y': info};
-	else if (attr === "position") tweenData = {'position.x':info.x, 'position.z':info.z };
+	else if (attr === "position") tweenData = {'position.x':info.x, 'position.y':info.y, 'position.z':info.z };
 	else if (attr === "camPos")   tweenData = {'position.y':info };
 	else if (attr === "far")      tweenData = {'far': info };
 	else if (attr === "color")    tweenData = {'r': info.r, 'g':info.g, 'b':info.b };
@@ -212,8 +212,6 @@ export function CheckGameModel(model, num) {
 				if (oriPos[axis] !== curPos[axis]) subCheckVal = false;
 			});
 			if (subCheckVal === false) {
-				console.log(oriPos);
-				console.log(curPos);
 				remainCount++;
 			}
 		});
@@ -237,4 +235,22 @@ export const hotModalInfo={
 		content:"AMERICA hot modal content",
 		img:hotImgAMERICA
 	}
+}
+
+export function GetStepInfo(newArr, oldArr) {
+	var stepInfo = [], checkDiff = false;
+	newArr.forEach((newMesh, idx) => {
+		const oldMesh = oldArr[idx];
+		const newPos = newMesh.position, newRot = newMesh.rotation;
+		if (oldMesh) {
+			["x", "y", "z"].forEach(axis => {
+				if (Math.round(newPos[axis]) !== Math.round(oldMesh.pos[axis])) checkDiff = true;
+				if (Math.round(newRot[axis] * 10) !== Math.round(oldMesh.rot[axis] * 10)) checkDiff = true;
+			});
+		}
+		else checkDiff = true;
+		stepInfo[idx] = {pos:{x:newPos.x, y:newPos.y, z:newPos.z},
+						 rot:{x:newRot.x, y:newRot.y, z:newRot.z}};
+	});
+	return (checkDiff === true)?stepInfo:false;
 }

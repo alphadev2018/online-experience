@@ -5,9 +5,12 @@ import {FBXLoader} from "three/examples/jsm/loaders/FBXLoader";
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
 import {TransformControls} from 'three/examples/jsm/controls/TransformControls';
 
-import {modelArr, gameInfoArr, easeTime, gameReadyTime, SetTween, AnimateReturn, AnimateRotate, LoadGameModel, GotoIsland, GetRayCastObject, CheckGameModel, hotNameArr} from "./common";
+import {modelArr, gameInfoArr, easeTime, gameReadyTime, SetTween, AnimateReturn, AnimateRotate, LoadGameModel, GotoIsland, GetRayCastObject, CheckGameModel, hotNameArr, GetStepInfo} from "./common";
 import '../assets/styles/home.css';
 import '../assets/styles/overPan.css';
+
+import undoImg from "../assets/images/undo.png";
+import redoImg from "../assets/images/redo.png";
 
 export default class Home extends Component {
 	constructor(props) {
@@ -19,9 +22,9 @@ export default class Home extends Component {
 		this.meshArr = []; this.selLandName = "";
 		this.cloudArr = []; this.windBaseArr = []; this.ballonArr = []; this.tonArr = []; this.roundPlayArr = [];
 		this.mouseStatus = "";
-		this.state = { overModal:true, gameStatus:null, gameTime:-1, autoBuild:false, selHot:"" };
+		this.state = { overModal:true, gameStatus:null, gameTime:-1, autoBuild:false, selHot:"", stepNum:-1, maxStepNum:-1 };
 		this.gameMeshArr = []; this.gameIslandPlane = null; this.gameIslandLine = null;
-		this.hotMeshArr = []; this.hotOverArr = [];
+		this.hotMeshArr = []; this.hotOverArr = []; this.stepArr = [];
 	}
 	
 	componentDidMount() {
@@ -49,28 +52,21 @@ export default class Home extends Component {
 				island.visible = (island.islandName === "game");
 			});
 			this.controls.minDistance = 0.1;
-			SetTween(this.camera, "position", {x:-10, z:0}, easeTime);
+			SetTween(this.camera, "position", {x:-10, y:this.camera.position.y, z:0}, easeTime);
 			setTimeout(() => { this.controls.minDistance = 5; }, easeTime);
 			this.gameGroup.visible = true;
 			if 		(nextProps.game === "gameEasy") 	this.gameNum = 0;
 			else if (nextProps.game === "gameMedium") 	this.gameNum = 1;
 			else if (nextProps.game === "gameDifficult")this.gameNum = 2;
-			if (this.gameNum === 1) {
-				this.gameIslandPlane.material = new THREE.MeshPhongMaterial({transparent:true, opacity:0.7, color:0x083D8A});
-			}
-			else {
-				this.gameIslandPlane.material = new THREE.MeshPhongMaterial({color:0x7E9E3A});
-			}
-
+			var gamePlaneTrans = false, gamePlaneCol = 0x3E9E1A;
+			if (this.gameNum === 1) { gamePlaneTrans = true; gamePlaneCol = 0x083D8A;}
+			this.gameIslandPlane.material = new THREE.MeshPhongMaterial({transparent:gamePlaneTrans, opacity:0.7, color:gamePlaneCol});
 
 			this.gameGroup.children.forEach((gameModel, idx) => {
 				gameModel.visible = (idx === this.gameNum)?true:false;
 			});
 			this.totalTime = gameInfoArr[this.gameNum].time;
-			this.setState({gameTime:this.totalTime+gameReadyTime, gameStatus:"start", gamePro:0}, ()=>{
-				this.setStartTime();
-			});
-			
+			this.setState({gameTime:this.totalTime+gameReadyTime, gameStatus:"start", gamePro:0}, ()=>{this.setStartTime();});
 		}
 		else if (this.state.gameStatus && !nextProps.game) {
 			this.setEndGame();
@@ -138,12 +134,36 @@ export default class Home extends Component {
 		else {
 			const checkGamePro = CheckGameModel(this.gameGroup.children, this.gameNum);
 			this.setState({gamePro:checkGamePro});
-			console.log(checkGamePro);
 			if (checkGamePro === 100) {
 				this.props.callGameResult("success", this.totalTime, this.state.gameTime, checkGamePro);
 			}
+			else {
+				const stepInfo = GetStepInfo(this.gameMeshArr, this.stepArr[this.state.stepNum]);
+				if (stepInfo) {
+					const newStepNum = this.state.stepNum + 1;
+					this.stepArr[newStepNum] = stepInfo;
+					this.setState({stepNum:newStepNum, maxStepNum:newStepNum});
+				}
+			}
 		}
 		this.mouseStatus = "";
+	}
+
+	setStep=(delta)=>{
+		const {stepNum, maxStepNum} = this.state;
+		if (stepNum <= 0 && delta === -1) return;
+		if (stepNum >= maxStepNum && delta === 1) return;
+		const newStepNum = stepNum + delta;
+		const stepInfo = this.stepArr[newStepNum];
+		this.stepChange = true;
+		this.transform.detach();
+		this.gameMeshArr.forEach((mesh, idx) => {
+			const posInfo = stepInfo[idx].pos;
+			const rotInfo = stepInfo[idx].rot;
+			SetTween(mesh, "position", {x:posInfo.x, y:posInfo.y, z:posInfo.z}, easeTime);
+		});
+		setTimeout(() => { this.setState({stepNum:newStepNum}); this.stepChange = false; }, easeTime);
+		
 	}
 
 	setHotMeshCol=(arr, str, overCol, noCol)=>{
@@ -185,13 +205,17 @@ export default class Home extends Component {
 			if (child.name !== gameModel.basicModel) this.gameMeshArr.push(child);
 		});
 		const dis = gameModel.areaDis, snapDis = gameModel.snapDis;
-		this.transform.setTranslationSnap(snapDis)
+		this.transform.setTranslationSnap(snapDis);
 		this.gameMeshArr.forEach(mesh => {
 			const posX = Math.round(Math.random() * dis/snapDis) * snapDis - dis/2;
 			const posZ = Math.round(Math.random() * dis/snapDis) * snapDis - dis/2;
-			SetTween(mesh, "position", {x:posX, z:posZ}, easeTime);
-			SetTween(mesh, "camPos", 0, easeTime);
+			SetTween(mesh, "position", {x:posX, y:0, z:posZ}, easeTime);
 		});
+		setTimeout(() => {
+			const stepInfo = GetStepInfo(this.gameMeshArr, []);
+			this.stepArr = [stepInfo];
+			this.setState({stepNum:0, maxStepNum:0});
+		}, easeTime);
 	}
 
 	setAutoBuild=()=>{
@@ -199,8 +223,7 @@ export default class Home extends Component {
 		for (let i = 0; i < childArr.length; i++) {
 			setTimeout(() => {
 				const oriPos = childArr[i].oriPos;
-				SetTween(childArr[i], "position", {x:oriPos.x, z:oriPos.z}, easeTime);
-				SetTween(childArr[i], "camPos", oriPos.y, easeTime);
+				SetTween(childArr[i], "position", {x:oriPos.x, y:oriPos.y, z:oriPos.z}, easeTime);
 			}, i * easeTime / 2);
 		}
 		setTimeout(() => {
@@ -226,8 +249,8 @@ export default class Home extends Component {
 						else if (child.name.indexOf("line")>-1) this.gameIslandLine = child;
 					}
 				}
-				if 		(child.name.indexOf("wind_group") > -1) this.windBaseArr.push(child);
-				else if(child.name.indexOf("crane") > -1 || child.name.indexOf("cloud") > -1) {
+				if		(child.name.indexOf("wind_group") > -1) this.windBaseArr.push(child);
+				else if (child.name.indexOf("crane") > -1 || child.name.indexOf("cloud") > -1) {
 					child.curVal = Math.round(Math.random() * 100);
 					child.dir = (Math.random() > 0.5)? 1:-1;
 					if (child.name.indexOf("cloud") > -1) this.cloudArr.push(child);
@@ -242,10 +265,7 @@ export default class Home extends Component {
 			});
 			var vSize = new THREE.Box3().setFromObject(object).getSize();
 			var scl = info.size/vSize.x;
-			if 		(info.islandName === "home0") { scl = 0.09; }
-			else if (info.islandName === "home1") { scl = 0.09; }
-			else if (info.islandName === "home2") { scl = 0.09; }
-			// const scl = info.size/vSize.x;
+			if (info.islandName.indexOf("home") > -1) scl = 0.09;
 			object.scale.set(scl, scl, scl);
 			object.position.set(info.pos.x, info.pos.y, info.pos.z);
 			object.islandName = info.islandName;
@@ -297,6 +317,7 @@ export default class Home extends Component {
 	}
 	
 	render() {
+		const {maxStepNum, stepNum} = this.state;
 		return (
 			<div className="home">
 				<div id="container"></div>
@@ -311,8 +332,18 @@ export default class Home extends Component {
 					</div>
 				}
 				{this.state.gameStatus === "process" &&
-					<div className="process-time">
-						<div className="label">{this.state.gameTime}</div>
+					<div>
+						<div className="process-time">
+							<div className="label">{this.state.gameTime}</div>
+						</div>
+						<div className="step">
+							<div className={`step-item ${(stepNum<=0)?"disable":""}`} onClick={()=>this.setStep(-1)}>
+								<img src={undoImg}></img>
+							</div>
+							<div className={`step-item ${(stepNum>=maxStepNum)?"disable":""}`} onClick={()=>this.setStep(1)}>
+								<img src={redoImg}></img>
+							</div>
+						</div>
 					</div>
 				}
 				<div id="test_hotspot"></div>
