@@ -220,6 +220,7 @@ export default class Home extends Component {
 					const colVal = child.name.split("__")[1];
 					child.material = new THREE.MeshPhongMaterial({color:"#"+colVal});
 					if (child.name === "rect__FFFFFF" || child.name === "plane__000000") {child.visible = false;}
+					if (colVal === "448888") {child.material.transparent = true; child.material.opacity = 0.7}
 					if (info.islandName === "game") {
 						if (child.name.indexOf("trans")>-1) this.gameIslandPlane = child;
 						else if (child.name.indexOf("line")>-1) this.gameIslandLine = child;
