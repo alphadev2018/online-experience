@@ -8,7 +8,7 @@ import hotImgACPA from "../assets/images/hot_ACPA.png";
 import hotImgAMERICA from "../assets/images/hot_AMERICA.png";
 
 // const island0 = require("assets/models/island_0.fbx");
-const islandHome0 = require("assets/models/building.fbx");//EMEA_custom_test
+const islandHome0 = require("assets/models/EMEA_custom_test.fbx");
 const islandHome1 = require("assets/models/APAC_custom_test.fbx");
 const islandHome2 = require("assets/models/AMERACAS_custom_test.fbx");
 const islandGame = require("assets/models/island_game.fbx");
@@ -25,7 +25,7 @@ export const hotNameArr = ["EMEA", "AMERICA", "ACPA"];
 
 autoPlay(true);
 
-export const easeTime = 1000, gameReadyTime = 1;
+export const easeTime = 1000, gameReadyTime = 5;
 export const menuHomeArr=[
 	{label:"home0", value:"home0"},
 	{label:"home1", value:"home1"},
