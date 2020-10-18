@@ -11,6 +11,8 @@ import '../assets/styles/overPan.css';
 
 import undoImg from "../assets/images/undo.png";
 import redoImg from "../assets/images/redo.png";
+import {ReactComponent as TransMoveIcon} from "../assets/images/trans_move.svg";
+import {ReactComponent as TransRotateIcon} from "../assets/images/trans_rotate.svg";
 
 export default class Home extends Component {
 	constructor(props) {
@@ -22,7 +24,7 @@ export default class Home extends Component {
 		this.meshArr = []; this.selLandName = "";
 		this.cloudArr = []; this.windBaseArr = []; this.ballonArr = []; this.tonArr = []; this.roundPlayArr = [];
 		this.mouseStatus = "";
-		this.state = { overModal:true, gameStatus:null, gameTime:-1, autoBuild:false, selHot:"", stepNum:-1, maxStepNum:-1 };
+		this.state = { overModal:true, gameStatus:null, gameTime:-1, autoBuild:false, selHot:"", stepNum:-1, maxStepNum:-1, selTrans:"translate" };
 		this.gameMeshArr = []; this.gameIslandPlane = null; this.gameIslandLine = null;
 		this.hotMeshArr = []; this.hotOverArr = []; this.stepArr = [];
 	}
@@ -55,15 +57,28 @@ export default class Home extends Component {
 			SetTween(this.camera, "position", {x:-10, y:this.camera.position.y, z:0}, easeTime);
 			setTimeout(() => { this.controls.minDistance = 5; }, easeTime);
 			this.gameGroup.visible = true;
+			var gamePlaneTrans = false, gamePlaneCol = 0x0E5E1A, transRotCol = "#0000FF";
+			if (nextProps.game === "gameMedium") { gamePlaneTrans = true; gamePlaneCol = 0x083D8A; transRotCol="#00FF00";}
+			this.gameIslandPlane.material = new THREE.MeshPhongMaterial({transparent:gamePlaneTrans, opacity:0.7, color:gamePlaneCol});
+			this.transform.children[0].children[1].children.forEach(child => {
+				if (child instanceof THREE.Mesh) child.material = new THREE.MeshBasicMaterial({color:transRotCol, depthTest:false});
+				else  child.material = new THREE.LineBasicMaterial({color:transRotCol, depthTest:false});
+			});
+
 			if 		(nextProps.game === "gameEasy") 	this.gameNum = 0;
 			else if (nextProps.game === "gameMedium") 	this.gameNum = 1;
 			else if (nextProps.game === "gameDifficult")this.gameNum = 2;
-			var gamePlaneTrans = false, gamePlaneCol = 0x3E9E1A;
-			if (this.gameNum === 1) { gamePlaneTrans = true; gamePlaneCol = 0x083D8A;}
-			this.gameIslandPlane.material = new THREE.MeshPhongMaterial({transparent:gamePlaneTrans, opacity:0.7, color:gamePlaneCol});
-
+			const gameModelId = {gameEasy:"building", gameMedium:"bridge", gameDifficult:"stadium"};
 			this.gameGroup.children.forEach((gameModel, idx) => {
-				gameModel.visible = (idx === this.gameNum)?true:false;
+				if (gameModelId[nextProps.game] === gameModel.gameId) {
+					this.gameNum = idx;
+					gameModel.visible = true;
+					gameModel.children.forEach(child => {
+						child.position.set(child.oriPos.x, child.oriPos.y, child.oriPos.z);
+						child.rotation.set(child.oriRot.x, child.oriRot.y, child.oriRot.z);
+					});
+				}
+				else gameModel.visible = false;
 			});
 			this.totalTime = gameInfoArr[this.gameNum].time;
 			this.setState({gameTime:this.totalTime+gameReadyTime, gameStatus:"start", gamePro:0}, ()=>{this.setStartTime();});
@@ -142,6 +157,7 @@ export default class Home extends Component {
 				if (stepInfo) {
 					const newStepNum = this.state.stepNum + 1;
 					this.stepArr[newStepNum] = stepInfo;
+					console.log(this.stepArr);
 					this.setState({stepNum:newStepNum, maxStepNum:newStepNum});
 				}
 			}
@@ -161,6 +177,7 @@ export default class Home extends Component {
 			const posInfo = stepInfo[idx].pos;
 			const rotInfo = stepInfo[idx].rot;
 			SetTween(mesh, "position", {x:posInfo.x, y:posInfo.y, z:posInfo.z}, easeTime);
+			SetTween(mesh, "rotation", {x:rotInfo.x, y:rotInfo.y, z:rotInfo.z}, easeTime);
 		});
 		setTimeout(() => { this.setState({stepNum:newStepNum}); this.stepChange = false; }, easeTime);
 		
@@ -209,13 +226,21 @@ export default class Home extends Component {
 		this.gameMeshArr.forEach(mesh => {
 			const posX = Math.round(Math.random() * dis/snapDis) * snapDis - dis/2;
 			const posZ = Math.round(Math.random() * dis/snapDis) * snapDis - dis/2;
+			const rotY = mesh.oriRot.y + Math.round(Math.random() * 2) * Math.PI/2;
 			SetTween(mesh, "position", {x:posX, y:0, z:posZ}, easeTime);
+			// SetTween(mesh, "rotation", {x:0, y:rotY, z:0}, easeTime);
 		});
 		setTimeout(() => {
 			const stepInfo = GetStepInfo(this.gameMeshArr, []);
 			this.stepArr = [stepInfo];
 			this.setState({stepNum:0, maxStepNum:0});
-		}, easeTime);
+		}, easeTime * 2);
+	}
+
+	setTrans=(str)=>{
+		this.setState({selTrans:str});
+		this.transform.setMode( str );
+		this.transform.showX = this.transform.showZ = (str === "translate")?true:false;
 	}
 
 	setAutoBuild=()=>{
@@ -293,9 +318,9 @@ export default class Home extends Component {
 		this.controls.minDistance = 5; this.controls.maxDistance = 25; this.controls.maxPolarAngle = Math.PI/2;
 
         this.transform = new TransformControls( this.camera, this.renderer.domElement ); this.scene.add(this.transform);
-        this.transform.setTranslationSnap(10);
+        this.transform.setTranslationSnap(10); this.transform.setRotationSnap( THREE.MathUtils.degToRad( 90 ) );
         this.transform.setSize(0.8);
-        this.transform.addEventListener( 'dragging-changed', function ( event ) { self.controls.enabled = ! event.value; } );
+		this.transform.addEventListener( 'dragging-changed', function ( event ) { self.controls.enabled = ! event.value; } );
 
 		const ambientLight = new THREE.AmbientLight( 0xFFFFFF, 0.3 ); this.scene.add( ambientLight );
 		this.mainLight = new THREE.DirectionalLight( 0xFFFFFF, 1.5 ); this.scene.add( this.mainLight );
@@ -317,7 +342,7 @@ export default class Home extends Component {
 	}
 	
 	render() {
-		const {maxStepNum, stepNum} = this.state;
+		const {maxStepNum, stepNum, selTrans} = this.state;
 		return (
 			<div className="home">
 				<div id="container"></div>
@@ -342,6 +367,14 @@ export default class Home extends Component {
 							</div>
 							<div className={`step-item ${(stepNum>=maxStepNum)?"disable":""}`} onClick={()=>this.setStep(1)}>
 								<img src={redoImg}></img>
+							</div>
+						</div>
+						<div className="trans-option">
+							<div className={`trans-item ${(selTrans==="translate")?"active":""}`} onClick={()=>this.setTrans("translate")}>
+								<TransMoveIcon></TransMoveIcon>
+							</div>
+							<div className={`trans-item ${(selTrans==="rotate")?"active":""}`} onClick={()=>this.setTrans("rotate")}>
+								<TransRotateIcon></TransRotateIcon>
 							</div>
 						</div>
 					</div>

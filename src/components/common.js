@@ -25,7 +25,7 @@ export const hotNameArr = ["EMEA", "AMERICA", "ACPA"];
 
 autoPlay(true);
 
-export const easeTime = 1000, gameReadyTime = 5;
+export const easeTime = 1000, gameReadyTime = 1;
 export const menuHomeArr=[
 	{label:"home0", value:"home0"},
 	{label:"home1", value:"home1"},
@@ -47,7 +47,7 @@ export const modelArr = [
 ];
 export const gameInfoArr = [
 	{id:"building", file:gameModelBuilding, size:5, time:100, basicName:"", snapDis:100},
-	{id:"bridge", file:gameModelBridge, size:2, time:500, basicName:"Support_0", snapDis:40},
+	{id:"bridge", file:gameModelBridge, size:2, time:500, basicName:"Support0__EEEEEE", snapDis:40},
 	{id:"stadium", file:gameModelStadium, size:2, time:500, basicName:"Asphalt", snapDis:60}
 ]
 
@@ -56,12 +56,20 @@ export function SetTween (obj, attr, info, easeTime) {
 	//  Linear.None Quadratic, Cubic, Quartic, Quintic, Sinusoidal, Exponential, Circular, Elastic, Back, Bounce
    	// .repeat(Infinity)  .yoyo(true)
 	const easeType = Easing.Cubic.InOut; //, Easing.Quadratic.Out
-	if      (attr === "scale")    tweenData = {'scale.x': info, 'scale.y': info};
-	else if (attr === "position") tweenData = {'position.x':info.x, 'position.y':info.y, 'position.z':info.z };
-	else if (attr === "camPos")   tweenData = {'position.y':info };
-	else if (attr === "far")      tweenData = {'far': info };
-	else if (attr === "color")    tweenData = {'r': info.r, 'g':info.g, 'b':info.b };
-	new Tween(obj).to( tweenData , easeTime ).easing(easeType).start();
+	if (attr === "rotation") {
+		// tweenData = {'rotation.x':info.x, 'rotation.y':info.y, 'rotation.z':info.z };
+		tweenData = {'y':info.y };
+		console.log(tweenData);
+		new Tween(obj.rotation).to( tweenData , easeTime ).easing(easeType).start();
+	}
+	else {
+		if      (attr === "scale")    tweenData = {'scale.x': info, 'scale.y': info};
+		else if (attr === "camPos")   tweenData = {'position.y':info };
+		else if (attr === "far")      tweenData = {'far': info };
+		else if (attr === "color")    tweenData = {'r': info.r, 'g':info.g, 'b':info.b };
+		else if (attr === "position") tweenData = {'position.x':info.x, 'position.y':info.y, 'position.z':info.z };
+		new Tween(obj).to( tweenData , easeTime ).easing(easeType).start();
+	}
 }
 
 export function AnimateRotate(arr, axis, value, type) {
@@ -116,8 +124,10 @@ export function LoadIslandModel(info, self) {
 export function LoadGameModel(info, self) {
 	new FBXLoader().load(info.file, async function (object){
 		object.children.forEach(child => {
-			const childPos = child.position;
+			const childPos = child.position, childRot = child.rotation;
 			child.oriPos = {x:childPos.x, y:childPos.y, z:childPos.z};
+			child.oriRot = {x:childRot.x, y:childRot.y, z:childRot.z};
+
 			child.castShadow = true;
 			child.receiveShadow = true;
 			if 		(child.name.indexOf("Suspenders") > -1) child.material.color.setHex(0xA75A00);
