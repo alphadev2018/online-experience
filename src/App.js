@@ -47,31 +47,34 @@ export default class App extends Component {
 	}
 
 	render() {
+		const {selGame,modalInfo, first, menuItem, autoBuild, gameAssist, modalDetailInfo} = this.state;
 		return (
 			<div>
 				<Home
-					game={this.state.selGame}
-					overModal={this.state.modalInfo}
-					first={this.state.first}
-					menuItem={this.state.menuItem}
-					autoBuild={this.state.autoBuild}
+					game={selGame}
+					overModal={modalInfo}
+					first={first}
+					menuItem={menuItem}
+					autoBuild={autoBuild}
+					gameAssist={gameAssist}
 					callMenuItem={this.callMenuItem}
 					callGameResult={this.callGameResult}
 					callHotSpot={this.callHotSpot}
 				></Home>
 				<Header></Header>
 				<Footer
-					game={this.state.selGame}
+					game={selGame}
 					callAutoBuild={()=>this.setState({autoBuild:true})}
+					callAssist={()=>this.setState({gameAssist:true}, ()=>this.setState({gameAssist:false}))}
 				></Footer>
 				<Sidebar
-					menuItem={this.state.menuItem}
+					menuItem={menuItem}
 					callMenuItem={this.callMenuItem}
 				></Sidebar>
-				{this.state.modalInfo &&
+				{modalInfo &&
 					<OverPan
-						modalInfo={this.state.modalInfo}
-						modalDetailInfo={this.state.modalDetailInfo}
+						modalInfo={modalInfo}
+						modalDetailInfo={modalDetailInfo}
 						callClickButton={this.callModalButton}
 					></OverPan>
 				}

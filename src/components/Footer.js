@@ -12,12 +12,8 @@ export default class Footer extends Component {
 			{label:"Projects Team Assist", value:"assist"},
 			{label:"Design Reveal", value:"design"},
 			{label:"Auto complete", value:"auto"},
-			// {label:["Team", "Assist"], value:"assist"},
-			// {label:["Design", "Reveal"], value:"design"},
-			// {label:["Auto", "complete"], value:"auto"},
 		];
 		this.state = {game:false, selButton:null, gameNum:-1};
-		// this.gamePreImg = [gameImgEasy, gameImgMedium, gameImgDifficult];
 		this.gamePreImg = {gameEasy:gameImgEasy, gameMedium:gameImgMedium, gameDifficult:gameImgDifficult};
 	}
 
@@ -27,18 +23,19 @@ export default class Footer extends Component {
 	UNSAFE_componentWillReceiveProps(nextProps) {
 		if (this.state.game !== nextProps.game) {
 			this.setState({game:nextProps.game});
+			if (!nextProps.game) this.setState({selButton:null});
 		}
 	}
 	clickItem=(str)=>{
-		if (str === "auto") {
-			this.props.callAutoBuild();
+		if (this.state.selButton) return;
+		this.setState({selButton:str});
+		if (str === "auto") this.props.callAutoBuild();
+		else if (str === "assist") {
+			this.props.callAssist();
+			setTimeout(() => { this.setState({selButton:null}); }, 1000);
 		}
-		else {
-			if (this.state.selButton) return;
-			this.setState({selButton:str});
-			setTimeout(() => {
-				this.setState({selButton:null});
-			}, 3000);
+		else if (str === "design") {
+			setTimeout(() => { this.setState({selButton:null}); }, 3000);
 		}
 	}
 
@@ -52,8 +49,6 @@ export default class Footer extends Component {
 						<div className="life-btn-wrapper">
 							{this.footerBtnArr.map(item =>
 								<div className={`life-item `} onClick={()=>this.clickItem(item.value)} key={item.value}>
-									{/* <div>{item.label[0]}</div>
-									<div>{item.label[1]}</div> */}
 									<label>{item.label}</label>
 								</div>
 							)}

@@ -25,7 +25,7 @@ export const hotNameArr = ["EMEA", "AMERICA", "ACPA"];
 
 autoPlay(true);
 
-export const easeTime = 1000, gameReadyTime = 1;
+export const easeTime = 1000, gameReadyTime = 5;
 export const menuHomeArr=[
 	{label:"home0", value:"home0"},
 	{label:"home1", value:"home1"},
@@ -47,7 +47,7 @@ export const modelArr = [
 ];
 export const gameInfoArr = [
 	{id:"building", file:gameModelBuilding, size:5, time:100, basicName:"", snapDis:100},
-	{id:"bridge", file:gameModelBridge, size:2, time:500, basicName:"Support0", snapDis:40},
+	{id:"bridge", file:gameModelBridge, size:2, time:500, basicName:"Support_0", snapDis:40},
 	{id:"stadium", file:gameModelStadium, size:2, time:500, basicName:"Asphalt", snapDis:60}
 ]
 
@@ -140,6 +140,7 @@ export function LoadGameModel(info, self) {
 				const colVal = child.name.split("__")[1];
 				child.material = new THREE.MeshPhongMaterial({color:"#"+colVal});
 			}
+			if (child.name === "Support_0") console.log(child);
 		});
 		var vSize = await new THREE.Box3().setFromObject(object).getSize();
 		const scl = info.size/vSize.y;
@@ -196,8 +197,8 @@ export function GetRayCastObject(self, mouseX, mouseY, meshArr) {
 	return self.raycaster.intersectObjects( meshArr )[0];
 }
 
-export function CheckGameModel(model, level) {
-	var children = model.children, checkVal = true, remainCount = 0;;
+export function CheckGameModel(children, level) {
+	var remainCount = 0; // children = model.children, 
 	if (level === "gameMedium") {
 		var keyArr = [{name:"Road", y:120}, {name:"Support", y:0}, {name:"Suspenders", y:120}], posZArr=[-480, 0, 480];
 		posZArr.forEach(posZ => {
@@ -206,23 +207,24 @@ export function CheckGameModel(model, level) {
 				children.forEach(child => {
 					if (child.name.indexOf(key.name) > -1) {
 						const {x, y, z} = child.position;
-						if (x === 0 && y === key.y && z === posZ) subCheckVal = true;
+						if (Math.round(x) === 0 && Math.round(y) === key.y && Math.round(z) === posZ) subCheckVal = true;
 					}
 				});
 				if (subCheckVal === false) remainCount++;
 			});
 		});
+		remainCount--;
 	}
 	else {
 		children.forEach(item => {
-			const oriPos = item.oriPos, curPos = item.position;
+			const oriPos = item.oriPos, oriRot = item.oriRot, curPos = item.position, curRot = item.rotation;
 			var subCheckVal = true;
 			["x", "y", "z"].forEach(axis => {
-				if (oriPos[axis] !== curPos[axis]) subCheckVal = false;
+				if (Math.round(oriPos[axis]) !== Math.round(curPos[axis]) ||
+					Math.round(oriRot[axis] * 100) !== Math.round(curRot[axis] * 100) )
+					subCheckVal = false;
 			});
-			if (subCheckVal === false) {
-				remainCount++;
-			}
+			if (subCheckVal === false) { remainCount++; }
 		});
 	}
 	return 100 - Math.round(remainCount / children.length * 100);

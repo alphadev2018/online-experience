@@ -89,6 +89,10 @@ export default class Home extends Component {
 			this.setState({autoBuild:nextProps.autoBuild});
 			if (nextProps.autoBuild) this.setAutoBuild();
 		}
+		if (!this.state.gameAssist && nextProps.gameAssist) {
+			this.setState({gameAssist:true});
+			this.setAssist();
+		}
 	}
 
 	setCanvasSize = () => {
@@ -145,22 +149,24 @@ export default class Home extends Component {
 			if (intersect) { this.transform.attach(intersect.object); }
 			else 			{ this.transform.detach(); }
 		}
+		else { this.checkGameStatus(); }
+		this.mouseStatus = "";
+	}
+
+	checkGameStatus = ()=>{
+		const checkGamePro = CheckGameModel(this.gameMeshArr, this.gameLevel);
+		this.setState({gamePro:checkGamePro});
+		if (checkGamePro === 100) {
+			this.props.callGameResult("success", this.totalTime, this.state.gameTime, checkGamePro);
+		}
 		else {
-			const checkGamePro = CheckGameModel(this.gameModel, this.gameLevel);
-			this.setState({gamePro:checkGamePro});
-			if (checkGamePro === 100) {
-				this.props.callGameResult("success", this.totalTime, this.state.gameTime, checkGamePro);
-			}
-			else {
-				const stepInfo = GetStepInfo(this.gameMeshArr, this.stepArr[this.state.stepNum]);
-				if (stepInfo) {
-					const newStepNum = this.state.stepNum + 1;
-					this.stepArr[newStepNum] = stepInfo;
-					this.setState({stepNum:newStepNum, maxStepNum:newStepNum});
-				}
+			const stepInfo = GetStepInfo(this.gameMeshArr, this.stepArr[this.state.stepNum]);
+			if (stepInfo) {
+				const newStepNum = this.state.stepNum + 1;
+				this.stepArr[newStepNum] = stepInfo;
+				this.setState({stepNum:newStepNum, maxStepNum:newStepNum});
 			}
 		}
-		this.mouseStatus = "";
 	}
 
 	setStep=(delta)=>{
@@ -245,14 +251,34 @@ export default class Home extends Component {
 		var childArr = this.gameModel.children;
 		for (let i = 0; i < childArr.length; i++) {
 			setTimeout(() => {
-				const oriPos = childArr[i].oriPos;
+				const oriPos = childArr[i].oriPos, oriRot=childArr[i].oriRot;
 				SetTween(childArr[i], "position", {x:oriPos.x, y:oriPos.y, z:oriPos.z}, easeTime);
+				SetTween(childArr[i], "rotation", {x:oriRot.x, y:oriRot.y, z:oriRot.z}, easeTime);
 			}, i * easeTime / 2);
 		}
 		setTimeout(() => {
 			this.setEndGame();
 			this.props.callGameResult("autoBuild", this.totalTime, this.state.gameTime, this.state.gamePro);
 		}, childArr.length * easeTime / 2 + 1000);
+	}
+
+	setAssist=()=>{
+		var diffMesh;
+		this.gameMeshArr.forEach(mesh => {
+			if (diffMesh) return;
+			var pos = mesh.position, rot = mesh.rotation, checkDiff = false;
+			["x", "y", "z"].forEach(axis => {
+				if (Math.round(pos[axis]) !== Math.round(mesh.oriPos[axis]) ||
+					Math.round(rot[axis] * 100) !== Math.round(mesh.oriRot[axis] * 100))
+					diffMesh = mesh;
+			});
+		});
+		if (diffMesh) {
+			const oriPos = diffMesh.oriPos, oriRot=diffMesh.oriRot;
+			SetTween(diffMesh, "position", {x:oriPos.x, y:oriPos.y, z:oriPos.z}, easeTime);
+			SetTween(diffMesh, "rotation", {x:oriRot.x, y:oriRot.y, z:oriRot.z}, easeTime);
+			setTimeout(() => { this.checkGameStatus(); this.setState({gameAssist:false}); }, easeTime);
+		}
 	}
 
 	loadIslandModel=(info)=>{
