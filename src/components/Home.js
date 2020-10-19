@@ -65,13 +65,12 @@ export default class Home extends Component {
 				else  child.material = new THREE.LineBasicMaterial({color:transRotCol, depthTest:false});
 			});
 
-			if 		(nextProps.game === "gameEasy") 	this.gameNum = 0;
-			else if (nextProps.game === "gameMedium") 	this.gameNum = 1;
-			else if (nextProps.game === "gameDifficult")this.gameNum = 2;
+			this.gameLevel = nextProps.game;
 			const gameModelId = {gameEasy:"building", gameMedium:"bridge", gameDifficult:"stadium"};
 			this.gameGroup.children.forEach((gameModel, idx) => {
 				if (gameModelId[nextProps.game] === gameModel.gameId) {
-					this.gameNum = idx;
+					this.gameModel = gameModel;
+					this.totalTime = gameModel.gameTime;
 					gameModel.visible = true;
 					gameModel.children.forEach(child => {
 						child.position.set(child.oriPos.x, child.oriPos.y, child.oriPos.z);
@@ -80,7 +79,7 @@ export default class Home extends Component {
 				}
 				else gameModel.visible = false;
 			});
-			this.totalTime = gameInfoArr[this.gameNum].time;
+			
 			this.setState({gameTime:this.totalTime+gameReadyTime, gameStatus:"start", gamePro:0}, ()=>{this.setStartTime();});
 		}
 		else if (this.state.gameStatus && !nextProps.game) {
@@ -147,7 +146,7 @@ export default class Home extends Component {
 			else 			{ this.transform.detach(); }
 		}
 		else {
-			const checkGamePro = CheckGameModel(this.gameGroup.children, this.gameNum);
+			const checkGamePro = CheckGameModel(this.gameModel, this.gameLevel);
 			this.setState({gamePro:checkGamePro});
 			if (checkGamePro === 100) {
 				this.props.callGameResult("success", this.totalTime, this.state.gameTime, checkGamePro);
@@ -157,7 +156,6 @@ export default class Home extends Component {
 				if (stepInfo) {
 					const newStepNum = this.state.stepNum + 1;
 					this.stepArr[newStepNum] = stepInfo;
-					console.log(this.stepArr);
 					this.setState({stepNum:newStepNum, maxStepNum:newStepNum});
 				}
 			}
@@ -167,7 +165,7 @@ export default class Home extends Component {
 
 	setStep=(delta)=>{
 		const {stepNum, maxStepNum} = this.state;
-		if (stepNum <= 0 && delta === -1) return;
+		if ((stepNum <= 0 || stepNum <= maxStepNum - 5) && delta === -1) return;
 		if (stepNum >= maxStepNum && delta === 1) return;
 		const newStepNum = stepNum + delta;
 		const stepInfo = this.stepArr[newStepNum];
@@ -177,7 +175,7 @@ export default class Home extends Component {
 			const posInfo = stepInfo[idx].pos;
 			const rotInfo = stepInfo[idx].rot;
 			SetTween(mesh, "position", {x:posInfo.x, y:posInfo.y, z:posInfo.z}, easeTime);
-			SetTween(mesh, "rotation", {x:rotInfo.x, y:rotInfo.y, z:rotInfo.z}, easeTime);
+			SetTween(mesh, "rotation", {x:rotInfo.x, y:rotInfo.y, z:rotInfo.z}, easeTime, this.gameLevel);
 		});
 		setTimeout(() => { this.setState({stepNum:newStepNum}); this.stepChange = false; }, easeTime);
 		
@@ -217,18 +215,18 @@ export default class Home extends Component {
 
 	startGame=()=>{
 		this.gameMeshArr = [];
-		var gameModel = this.gameGroup.children[this.gameNum];
-		gameModel.children.forEach((child, idx) => {
-			if (child.name !== gameModel.basicModel) this.gameMeshArr.push(child);
+		this.gameModel.children.forEach((child, idx) => {
+			if (child.name !== this.gameModel.basicModel) this.gameMeshArr.push(child);
 		});
-		const dis = gameModel.areaDis, snapDis = gameModel.snapDis;
+		const dis = this.gameModel.areaDis, snapDis = this.gameModel.snapDis;
 		this.transform.setTranslationSnap(snapDis);
 		this.gameMeshArr.forEach(mesh => {
 			const posX = Math.round(Math.random() * dis/snapDis) * snapDis - dis/2;
 			const posZ = Math.round(Math.random() * dis/snapDis) * snapDis - dis/2;
 			const rotY = mesh.oriRot.y + Math.round(Math.random() * 2) * Math.PI/2;
 			SetTween(mesh, "position", {x:posX, y:0, z:posZ}, easeTime);
-			// SetTween(mesh, "rotation", {x:0, y:rotY, z:0}, easeTime);
+			if (this.gameLevel === "gameMedium") SetTween(mesh, "rotation", {x:mesh.oriRot.x, y:mesh.oriRot.y, z:rotY}, easeTime);
+			else 								 SetTween(mesh, "rotation", {x:mesh.oriRot.x, y:rotY, z:mesh.oriRot.z}, easeTime);
 		});
 		setTimeout(() => {
 			const stepInfo = GetStepInfo(this.gameMeshArr, []);
@@ -244,7 +242,7 @@ export default class Home extends Component {
 	}
 
 	setAutoBuild=()=>{
-		var childArr = this.gameGroup.children[this.gameNum].children;
+		var childArr = this.gameModel.children;
 		for (let i = 0; i < childArr.length; i++) {
 			setTimeout(() => {
 				const oriPos = childArr[i].oriPos;
@@ -362,7 +360,7 @@ export default class Home extends Component {
 							<div className="label">{this.state.gameTime}</div>
 						</div>
 						<div className="step">
-							<div className={`step-item ${(stepNum<=0)?"disable":""}`} onClick={()=>this.setStep(-1)}>
+							<div className={`step-item ${(stepNum<=0 || stepNum <= maxStepNum - 5)?"disable":""}`} onClick={()=>this.setStep(-1)}>
 								<img src={undoImg}></img>
 							</div>
 							<div className={`step-item ${(stepNum>=maxStepNum)?"disable":""}`} onClick={()=>this.setStep(1)}>

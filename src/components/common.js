@@ -18,7 +18,7 @@ const islandMedia = require("assets/models/island_media.fbx");
 
 const gameModelCrane = require("assets/models/crane.fbx");
 const gameModelBuilding = require("assets/models/building.fbx");
-const gameModelBridge = require("assets/models/bridge.fbx");
+const gameModelBridge = require("assets/models/bridge_old.fbx");
 const gameModelStadium = require("assets/models/stadium.fbx");
 
 export const hotNameArr = ["EMEA", "AMERICA", "ACPA"];
@@ -47,7 +47,7 @@ export const modelArr = [
 ];
 export const gameInfoArr = [
 	{id:"building", file:gameModelBuilding, size:5, time:100, basicName:"", snapDis:100},
-	{id:"bridge", file:gameModelBridge, size:2, time:500, basicName:"Support0__EEEEEE", snapDis:40},
+	{id:"bridge", file:gameModelBridge, size:2, time:500, basicName:"Support0", snapDis:40},
 	{id:"stadium", file:gameModelStadium, size:2, time:500, basicName:"Asphalt", snapDis:60}
 ]
 
@@ -57,9 +57,7 @@ export function SetTween (obj, attr, info, easeTime) {
    	// .repeat(Infinity)  .yoyo(true)
 	const easeType = Easing.Cubic.InOut; //, Easing.Quadratic.Out
 	if (attr === "rotation") {
-		// tweenData = {'rotation.x':info.x, 'rotation.y':info.y, 'rotation.z':info.z };
-		tweenData = {'y':info.y };
-		console.log(tweenData);
+		tweenData = {'x':info.x, 'y':info.y, 'z':info.z };
 		new Tween(obj.rotation).to( tweenData , easeTime ).easing(easeType).start();
 	}
 	else {
@@ -148,6 +146,7 @@ export function LoadGameModel(info, self) {
 		object.scale.set(scl, scl, scl);
 		// object.position.set(info.pos.x, info.pos.y, info.pos.z);
 		object.gameId = info.id;
+		object.gameTime = info.time;
 		object.basicModel = info.basicName;
 		object.areaDis = 8 / scl;
 		object.snapDis = info.snapDis;
@@ -197,9 +196,9 @@ export function GetRayCastObject(self, mouseX, mouseY, meshArr) {
 	return self.raycaster.intersectObjects( meshArr )[0];
 }
 
-export function CheckGameModel(model, num) {
-	var children = model[num].children, checkVal = true, remainCount = 0;;
-	if (num === 1) {
+export function CheckGameModel(model, level) {
+	var children = model.children, checkVal = true, remainCount = 0;;
+	if (level === "gameMedium") {
 		var keyArr = [{name:"Road", y:120}, {name:"Support", y:0}, {name:"Suspenders", y:120}], posZArr=[-480, 0, 480];
 		posZArr.forEach(posZ => {
 			keyArr.forEach(key => {
@@ -250,7 +249,7 @@ export const hotModalInfo={
 export function GetStepInfo(newArr, oldArr) {
 	var stepInfo = [], checkDiff = false;
 	newArr.forEach((newMesh, idx) => {
-		const oldMesh = oldArr[idx];
+		const oldMesh = (oldArr && oldArr[idx])?oldArr[idx]:null;
 		const newPos = newMesh.position, newRot = newMesh.rotation;
 		if (oldMesh) {
 			["x", "y", "z"].forEach(axis => {
