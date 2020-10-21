@@ -25,7 +25,7 @@ export const hotNameArr = ["EMEA", "AMERICA", "ACPA"];
 
 autoPlay(true);
 
-export const easeTime = 1000, gameReadyTime = 5;
+export const easeTime = 1000, gameReadyTime = 1;
 export const menuHomeArr=[
 	{label:"home0", value:"home0"},
 	{label:"home1", value:"home1"},
@@ -125,7 +125,18 @@ export function LoadGameModel(info, self) {
 			const childPos = child.position, childRot = child.rotation;
 			child.oriPos = {x:childPos.x, y:childPos.y, z:childPos.z};
 			child.oriRot = {x:childRot.x, y:childRot.y, z:childRot.z};
-
+			// if (info.id === "bridge") {
+				var vPos = new THREE.Box3().setFromObject(child);
+				["min", "max"].forEach(level => {
+					["x", "y", "z"].forEach(axis => {
+						const value = vPos[level][axis];
+						const dir = (value > 0)?1:-1;
+						const tVal = Math.floor(Math.abs(value)  / 10) * 10;
+						vPos[level][axis] = tVal * dir - childPos[axis];
+					});
+				});
+			// }
+			child.posArea = vPos;
 			child.castShadow = true;
 			child.receiveShadow = true;
 			if 		(child.name.indexOf("Suspenders") > -1) child.material.color.setHex(0xA75A00);
@@ -140,7 +151,7 @@ export function LoadGameModel(info, self) {
 				const colVal = child.name.split("__")[1];
 				child.material = new THREE.MeshPhongMaterial({color:"#"+colVal});
 			}
-			if (child.name === "Support_0") console.log(child);
+			// if (child.name === "Support_0") console.log(child);
 		});
 		var vSize = await new THREE.Box3().setFromObject(object).getSize();
 		const scl = info.size/vSize.y;
@@ -264,4 +275,41 @@ export function GetStepInfo(newArr, oldArr) {
 						 rot:{x:newRot.x, y:newRot.y, z:newRot.z}};
 	});
 	return (checkDiff === true)?stepInfo:false;
+}
+
+export function CheckCrash(meshArr, selMesh) {
+	var crash = false, checkPosRot = true;
+	const selMeshPos = selMesh.position, selMeshArea = selMesh.posArea, selMeshRot = selMesh.rotation;
+	["x", "y", "z"].forEach(axis => {
+		if (selMeshPos[axis] != selMesh.oriPos[axis]) checkPosRot = false;
+		if (selMeshRot[axis] != selMesh.oriRot[axis]) checkPosRot = false;
+	});
+	if (checkPosRot === true) return false;
+	const ePosArr = [
+		{x: selMeshPos.x + selMeshArea.min.x, y: selMeshPos.y + selMeshArea.min.y, z: selMeshPos.z + selMeshArea.min.z},
+		{x: selMeshPos.x + selMeshArea.min.x, y: selMeshPos.y + selMeshArea.min.y, z: selMeshPos.z + selMeshArea.max.z},
+		{x: selMeshPos.x + selMeshArea.min.x, y: selMeshPos.y + selMeshArea.max.y, z: selMeshPos.z + selMeshArea.min.z},
+		{x: selMeshPos.x + selMeshArea.min.x, y: selMeshPos.y + selMeshArea.max.y, z: selMeshPos.z + selMeshArea.max.z},
+		{x: selMeshPos.x + selMeshArea.max.x, y: selMeshPos.y + selMeshArea.min.y, z: selMeshPos.z + selMeshArea.min.z},
+		{x: selMeshPos.x + selMeshArea.max.x, y: selMeshPos.y + selMeshArea.min.y, z: selMeshPos.z + selMeshArea.max.z},
+		{x: selMeshPos.x + selMeshArea.max.x, y: selMeshPos.y + selMeshArea.max.y, z: selMeshPos.z + selMeshArea.min.z},
+		{x: selMeshPos.x + selMeshArea.max.x, y: selMeshPos.y + selMeshArea.max.y, z: selMeshPos.z + selMeshArea.max.z}
+	];
+
+	meshArr.forEach(mesh => {
+		if (mesh.name === selMesh.name || crash === true) return;
+		const meshPos = mesh.position, meshArea = mesh.posArea;
+		ePosArr.forEach(ePos => {
+			if (ePos.x > meshPos.x + meshArea.min.x && ePos.x < meshPos.x + meshArea.max.x && 
+				ePos.y > meshPos.y + meshArea.min.y && ePos.y < meshPos.y + meshArea.max.y && 
+				ePos.z > meshPos.z + meshArea.min.z && ePos.z < meshPos.z + meshArea.max.z )
+				crash = true;
+		});
+	});
+	return (crash === true)?"clash":"wrong";
+}
+
+export const modalInfo = {
+	clash:{title:"CLASH WARNING!", description : "Your design is poorly coordinated, this has coursed a clash on site, you have been penalized $xxx for rework costs."},
+	wrong:{title:"QUALITY WARNING!", description : "You have incorrectly laid out the design, an issue has been raised, you have been penalized $xxx for rework costs."}
 }

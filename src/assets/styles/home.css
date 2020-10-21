@@ -74,6 +74,26 @@
 .home .trans-option .trans-item.active svg path{
   fill: green;
 }
+.home .clash-modal{
+  position: absolute;
+    top: 50vh;
+    left: 50px;
+    border-radius: 5px;
+    width: 300px;
+    background-image: linear-gradient(rgb(5, 109, 156), rgb(3, 79, 114));
+    padding: 20px;
+}
+.home .clash-modal .clash-title{
+  color: white;
+  font-size: 24px;
+  font-weight: 700;
+}
+.home .clash-modal .clash-des{
+  margin-top: 20px;
+  color: white;
+  font-size: 18px;
+}
+
 
 /* header */
 .header{

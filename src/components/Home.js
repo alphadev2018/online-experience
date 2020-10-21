@@ -5,7 +5,7 @@ import {FBXLoader} from "three/examples/jsm/loaders/FBXLoader";
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
 import {TransformControls} from 'three/examples/jsm/controls/TransformControls';
 
-import {modelArr, gameInfoArr, easeTime, gameReadyTime, SetTween, AnimateReturn, AnimateRotate, LoadGameModel, GotoIsland, GetRayCastObject, CheckGameModel, hotNameArr, GetStepInfo} from "./common";
+import {modelArr, gameInfoArr, easeTime, gameReadyTime, SetTween, AnimateReturn, AnimateRotate, LoadGameModel, GotoIsland, GetRayCastObject, CheckGameModel, hotNameArr, GetStepInfo, CheckCrash, modalInfo} from "./common";
 import '../assets/styles/home.css';
 import '../assets/styles/overPan.css';
 
@@ -24,7 +24,7 @@ export default class Home extends Component {
 		this.meshArr = []; this.selLandName = "";
 		this.cloudArr = []; this.windBaseArr = []; this.ballonArr = []; this.tonArr = []; this.roundPlayArr = [];
 		this.mouseStatus = "";
-		this.state = { overModal:true, gameStatus:null, gameTime:-1, autoBuild:false, selHot:"", stepNum:-1, maxStepNum:-1, selTrans:"translate" };
+		this.state = { overModal:true, gameStatus:null, gameTime:-1, autoBuild:false, selHot:"", stepNum:-1, maxStepNum:-1, selTrans:"translate", crashModalId:false };
 		this.gameMeshArr = []; this.gameIslandPlane = null; this.gameIslandLine = null;
 		this.hotMeshArr = []; this.hotOverArr = []; this.stepArr = [];
 	}
@@ -165,6 +165,9 @@ export default class Home extends Component {
 				const newStepNum = this.state.stepNum + 1;
 				this.stepArr[newStepNum] = stepInfo;
 				this.setState({stepNum:newStepNum, maxStepNum:newStepNum});
+				const checkCrash = CheckCrash(this.gameMeshArr, this.transform.object);
+				this.setState({crashModalId:checkCrash});
+				setTimeout(() => { this.setState({crashModalId:false}); }, 1000);
 			}
 		}
 	}
@@ -366,24 +369,24 @@ export default class Home extends Component {
 	}
 	
 	render() {
-		const {maxStepNum, stepNum, selTrans} = this.state;
+		const {maxStepNum, stepNum, selTrans, gameStatus, gameTime, crashModalId} = this.state;
 		return (
 			<div className="home">
 				<div id="container"></div>
-				{this.state.gameStatus === "start" &&
+				{gameStatus === "start" &&
 					<div className="over-pan">
 						<div className="modal-wrapper game-ready">
 							<div className="title">Get ready ...</div>
 							<div className="start-time">
-								<div className="game-ready-label">{this.state.gameTime - this.totalTime}</div>
+								<div className="game-ready-label">{gameTime - this.totalTime}</div>
 							</div>
 						</div>
 					</div>
 				}
-				{this.state.gameStatus === "process" &&
+				{gameStatus === "process" &&
 					<div>
 						<div className="process-time">
-							<div className="label">{this.state.gameTime}</div>
+							<div className="label">{gameTime}</div>
 						</div>
 						<div className="step">
 							<div className={`step-item ${(stepNum<=0 || stepNum <= maxStepNum - 5)?"disable":""}`} onClick={()=>this.setStep(-1)}>
@@ -401,6 +404,12 @@ export default class Home extends Component {
 								<TransRotateIcon></TransRotateIcon>
 							</div>
 						</div>
+						{crashModalId !== false &&
+							<div className="clash-modal">
+								<div className="clash-title">{modalInfo[crashModalId].title}</div>
+								<div className="clash-des">{modalInfo[crashModalId].description}</div>
+							</div>
+						}
 					</div>
 				}
 				<div id="test_hotspot"></div>
