@@ -5,7 +5,7 @@ import {FBXLoader} from "three/examples/jsm/loaders/FBXLoader";
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
 import {TransformControls} from 'three/examples/jsm/controls/TransformControls';
 
-import {modelArr, gameInfoArr, easeTime, gameReadyTime, SetTween, AnimateReturn, AnimateRotate, LoadGameModel, GotoIsland, GetRayCastObject, CheckGameModel, hotNameArr, GetStepInfo, CheckCrash, modalInfo} from "./common";
+import {modelArr, gameInfoArr, easeTime, gameReadyTime, SetTween, AnimateReturn, AnimateRotate, LoadGameModel, GotoIsland, GetRayCastObject, CheckGameModel, hotNameArr, GetStepInfo, CheckClash, modalInfo} from "./common";
 import '../assets/styles/home.css';
 import '../assets/styles/overPan.css';
 
@@ -153,7 +153,7 @@ export default class Home extends Component {
 		this.mouseStatus = "";
 	}
 
-	checkGameStatus = ()=>{
+	checkGameStatus () {
 		const checkGamePro = CheckGameModel(this.gameMeshArr, this.gameLevel);
 		this.setState({gamePro:checkGamePro});
 		if (checkGamePro === 100) {
@@ -165,9 +165,9 @@ export default class Home extends Component {
 				const newStepNum = this.state.stepNum + 1;
 				this.stepArr[newStepNum] = stepInfo;
 				this.setState({stepNum:newStepNum, maxStepNum:newStepNum});
-				const checkCrash = CheckCrash(this.gameMeshArr, this.transform.object);
-				this.setState({crashModalId:checkCrash});
-				setTimeout(() => { this.setState({crashModalId:false}); }, 1000);
+				const checkClashStatus = CheckClash(this.gameMeshArr, this.transform.object);
+				this.setState({crashModalId:checkClashStatus});
+				setTimeout(() => { this.setState({crashModalId:false}); }, 1500);
 			}
 		}
 	}

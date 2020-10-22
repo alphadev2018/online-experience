@@ -8,7 +8,7 @@ import hotImgACPA from "../assets/images/hot_ACPA.png";
 import hotImgAMERICA from "../assets/images/hot_AMERICA.png";
 
 // const island0 = require("assets/models/island_0.fbx");
-const islandHome0 = require("assets/models/EMEA_custom_test.fbx");
+const islandHome0 = require("assets/models/EMEA_custom_test.fbx");// building
 const islandHome1 = require("assets/models/APAC_custom_test.fbx");
 const islandHome2 = require("assets/models/AMERACAS_custom_test.fbx");
 const islandGame = require("assets/models/island_game.fbx");
@@ -25,7 +25,7 @@ export const hotNameArr = ["EMEA", "AMERICA", "ACPA"];
 
 autoPlay(true);
 
-export const easeTime = 1000, gameReadyTime = 1;
+export const easeTime = 1000, gameReadyTime = 5;
 export const menuHomeArr=[
 	{label:"home0", value:"home0"},
 	{label:"home1", value:"home1"},
@@ -125,20 +125,10 @@ export function LoadGameModel(info, self) {
 			const childPos = child.position, childRot = child.rotation;
 			child.oriPos = {x:childPos.x, y:childPos.y, z:childPos.z};
 			child.oriRot = {x:childRot.x, y:childRot.y, z:childRot.z};
-			// if (info.id === "bridge") {
-				var vPos = new THREE.Box3().setFromObject(child);
-				["min", "max"].forEach(level => {
-					["x", "y", "z"].forEach(axis => {
-						const value = vPos[level][axis];
-						const dir = (value > 0)?1:-1;
-						const tVal = Math.floor(Math.abs(value)  / 10) * 10;
-						vPos[level][axis] = tVal * dir - childPos[axis];
-					});
-				});
-			// }
-			child.posArea = vPos;
+			// child.geometry = new THREE.Geometry().fromBufferGeometry( child.geometry );
 			child.castShadow = true;
 			child.receiveShadow = true;
+			
 			if 		(child.name.indexOf("Suspenders") > -1) child.material.color.setHex(0xA75A00);
 			else if (child.name.indexOf("Road") > -1) child.material.color.setHex(0x666666);
 			if (child.material.length) {
@@ -277,39 +267,72 @@ export function GetStepInfo(newArr, oldArr) {
 	return (checkDiff === true)?stepInfo:false;
 }
 
-export function CheckCrash(meshArr, selMesh) {
-	var crash = false, checkPosRot = true;
-	const selMeshPos = selMesh.position, selMeshArea = selMesh.posArea, selMeshRot = selMesh.rotation;
+export function CheckClash(meshArr, selMesh) {
+	var clash = false, checkPosRot = true;
+	const selMeshPos = selMesh.position, selMeshRot = selMesh.rotation; //, selMeshArea = selMesh.posArea;
 	["x", "y", "z"].forEach(axis => {
 		if (selMeshPos[axis] != selMesh.oriPos[axis]) checkPosRot = false;
 		if (selMeshRot[axis] != selMesh.oriRot[axis]) checkPosRot = false;
 	});
 	if (checkPosRot === true) return false;
-	const ePosArr = [
-		{x: selMeshPos.x + selMeshArea.min.x, y: selMeshPos.y + selMeshArea.min.y, z: selMeshPos.z + selMeshArea.min.z},
-		{x: selMeshPos.x + selMeshArea.min.x, y: selMeshPos.y + selMeshArea.min.y, z: selMeshPos.z + selMeshArea.max.z},
-		{x: selMeshPos.x + selMeshArea.min.x, y: selMeshPos.y + selMeshArea.max.y, z: selMeshPos.z + selMeshArea.min.z},
-		{x: selMeshPos.x + selMeshArea.min.x, y: selMeshPos.y + selMeshArea.max.y, z: selMeshPos.z + selMeshArea.max.z},
-		{x: selMeshPos.x + selMeshArea.max.x, y: selMeshPos.y + selMeshArea.min.y, z: selMeshPos.z + selMeshArea.min.z},
-		{x: selMeshPos.x + selMeshArea.max.x, y: selMeshPos.y + selMeshArea.min.y, z: selMeshPos.z + selMeshArea.max.z},
-		{x: selMeshPos.x + selMeshArea.max.x, y: selMeshPos.y + selMeshArea.max.y, z: selMeshPos.z + selMeshArea.min.z},
-		{x: selMeshPos.x + selMeshArea.max.x, y: selMeshPos.y + selMeshArea.max.y, z: selMeshPos.z + selMeshArea.max.z}
-	];
+
+	// var originPoint = selMesh.position.clone();
+	// var overMeshArr = [];
+	// meshArr.forEach(mesh => {
+	// 	if (mesh.name !== selMesh.name) overMeshArr.push(mesh);
+	// });
+
+	// for (var i = 0; i < selMesh.geometry.vertices.length; i++) {		
+	// 	var localVertex = selMesh.geometry.vertices[i].clone();
+	// 	var globalVertex = localVertex.applyMatrix4( selMesh.matrix );
+	// 	var directionVector = globalVertex.sub( selMesh.position );
+		
+	// 	var ray = new THREE.Raycaster( originPoint, directionVector.clone().normalize() );
+	// 	var collisionResults = ray.intersectObjects( overMeshArr );
+	// 	if ( collisionResults.length > 0 && collisionResults[0].distance < directionVector.length() ) {
+	// 		console.log("clash");
+	// 		clash = true;
+	// 	}
+	// }
+
+
+	const selVPos = GetMeshArea(selMesh);
+	var ePosArr = [];
+	for (let xPos = selVPos.min.x; xPos <= selVPos.max.x; xPos+=0.1) {
+		for (let yPos = selVPos.min.y; yPos <= selVPos.max.y; yPos+=0.1) {
+			for (let zPos = selVPos.min.z; zPos <= selVPos.max.z; zPos+=0.1) {
+				ePosArr.push({x: xPos, y: yPos, z: zPos});
+			}
+		}
+	}
 
 	meshArr.forEach(mesh => {
-		if (mesh.name === selMesh.name || crash === true) return;
-		const meshPos = mesh.position, meshArea = mesh.posArea;
+		if (mesh.name === selMesh.name || clash === true) return;
+		const vPos = GetMeshArea(mesh);
 		ePosArr.forEach(ePos => {
-			if (ePos.x > meshPos.x + meshArea.min.x && ePos.x < meshPos.x + meshArea.max.x && 
-				ePos.y > meshPos.y + meshArea.min.y && ePos.y < meshPos.y + meshArea.max.y && 
-				ePos.z > meshPos.z + meshArea.min.z && ePos.z < meshPos.z + meshArea.max.z )
-				crash = true;
+			if (ePos.x >= vPos.min.x && ePos.x <= vPos.max.x && 
+				ePos.y >= vPos.min.y && ePos.y <= vPos.max.y && 
+				ePos.z >= vPos.min.z && ePos.z <= vPos.max.z )
+				clash = true;
 		});
 	});
-	return (crash === true)?"clash":"wrong";
+	return (clash === true)?"clash":"wrong";
 }
 
 export const modalInfo = {
 	clash:{title:"CLASH WARNING!", description : "Your design is poorly coordinated, this has coursed a clash on site, you have been penalized $xxx for rework costs."},
 	wrong:{title:"QUALITY WARNING!", description : "You have incorrectly laid out the design, an issue has been raised, you have been penalized $xxx for rework costs."}
+}
+
+function GetMeshArea(mesh) {
+	var vPos = new THREE.Box3().setFromObject(mesh);
+	["min", "max"].forEach(level => {
+		["x", "y", "z"].forEach(axis=> {
+			const posVal = vPos[level][axis];
+			const dir = (posVal >= 0)?1:-1;
+			const tVal = Math.floor(Math.abs(posVal) * 10) / 10;
+			vPos[level][axis] = tVal * dir;
+		});
+	});
+	return vPos;
 }
