@@ -31,6 +31,7 @@
   position: absolute;
   bottom: 10px;
   left: calc(50% - 100px);
+  display: none;
 }
 .home .step .step-item{
   float: left;
@@ -48,16 +49,17 @@
 
 .home .trans-option{
   position: absolute;
-  bottom: 50px;
-  right: 40px;
+  bottom: 60px;
+  left: calc(50% - 60px);
 }
 .home .trans-option .trans-item{
   width: 50px;
   height: 50px;
-  margin: 10px;
+  margin: 20px;
   padding: 5px;
   border-radius: 5px;
-  background-color: rgba(0,0,0,0.2);
+  background-color: rgba( 0, 0, 0, 0.3);
+  border: 2px solid rgba( 0, 0, 0, 0.5);
   float: left;
   cursor: pointer;
 }
@@ -69,7 +71,8 @@
   fill: black;
 }
 .home .trans-option .trans-item.active{
-  background-color: rgba(255,255,255,0.2);
+  background-color: rgba( 255, 255, 255, 0.3);
+  border: 2px solid rgba( 255, 0, 0, 0.5);
 }
 .home .trans-option .trans-item.active svg path{
   fill: green;
