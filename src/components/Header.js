@@ -15,7 +15,10 @@ export default class Header extends Component {
 	render() {
 		return (
 			<div className="header">
-				<MainLogoIcon className="logo-icon"></MainLogoIcon>
+				<div className="logo-icon" />
+				<a href="#" className="menu-toggle">
+					<i class="fa fa-bars" aria-hidden="true"></i>
+				</a>
 			</div>
 		);
 	}
