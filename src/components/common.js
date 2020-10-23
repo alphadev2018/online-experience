@@ -48,7 +48,7 @@ export const modelArr = [
 export const gameInfoArr = [
 	{id:"building", file:gameModelBuilding, size:5, time:100, basicName:"", snapDis:100},
 	{id:"bridge", file:gameModelBridge, size:2, time:500, basicName:"Support_0", snapDis:40},
-	{id:"stadium", file:gameModelStadium, size:2, time:500, basicName:"Asphalt", snapDis:60}
+	{id:"stadium", file:gameModelStadium, size:1.6, time:500, basicName:"Asphalt", snapDis:60}
 ]
 
 export function SetTween (obj, attr, info, easeTime) {

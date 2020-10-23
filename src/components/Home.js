@@ -112,8 +112,8 @@ export default class Home extends Component {
 		if (hotIntersect) this.props.callHotSpot(intersect.object.hotStr);
 		else if (intersect) {
 			const landName = intersect.object.landChildName;
+			console.log(landName);
 			if (landName !== this.selLandName) {
-				if (landName !== "home" && this.selLandName !== "home") return;
 				GotoIsland(this, landName);
 				this.props.callMenuItem(landName);
 			}
@@ -129,13 +129,13 @@ export default class Home extends Component {
 		const intersect = GetRayCastObject(this, event.clientX, event.clientY, this.hotMeshArr);
 		if (intersect) {
 			const hotStr = intersect.object.hotStr;
-			this.setHotMeshCol(this.hotMeshArr, hotStr, 0xFF8888, 0xFFFFFF);
-			this.setHotMeshCol(this.hotOverArr, hotStr, 0xFFFF00, 0xFF0000);
+			// this.setHotMeshCol(this.hotMeshArr, hotStr, 0xFF8888, 0xFFFFFF);
+			this.setHotMeshCol(this.hotOverArr, hotStr, 0xFFFFFF, 0xFF0000);
 			document.getElementById("container").style.cursor = "pointer";
 		}
 		else {
-			this.setHotMeshCol(this.hotMeshArr, "", 0xFF8888, 0xFFFFFF);
-			this.setHotMeshCol(this.hotOverArr, "", 0xFFFF00, 0xFF0000);
+			// this.setHotMeshCol(this.hotMeshArr, "", 0xFF8888, 0xFFFFFF);
+			this.setHotMeshCol(this.hotOverArr, "", 0xFFFFFF, 0xFF0000);
 			document.getElementById("container").style.cursor = "default";
 		}
 		this.mouseStatus = "move";
@@ -207,6 +207,7 @@ export default class Home extends Component {
 	setStartTime=()=> {
 		if (!this.state.gameStatus) return;
 		setTimeout(() => {
+			if (!this.state.gameStatus) return;
 			const remainTime = this.state.gameTime;
 			if (remainTime <= 0) {
 				this.setEndGame();
@@ -227,11 +228,14 @@ export default class Home extends Component {
 		this.gameModel.children.forEach((child, idx) => {
 			if (child.name !== this.gameModel.basicModel) this.gameMeshArr.push(child);
 		});
-		const dis = this.gameModel.areaDis, snapDis = this.gameModel.snapDis;
+		const dis = this.gameModel.areaDis, snapDis = this.gameModel.snapDis, dAngle = Math.PI * 2/this.gameMeshArr.length, rIdx = Math.round(Math.random() * 6);
+		console.log(dis);
 		this.transform.setTranslationSnap(snapDis);
-		this.gameMeshArr.forEach(mesh => {
-			const posX = Math.round(Math.random() * dis/snapDis) * snapDis - dis/2;
-			const posZ = Math.round(Math.random() * dis/snapDis) * snapDis - dis/2;
+		this.gameMeshArr.forEach((mesh, idx) => {
+			// const posX = Math.round(Math.random() * dis/snapDis) * snapDis - dis/2;
+			// const posZ = Math.round(Math.random() * dis/snapDis) * snapDis - dis/2;
+			const posX = Math.sin(dAngle * (idx+rIdx)) * dis/2;
+			const posZ = Math.cos(dAngle * (idx+rIdx)) * dis/2;
 			const rotY = mesh.oriRot.y + Math.round(Math.random() * 2) * Math.PI/2;
 			SetTween(mesh, "position", {x:posX, y:0, z:posZ}, easeTime);
 			if (this.gameLevel === "gameMedium") SetTween(mesh, "rotation", {x:mesh.oriRot.x, y:mesh.oriRot.y, z:rotY}, easeTime);
@@ -278,6 +282,7 @@ export default class Home extends Component {
 		});
 		if (diffMesh) {
 			const oriPos = diffMesh.oriPos, oriRot=diffMesh.oriRot;
+			this.transform.attach(diffMesh);
 			SetTween(diffMesh, "position", {x:oriPos.x, y:oriPos.y, z:oriPos.z}, easeTime);
 			SetTween(diffMesh, "rotation", {x:oriRot.x, y:oriRot.y, z:oriRot.z}, easeTime);
 			setTimeout(() => { this.checkGameStatus(); this.setState({gameAssist:false}); }, easeTime);
