@@ -5,7 +5,7 @@ import {FBXLoader} from "three/examples/jsm/loaders/FBXLoader";
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
 import {TransformControls} from 'three/examples/jsm/controls/TransformControls';
 
-import {modelArr, gameInfoArr, easeTime, gameReadyTime, SetTween, AnimateReturn, AnimateRotate, LoadGameModel, GotoIsland, GetRayCastObject, CheckGameModel, hotNameArr, GetStepInfo, CheckClash, modalInfo} from "./common";
+import {modelArr, gameInfoArr, easeTime, gameReadyTime, SetTween, AnimateReturn, AnimateRotate, GotoIsland, GetRayCastObject, CheckGameModel, hotNameArr, GetStepInfo, CheckClash, modalInfo} from "./common";
 import '../assets/styles/home.css';
 import '../assets/styles/overPan.css';
 
@@ -21,12 +21,13 @@ export default class Home extends Component {
 		this.cHeight = jQuery(window).height();this.mouseY = 0;
 		this.raycaster = new THREE.Raycaster(); this.mouse = new THREE.Vector2();
 		this.animate = this.animate.bind(this);
-		this.meshArr = []; this.selLandName = "";
+		this.meshArr = []; this.selLandName = ""; this.mouseStatus = "";
 		this.cloudArr = []; this.windBaseArr = []; this.ballonArr = []; this.tonArr = []; this.roundPlayArr = [];
-		this.mouseStatus = "";
-		this.state = { overModal:true, gameStatus:null, gameTime:-1, autoBuild:false, selHot:"", stepNum:-1, maxStepNum:-1, selTrans:"translate", crashModalId:false };
+		this.device = ( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) )?"mobile":"web";
+		this.state = { overModal:true, gameStatus:null, gameTime:-1, autoBuild:false, selHot:"", stepNum:-1, maxStepNum:-1, selTrans:"translate", crashModalId:false, transMesh:null };
 		this.gameMeshArr = []; this.gameIslandPlane = null; this.gameIslandLine = null;
 		this.hotMeshArr = []; this.hotOverArr = []; this.stepArr = [];
+		this.totalModelCount = modelArr.length + gameInfoArr.length; this.loadModelNum = 0;
 	}
 	
 	componentDidMount() {
@@ -38,10 +39,12 @@ export default class Home extends Component {
 		window.addEventListener( 'pointerdown', this.mouseDown, false );
 		window.addEventListener( 'pointermove', this.mouseMove, false );
 		window.addEventListener( 'pointerup', this.mouseUp, false );
+		window.addEventListener("touchend", this.touchEnd, false);
 	}
 
 	UNSAFE_componentWillReceiveProps(nextProps) {
-		if (this.selLandName !== nextProps.menuItem) {
+		if (nextProps.menuItem !== "first" && this.selLandName !== nextProps.menuItem) {
+			// if (this.totalModelCount > this.loadModelNum) return;
 			if (this.selLandName === "") SetTween(this.scene.fog, "far", 50, easeTime);
 			GotoIsland(this, nextProps.menuItem);
 		}
@@ -79,15 +82,19 @@ export default class Home extends Component {
 				}
 				else gameModel.visible = false;
 			});
-			
 			this.setState({gameTime:this.totalTime+gameReadyTime, gameStatus:"start", gamePro:0}, ()=>{this.setStartTime();});
 		}
 		else if (this.state.gameStatus && !nextProps.game) {
 			this.setEndGame();
 		}
 		if (this.state.autoBuild !== nextProps.autoBuild) {
-			this.setState({autoBuild:nextProps.autoBuild});
-			if (nextProps.autoBuild) this.setAutoBuild();
+			if (nextProps.autoBuild) {
+				if (this.state.gameStatus === "process") {
+					this.setState({autoBuild:true});
+					this.setAutoBuild();
+				}
+			}
+			else {this.setState({autoBuild:false});}
 		}
 		if (!this.state.gameAssist && nextProps.gameAssist) {
 			this.setState({gameAssist:true});
@@ -105,20 +112,21 @@ export default class Home extends Component {
 		}
 	}
 
-	mouseClick = (event) => {
+	processClickEvent=(mouseX, mouseY)=>{
 		if (this.state.overModal || this.state.gameStatus === "process") return;
-		const hotIntersect = GetRayCastObject(this, event.clientX, event.clientY, this.hotMeshArr);
-		const intersect = GetRayCastObject(this, event.clientX, event.clientY, this.meshArr);
+		const hotIntersect = GetRayCastObject(this, mouseX, mouseY, this.hotMeshArr);
+		const intersect = GetRayCastObject(this, mouseX, mouseY, this.meshArr);
 		if (hotIntersect) this.props.callHotSpot(intersect.object.hotStr);
 		else if (intersect) {
 			const landName = intersect.object.landChildName;
-			console.log(landName);
 			if (landName !== this.selLandName) {
 				GotoIsland(this, landName);
 				this.props.callMenuItem(landName);
 			}
 		}
 	}
+	touchEnd = (event) => { this.processClickEvent(event.changedTouches[0].pageX, event.changedTouches[0].pageY); }
+	mouseClick = (event) => { this.processClickEvent(event.clientX, event.clientY); }
 
 	mouseDown = (event) => {
 		this.mouseStatus = "down";
@@ -144,10 +152,11 @@ export default class Home extends Component {
 
 	mouseUp = (event) => {
 		if (this.state.gameStatus !== "process") return;
+		if (this.transform.object && event.target.className === "rotate-img") return;
 		if (this.mouseStatus === "down") {
 			const intersect = GetRayCastObject(this, event.clientX, event.clientY, this.gameMeshArr);
-			if (intersect) { this.transform.attach(intersect.object); }
-			else 			{ this.transform.detach(); }
+			if (intersect) { this.transform.attach(intersect.object); this.setState({transMesh:intersect.object});}
+			else 			{ this.transform.detach(); this.setState({transMesh:null});}
 		}
 		else { this.checkGameStatus(); }
 		this.mouseStatus = "";
@@ -165,6 +174,7 @@ export default class Home extends Component {
 				const newStepNum = this.state.stepNum + 1;
 				this.stepArr[newStepNum] = stepInfo;
 				this.setState({stepNum:newStepNum, maxStepNum:newStepNum});
+				if (!this.transform.object) return;
 				const checkClashStatus = CheckClash(this.gameMeshArr, this.transform.object);
 				this.setState({crashModalId:checkClashStatus});
 				setTimeout(() => { this.setState({crashModalId:false}); }, 1500);
@@ -180,6 +190,7 @@ export default class Home extends Component {
 		const stepInfo = this.stepArr[newStepNum];
 		this.stepChange = true;
 		this.transform.detach();
+		this.setState({transMesh:null});
 		this.gameMeshArr.forEach((mesh, idx) => {
 			const posInfo = stepInfo[idx].pos;
 			const rotInfo = stepInfo[idx].rot;
@@ -187,7 +198,6 @@ export default class Home extends Component {
 			SetTween(mesh, "rotation", {x:rotInfo.x, y:rotInfo.y, z:rotInfo.z}, easeTime, this.gameLevel);
 		});
 		setTimeout(() => { this.setState({stepNum:newStepNum}); this.stepChange = false; }, easeTime);
-		
 	}
 
 	setHotMeshCol=(arr, str, overCol, noCol)=>{
@@ -198,16 +208,16 @@ export default class Home extends Component {
 	}
 
 	setEndGame=()=>{
-		this.setState({gameStatus:null});
+		this.setState({gameStatus:null, transMesh:null});
 		this.gameGroup.visible = false;
 		this.totalGroup.children.forEach(island => { island.visible = true; });
 		this.transform.detach();
 	}
 
 	setStartTime=()=> {
-		if (!this.state.gameStatus) return;
+		if (!this.state.gameStatus) {this.props.callGameStatus(false); return;}
 		setTimeout(() => {
-			if (!this.state.gameStatus) return;
+			if (!this.state.gameStatus) { this.props.callGameStatus(false); return;}
 			const remainTime = this.state.gameTime;
 			if (remainTime <= 0) {
 				this.setEndGame();
@@ -215,7 +225,7 @@ export default class Home extends Component {
 			}
 			else {
 				if		(remainTime > this.totalTime) { this.setState({gameStatus:"start"}); }
-				else if (remainTime === this.totalTime) { this.startGame(); this.setState({gameStatus:"process"});}
+				else if (remainTime === this.totalTime) { this.startGame(); this.setState({gameStatus:"process"}); this.props.callGameStatus(true)}
 				else if (remainTime > 0) {  }
 				this.setState({gameTime:remainTime -1});
 				this.setStartTime();
@@ -229,7 +239,6 @@ export default class Home extends Component {
 			if (child.name !== this.gameModel.basicModel) this.gameMeshArr.push(child);
 		});
 		const dis = this.gameModel.areaDis, snapDis = this.gameModel.snapDis, dAngle = Math.PI * 2/this.gameMeshArr.length, rIdx = Math.round(Math.random() * 6);
-		console.log(dis);
 		this.transform.setTranslationSnap(snapDis);
 		this.gameMeshArr.forEach((mesh, idx) => {
 			// const posX = Math.round(Math.random() * dis/snapDis) * snapDis - dis/2;
@@ -248,6 +257,14 @@ export default class Home extends Component {
 		}, easeTime * 2);
 	}
 
+	setRotate=(dir)=>{
+		var mesh = this.transform.object;
+		if (!mesh) return;
+		const rotVal = mesh.rotation;
+		if (this.gameLevel === "gameMedium") SetTween(mesh, "rotation", {x:rotVal.x, y:rotVal.y, z:rotVal.z+Math.PI/2*dir}, easeTime);
+		else 								 SetTween(mesh, "rotation", {x:rotVal.x, y:rotVal.y+Math.PI/2*dir, z:rotVal.z}, easeTime);
+	}
+
 	setTrans=(str)=>{
 		this.setState({selTrans:str});
 		this.transform.setMode( str );
@@ -256,6 +273,7 @@ export default class Home extends Component {
 
 	setAutoBuild=()=>{
 		var childArr = this.gameModel.children;
+		this.props.callGameStatus(false);
 		for (let i = 0; i < childArr.length; i++) {
 			setTimeout(() => {
 				const oriPos = childArr[i].oriPos, oriRot=childArr[i].oriRot;
@@ -265,6 +283,7 @@ export default class Home extends Component {
 		}
 		setTimeout(() => {
 			this.setEndGame();
+			this.setState({autoBuild:false});
 			this.props.callGameResult("autoBuild", this.totalTime, this.state.gameTime, this.state.gamePro);
 		}, childArr.length * easeTime / 2 + 1000);
 	}
@@ -283,9 +302,11 @@ export default class Home extends Component {
 		if (diffMesh) {
 			const oriPos = diffMesh.oriPos, oriRot=diffMesh.oriRot;
 			this.transform.attach(diffMesh);
+			this.setState({transMesh:diffMesh});
+			this.props.callGameStatus(false);
 			SetTween(diffMesh, "position", {x:oriPos.x, y:oriPos.y, z:oriPos.z}, easeTime);
 			SetTween(diffMesh, "rotation", {x:oriRot.x, y:oriRot.y, z:oriRot.z}, easeTime);
-			setTimeout(() => { this.checkGameStatus(); this.setState({gameAssist:false}); }, easeTime);
+			setTimeout(() => { this.checkGameStatus(); this.setState({gameAssist:false}); this.props.callGameStatus(true); }, easeTime);
 		}
 	}
 
@@ -327,7 +348,49 @@ export default class Home extends Component {
 			object.position.set(info.pos.x, info.pos.y, info.pos.z);
 			object.islandName = info.islandName;
 			this.totalGroup.add(object);
-		});
+			this.addLoadModelNum();
+		}, undefined, ( error )=> { console.error( error ); this.addLoadModelNum(); } );
+	}
+	addLoadModelNum=()=>{
+		this.loadModelNum++;
+		this.props.callAddLoadNum(this.totalModelCount, this.loadModelNum);
+	};
+
+	loadGameModel(info) {
+		new FBXLoader().load(info.file, (object)=>{
+			object.children.forEach(child => {
+				const childPos = child.position, childRot = child.rotation;
+				child.oriPos = {x:childPos.x, y:childPos.y, z:childPos.z};
+				child.oriRot = {x:childRot.x, y:childRot.y, z:childRot.z};
+				// child.geometry = new THREE.Geometry().fromBufferGeometry( child.geometry );
+				child.castShadow = true;
+				child.receiveShadow = true;
+				
+				if 		(child.name.indexOf("Suspenders") > -1) child.material.color.setHex(0xA75A00);
+				else if (child.name.indexOf("Road") > -1) child.material.color.setHex(0x666666);
+				if (child.material.length) {
+					child.material.forEach(mat => {
+						if (mat.name.indexOf("0x") > -1) mat.color.setHex("0x"+mat.name.substring(2));
+					});
+				}
+				else child.material.side = THREE.DoubleSide;
+				if (child.name.indexOf("__") > -1) {
+					const colVal = child.name.split("__")[1];
+					child.material = new THREE.MeshPhongMaterial({color:"#"+colVal});
+				}
+			});
+			var vSize = new THREE.Box3().setFromObject(object).getSize();
+			const scl = info.size/vSize.y;
+			object.scale.set(scl, scl, scl);
+			// object.position.set(info.pos.x, info.pos.y, info.pos.z);
+			object.gameId = info.id;
+			object.gameTime = info.time;
+			object.basicModel = info.basicName;
+			object.areaDis = 8 / scl;
+			object.snapDis = info.snapDis;
+			this.gameGroup.add(object);
+			this.addLoadModelNum();
+		}, undefined, ( error ) =>{ console.error( error ); this.addLoadModelNum();});
 	}
 
 	init() {
@@ -337,17 +400,18 @@ export default class Home extends Component {
 		if (!document.getElementById("container")) return false;
 		document.getElementById("container").appendChild(this.renderer.domElement);
 		this.renderer.setClearColor(backCol, 1);
-		this.renderer.shadowMap.enabled = true;
+		this.renderer.shadowMap.enabled = (this.device === "web")?true:false;
 		this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
 		this.camera = new THREE.PerspectiveCamera(60, this.cWidth / this.cHeight, 1, 500);
 		this.camera.position.set(0, 1.5, 10);
+		if (this.device === "mobile") this.camera.position.set(0, 3, 20);
 		this.scene = new THREE.Scene(); this.scene.fog = new THREE.Fog(backCol, 0, 200);
 		this.totalGroup = new THREE.Group(); this.scene.add(this.totalGroup); this.totalGroup.position.set(0, -5, -70);
 		this.gameGroup = new THREE.Group(); this.scene.add(this.gameGroup); this.gameGroup.visible = false;
 
 		this.controls = new OrbitControls(this.camera, this.renderer.domElement); this.controls.enablePan = false;
-		this.controls.minDistance = 5; this.controls.maxDistance = 25; this.controls.maxPolarAngle = Math.PI/2;
+		this.controls.minDistance = 5; this.controls.maxDistance = 30; this.controls.maxPolarAngle = Math.PI/2;
 
         this.transform = new TransformControls( this.camera, this.renderer.domElement ); this.scene.add(this.transform);
         this.transform.setTranslationSnap(10); this.transform.setRotationSnap( THREE.MathUtils.degToRad( 90 ) );
@@ -358,8 +422,8 @@ export default class Home extends Component {
 		this.mainLight = new THREE.DirectionalLight( 0xFFFFFF, 1.5 ); this.scene.add( this.mainLight );
 		this.mainLight.position.set(-50, 50, 50);
 		this.mainLight.castShadow = true;
-		modelArr.forEach(modelInfo => { this.loadIslandModel(modelInfo, this); });
-		gameInfoArr.forEach(gameInfo => { LoadGameModel(gameInfo, this); });
+		modelArr.forEach(modelInfo => { this.loadIslandModel(modelInfo); });
+		gameInfoArr.forEach(gameInfo => { this.loadGameModel(gameInfo); });
 	}
 
 	animate () {
@@ -374,7 +438,8 @@ export default class Home extends Component {
 	}
 	
 	render() {
-		const {maxStepNum, stepNum, selTrans, gameStatus, gameTime, crashModalId} = this.state;
+		const {maxStepNum, stepNum, selTrans, gameStatus, gameTime, crashModalId, transMesh} = this.state;
+		const rotateClassStr=(transMesh)?"":"disable";
 		return (
 			<div className="home">
 				<div id="container"></div>
@@ -393,14 +458,24 @@ export default class Home extends Component {
 						<div className="process-time">
 							<div className="label">{gameTime}</div>
 						</div>
-						<div className="step">
+						{/* <div className="step">
 							<div className={`step-item ${(stepNum<=0 || stepNum <= maxStepNum - 5)?"disable":""}`} onClick={()=>this.setStep(-1)}>
 								<img src={undoImg}></img>
 							</div>
 							<div className={`step-item ${(stepNum>=maxStepNum)?"disable":""}`} onClick={()=>this.setStep(1)}>
 								<img src={redoImg}></img>
 							</div>
+						</div> */}
+
+						<div className="rotate-wrapper">
+							<div className={`rotate-item ${rotateClassStr}`} onClick={()=>this.setRotate(-1)}>
+								<img className="rotate-img" src={undoImg}></img>
+							</div>
+							<div className={`rotate-item  ${rotateClassStr}`} onClick={()=>this.setRotate(1)}>
+								<img className="rotate-img" src={redoImg}></img>
+							</div>
 						</div>
+
 						<div className="trans-option">
 							<div className={`trans-item ${(selTrans==="translate")?"active":""}`} onClick={()=>this.setTrans("translate")}>
 								<TransMoveIcon></TransMoveIcon>

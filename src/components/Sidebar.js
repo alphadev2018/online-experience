@@ -39,7 +39,7 @@ export default class Sidebar extends Component {
 
 	render() {
 		return (
-			<div className={`side ${(this.state.selMenu !== "")?"active":""}`}>
+			<div className={`side ${(this.state.selMenu !== "" && this.state.selMenu !== "first")?"active":""}`}>
 				<div className="side-bar side-bar-top">
 					{menuHomeArr.map(menuItem =>
 						<div className={`side-item ${(this.state.selMenu === menuItem.value)?"active":""}`} onClick={()=>this.clickItem(menuItem.value)} key={menuItem.value}>

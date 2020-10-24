@@ -14,10 +14,14 @@ import { easeTime } from './components/common';
 export default class App extends Component {
 	constructor(props) {
 		super(props);
-		this.state={menuItem:"first", modalInfo:"first", first:true, selGame:false, gameResult:null, autoBuild:false};
+		this.state={menuItem:"first", modalInfo:"first", first:true, selGame:false, gameResult:null, autoBuild:false, loadPro:0, gameStatus:false};
 	}
 
 	componentDidMount() {
+	}
+
+	callAddLoadNum=(totalNum, loadNum)=>{
+		this.setState({loadPro:Math.round(loadNum * 100 / totalNum)});
 	}
 
 	callMenuItem=(str)=>{
@@ -42,12 +46,14 @@ export default class App extends Component {
 		if (str === "first") {
 			this.setState({menuItem:"home0"});
 		}
-		else if (str.indexOf("game") > -1) this.setState({selGame:str});
+		else if (str.indexOf("game") > -1) {
+			this.setState({selGame:str, gameStatus:false});
+		}
 		this.setState({modalInfo:false});
 	}
 
 	render() {
-		const {selGame,modalInfo, first, menuItem, autoBuild, gameAssist, modalDetailInfo} = this.state;
+		const {selGame,modalInfo, first, menuItem, autoBuild, gameAssist, modalDetailInfo, loadPro, gameStatus} = this.state;
 		return (
 			<div>
 				<Home
@@ -58,11 +64,14 @@ export default class App extends Component {
 					autoBuild={autoBuild}
 					gameAssist={gameAssist}
 					callMenuItem={this.callMenuItem}
+					callGameStatus={(val)=>this.setState({gameStatus:val})}
 					callGameResult={this.callGameResult}
 					callHotSpot={this.callHotSpot}
+					callAddLoadNum={this.callAddLoadNum}
 				></Home>
 				<Header></Header>
 				<Footer
+					gameStatus={gameStatus}
 					game={selGame}
 					callAutoBuild={()=>this.setState({autoBuild:true})}
 					callAssist={()=>this.setState({gameAssist:true}, ()=>this.setState({gameAssist:false}))}
@@ -73,6 +82,7 @@ export default class App extends Component {
 				></Sidebar>
 				{modalInfo &&
 					<OverPan
+						loadPro={loadPro}
 						modalInfo={modalInfo}
 						modalDetailInfo={modalDetailInfo}
 						callClickButton={this.callModalButton}

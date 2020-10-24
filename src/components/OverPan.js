@@ -41,7 +41,7 @@ export default class OverPan extends Component {
 		for (let i = 0; i < 7; i++) {
 			this.leaderBoardArr[i] = {no:i+1, name:"Person_"+i, score:Math.round(Math.random() * 300)};
 		}
-		this.state = {itemArr:[], hide:"hide", modalInfo:props.modalInfo, overPanClass:"", gameRuleNum:0};
+		this.state = {itemArr:[], hide:"hide", modalInfo:props.modalInfo, overPanClass:"", gameRuleNum:0, loadPro:0};
 	}
 
 	componentDidMount() {
@@ -51,6 +51,9 @@ export default class OverPan extends Component {
 	}
 	
 	componentWillReceiveProps(nextProps) {
+		if (this.state.loadPro !== nextProps.loadPro) {
+			this.setState({loadPro:nextProps.loadPro});
+		}
 	}
 
 	clickButton = (str, hide) => {
@@ -70,9 +73,9 @@ export default class OverPan extends Component {
 	}
 
 	render() {
-		const {modalInfo, gameRuleNum} = this.state;
-		const itemLength = this.state.itemArr.length;
+		const {modalInfo, gameRuleNum, loadPro} = this.state;
 		var totalTime, gameTime, level, gamePro, hotStr="";
+		// const loadingClassStr = (loadPro < 100)?"back-loading":"back-enter";
 		if (this.props && this.props.modalDetailInfo) {
 			const detailInfo = this.props.modalDetailInfo;
 			totalTime = detailInfo.totalTime;
@@ -84,9 +87,20 @@ export default class OverPan extends Component {
 		return (
 			<div className={`over-pan ${this.state.hide}`}>
 				{modalInfo === "first" &&
-					<div className={"first-button"} onClick={()=>this.clickButton("first", true)}>
-						<div className="back-yellow"></div>
-						<div className="label">Enter</div>
+					<div className={"first-button"}>
+						{loadPro >= 100 &&
+							<div onClick={()=>this.clickButton("first", true)}>
+								<div className="back-yellow"></div>
+								<div className="label enter-label">Enter</div>
+							</div>
+						}
+						{loadPro < 100 &&
+							<div>
+								<div className="back-loading" style={{top:(100-loadPro)+"%"}}></div>
+								<div className="label loading-label">Loading</div>
+								<div className="label pro-label">{loadPro} %</div>
+							</div>
+						}
 					</div>
 				}
 				{modalInfo === "game" &&

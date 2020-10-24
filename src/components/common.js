@@ -8,7 +8,7 @@ import hotImgACPA from "../assets/images/hot_ACPA.png";
 import hotImgAMERICA from "../assets/images/hot_AMERICA.png";
 
 // const island0 = require("assets/models/island_0.fbx");
-const islandHome0 = require("assets/models/EMEA_custom_test.fbx");// building
+const islandHome0 = require("assets/models/building.fbx");//EMEA_custom_test 
 const islandHome1 = require("assets/models/APAC_custom_test.fbx");
 const islandHome2 = require("assets/models/AMERACAS_custom_test.fbx");
 const islandGame = require("assets/models/island_game.fbx");
@@ -25,7 +25,7 @@ export const hotNameArr = ["EMEA", "AMERICA", "ACPA"];
 
 autoPlay(true);
 
-export const easeTime = 1000, gameReadyTime = 5;
+export const easeTime = 1000, gameReadyTime = 1;
 export const menuHomeArr=[
 	{label:"home0", value:"home0"},
 	{label:"home1", value:"home1"},
@@ -49,7 +49,7 @@ export const gameInfoArr = [
 	{id:"building", file:gameModelBuilding, size:5, time:100, basicName:"", snapDis:100},
 	{id:"bridge", file:gameModelBridge, size:2, time:500, basicName:"Support_0", snapDis:40},
 	{id:"stadium", file:gameModelStadium, size:1.6, time:500, basicName:"Asphalt", snapDis:60}
-]
+];
 
 export function SetTween (obj, attr, info, easeTime) {
 	var tweenData = {};
@@ -116,44 +116,7 @@ export function LoadIslandModel(info, self) {
 		object.position.set(info.pos.x, info.pos.y, info.pos.z);
 		object.islandName = info.islandName;
 		self.totalGroup.add(object);
-	});
-}
-
-export function LoadGameModel(info, self) {
-	new FBXLoader().load(info.file, async function (object){
-		object.children.forEach(child => {
-			const childPos = child.position, childRot = child.rotation;
-			child.oriPos = {x:childPos.x, y:childPos.y, z:childPos.z};
-			child.oriRot = {x:childRot.x, y:childRot.y, z:childRot.z};
-			// child.geometry = new THREE.Geometry().fromBufferGeometry( child.geometry );
-			child.castShadow = true;
-			child.receiveShadow = true;
-			
-			if 		(child.name.indexOf("Suspenders") > -1) child.material.color.setHex(0xA75A00);
-			else if (child.name.indexOf("Road") > -1) child.material.color.setHex(0x666666);
-			if (child.material.length) {
-				child.material.forEach(mat => {
-					if (mat.name.indexOf("0x") > -1) mat.color.setHex("0x"+mat.name.substring(2));
-				});
-			}
-			else child.material.side = THREE.DoubleSide;
-			if (child.name.indexOf("__") > -1) {
-				const colVal = child.name.split("__")[1];
-				child.material = new THREE.MeshPhongMaterial({color:"#"+colVal});
-			}
-			// if (child.name === "Support_0") console.log(child);
-		});
-		var vSize = await new THREE.Box3().setFromObject(object).getSize();
-		const scl = info.size/vSize.y;
-		object.scale.set(scl, scl, scl);
-		// object.position.set(info.pos.x, info.pos.y, info.pos.z);
-		object.gameId = info.id;
-		object.gameTime = info.time;
-		object.basicModel = info.basicName;
-		object.areaDis = 8 / scl;
-		object.snapDis = info.snapDis;
-		self.gameGroup.add(object);
-	});
+	}, undefined, function ( error ) { console.error( error ); });
 }
 
 export function GotoIsland(self, str) {

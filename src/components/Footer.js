@@ -13,7 +13,7 @@ export default class Footer extends Component {
 			{label:"Design Reveal", value:"design"},
 			{label:"Auto complete", value:"auto"},
 		];
-		this.state = {game:false, selButton:null, gameNum:-1};
+		this.state = {game:false, selButton:null, gameNum:-1, gameStatus:false};
 		this.gamePreImg = {gameEasy:gameImgEasy, gameMedium:gameImgMedium, gameDifficult:gameImgDifficult};
 	}
 
@@ -25,9 +25,13 @@ export default class Footer extends Component {
 			this.setState({game:nextProps.game});
 			if (!nextProps.game) this.setState({selButton:null});
 		}
+		if (this.state.gameStatus !== nextProps.gameStatus) {
+			this.setState({gameStatus:nextProps.gameStatus});
+		}
 	}
 	clickItem=(str)=>{
 		if (this.state.selButton) return;
+		if (!this.state.gameStatus) return;
 		this.setState({selButton:str});
 		if (str === "auto") this.props.callAutoBuild();
 		else if (str === "assist") {
@@ -55,12 +59,12 @@ export default class Footer extends Component {
 						</div>
 					</div>
 				}
-				{selButton === "assist" &&
+				{/* {selButton === "assist" &&
 					<div className="image-wrapper assist">
 						<div className="label">Team Assist</div>
 						<img src={this.gamePreImg[game]}></img>
 					</div>
-				}
+				} */}
 				{selButton === "design" &&
 					<div className="image-wrapper design">
 						<div className="label">Design Reveal</div>

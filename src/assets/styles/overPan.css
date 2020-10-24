@@ -60,7 +60,7 @@
     cursor: pointer;
     margin-top: 60vh;
 }
-.over-pan .first-button .back-yellow{
+.over-pan .first-button .back-yellow, .over-pan .first-button .back-loading{
     position: absolute;
     top: 130px;
     left: 0;
@@ -75,13 +75,24 @@
 .over-pan .first-button .label{
     position: absolute;
     width: 100%;    
-    transform: translateY(-50%);
-    top: 50%;
     color: white;
     font-family: calibri_bold;
-    font-size: 50px;
     text-align: center;
 }
+.over-pan .first-button .enter-label{
+    transform: translateY(-50%);
+    top: 50%;
+    font-size: 50px;
+}
+.over-pan .first-button .loading-label{
+    margin-top: 28px;
+    font-size: 34px;
+}
+.over-pan .first-button .pro-label{
+    margin-top: 70px;
+    font-size: 32px;
+}
+
 
 .modal-wrapper{
     /* margin-top: calc(50vh - 200px); */

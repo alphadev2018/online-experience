@@ -27,23 +27,23 @@
   margin-top: 10px;
 }
 
-.home .step{
+.home .rotate-wrapper{
   position: absolute;
-  bottom: 10px;
-  left: calc(50% - 100px);
-  display: none;
+  bottom: 30px;
+  left: calc(50% - 60px);
+  /* display: none; */
 }
-.home .step .step-item{
+.home .rotate-wrapper .rotate-item{
   float: left;
   width: 70px;
-  margin: 50px;
+  margin: 30px;
   cursor: pointer;
 }
-.home .step .step-item.disable{
+.home .rotate-wrapper .rotate-item.disable{
   opacity: 0.2;
   cursor: default;
 }
-.home .step .step-item img{
+.home .rotate-wrapper .rotate-item img{
   width: 100%;
 }
 
@@ -51,6 +51,7 @@
   position: absolute;
   bottom: 60px;
   left: calc(50% - 60px);
+  display: none;
 }
 .home .trans-option .trans-item{
   width: 50px;
