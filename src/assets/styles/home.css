@@ -102,11 +102,13 @@
 /* header */
 .header{
   position: absolute;
-  top: 20px;
+  top: 50px;
   width: 100%;
   color: white;
-  padding: 0 20px;
+  padding: 0 30px;
   font-size: 32px;
+  display: flex;
+  justify-content: space-between;
 }
 
 

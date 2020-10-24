@@ -10,6 +10,17 @@
 	top: 50%;
 }
 
+@media (max-width: 578px) {
+	.side {
+		display: block;
+	}
+}
+@media (min-width: 578px) {  
+	.side {
+		display: block;
+	}
+}
+
 .side.active{
 	right: 40px;
 }
