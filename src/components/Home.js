@@ -418,8 +418,8 @@ export default class Home extends Component {
         this.transform.setSize(0.8);
 		this.transform.addEventListener( 'dragging-changed', function ( event ) { self.controls.enabled = ! event.value; } );
 
-		const ambientLight = new THREE.AmbientLight( 0xFFFFFF, 0.3 ); this.scene.add( ambientLight );
-		this.mainLight = new THREE.DirectionalLight( 0xFFFFFF, 1.5 ); this.scene.add( this.mainLight );
+		const ambientLight = new THREE.AmbientLight( 0xFFFFFF, 0.2 ); this.scene.add( ambientLight );
+		this.mainLight = new THREE.DirectionalLight( 0xF4F5F7, 1.3 ); this.scene.add( this.mainLight );
 		this.mainLight.position.set(-50, 50, 50);
 		this.mainLight.castShadow = true;
 		modelArr.forEach(modelInfo => { this.loadIslandModel(modelInfo); });
@@ -465,10 +465,10 @@ export default class Home extends Component {
 						</div> */}
 
 						<div className="rotate-wrapper">
-							<div className={`rotate-item ${rotateClassStr}`} onClick={()=>this.setRotate(-1)}>
+							<div className={`rotate-item ${rotateClassStr}`} onClick={()=>this.setRotate(1)}>
 								<img className="rotate-img" src={undoImg}></img>
 							</div>
-							<div className={`rotate-item  ${rotateClassStr}`} onClick={()=>this.setRotate(1)}>
+							<div className={`rotate-item  ${rotateClassStr}`} onClick={()=>this.setRotate(-1)}>
 								<img className="rotate-img" src={redoImg}></img>
 							</div>
 						</div>
