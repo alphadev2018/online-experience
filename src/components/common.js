@@ -25,7 +25,7 @@ export const hotNameArr = ["EMEA", "AMERICA", "ACPA"];
 
 autoPlay(true);
 
-export const easeTime = 1000, gameReadyTime = 5;
+export const easeTime = 1000, gameReadyTime = 1;
 export const menuHomeArr=[
 	{label:"home0", value:"home0"},
 	{label:"home1", value:"home1"},
@@ -230,7 +230,7 @@ export function GetStepInfo(newArr, oldArr) {
 	return (checkDiff === true)?stepInfo:false;
 }
 
-export function CheckClash(meshArr, selMesh) {
+export function CheckClash(meshArr, selMesh, level) {
 	var clash = false, checkPosRot = true;
 	const selMeshPos = selMesh.position, selMeshRot = selMesh.rotation; //, selMeshArea = selMesh.posArea;
 	["x", "y", "z"].forEach(axis => {
@@ -238,6 +238,20 @@ export function CheckClash(meshArr, selMesh) {
 		if (selMeshRot[axis] != selMesh.oriRot[axis]) checkPosRot = false;
 	});
 	if (checkPosRot === true) return false;
+
+	if (level === "gameMedium") {
+		var keyArr = [{name:"Road", y:120}, {name:"Support", y:0}, {name:"Suspenders", y:120}], posZArr=[-480, 0, 480];
+		const {x, y, z} = selMesh.position;
+		var subCheckVal = true;
+		posZArr.forEach(posZ => {
+			keyArr.forEach(key => {
+				if (selMesh.name.indexOf(key.name) > -1) {
+					if (Math.round(x) === 0 && Math.round(y) === key.y && Math.round(z) === posZ) subCheckVal = false;
+				}
+			});
+		});
+		if (subCheckVal === false) return false;
+	}
 
 	// var originPoint = selMesh.position.clone();
 	// var overMeshArr = [];

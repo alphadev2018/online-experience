@@ -48,6 +48,24 @@
   width: 100%;
 }
 
+.home .set-place{
+  position: absolute;
+  bottom: 72px;
+  right: calc(50% - 290px);
+  padding: 10px 20px;
+  border-radius: 5px;
+  border: 3px solid;
+  background-color: rgb(3, 79, 114);
+  color: white;
+  font-size: 24px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.home .set-place.disable{
+  cursor: default;
+  opacity: 0.5;
+}
+
 .home .trans-option{
   position: absolute;
   bottom: 60px;

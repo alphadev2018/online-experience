@@ -24,7 +24,7 @@ export default class Home extends Component {
 		this.meshArr = []; this.selLandName = ""; this.mouseStatus = "";
 		this.cloudArr = []; this.windBaseArr = []; this.ballonArr = []; this.tonArr = []; this.roundPlayArr = [];
 		this.device = ( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) )?"mobile":"web";
-		this.state = { overModal:true, gameStatus:null, gameTime:-1, autoBuild:false, selHot:"", stepNum:-1, maxStepNum:-1, selTrans:"translate", crashModalId:false, transMesh:null };
+		this.state = { overModal:true, gameStatus:null, gameTime:-1, autoBuild:false, selHot:"", stepNum:-1, maxStepNum:-1, selTrans:"translate", crashModalId:false, transMesh:null, transChange:false };
 		this.gameMeshArr = []; this.gameIslandPlane = null; this.gameIslandLine = null;
 		this.hotMeshArr = []; this.hotOverArr = []; this.stepArr = [];
 		this.totalModelCount = modelArr.length + gameInfoArr.length; this.loadModelNum = 0;
@@ -152,13 +152,14 @@ export default class Home extends Component {
 
 	mouseUp = (event) => {
 		if (this.state.gameStatus !== "process") return;
-		if (this.transform.object && event.target.className === "rotate-img") return;
-		if (this.mouseStatus === "down") {
+		if (this.transform.object && event.target.className.indexOf("mesh-control") > -1) return;
+		if (this.mouseStatus === "down" && this.state.transMesh === null) {
 			const intersect = GetRayCastObject(this, event.clientX, event.clientY, this.gameMeshArr);
 			if (intersect) { this.transform.attach(intersect.object); this.setState({transMesh:intersect.object});}
-			else 			{ this.transform.detach(); this.setState({transMesh:null});}
 		}
-		else { this.checkGameStatus(); }
+		else {
+			this.checkGameStatus();
+		}
 		this.mouseStatus = "";
 	}
 
@@ -171,34 +172,31 @@ export default class Home extends Component {
 		else {
 			const stepInfo = GetStepInfo(this.gameMeshArr, this.stepArr[this.state.stepNum]);
 			if (stepInfo) {
+				if (this.state.transMesh) this.setState({transChange:true});
 				const newStepNum = this.state.stepNum + 1;
 				this.stepArr[newStepNum] = stepInfo;
 				this.setState({stepNum:newStepNum, maxStepNum:newStepNum});
-				if (!this.transform.object) return;
-				const checkClashStatus = CheckClash(this.gameMeshArr, this.transform.object);
-				this.setState({crashModalId:checkClashStatus});
-				setTimeout(() => { this.setState({crashModalId:false}); }, 1500);
 			}
 		}
 	}
 
-	setStep=(delta)=>{
-		const {stepNum, maxStepNum} = this.state;
-		if ((stepNum <= 0 || stepNum <= maxStepNum - 5) && delta === -1) return;
-		if (stepNum >= maxStepNum && delta === 1) return;
-		const newStepNum = stepNum + delta;
-		const stepInfo = this.stepArr[newStepNum];
-		this.stepChange = true;
-		this.transform.detach();
-		this.setState({transMesh:null});
-		this.gameMeshArr.forEach((mesh, idx) => {
-			const posInfo = stepInfo[idx].pos;
-			const rotInfo = stepInfo[idx].rot;
-			SetTween(mesh, "position", {x:posInfo.x, y:posInfo.y, z:posInfo.z}, easeTime);
-			SetTween(mesh, "rotation", {x:rotInfo.x, y:rotInfo.y, z:rotInfo.z}, easeTime, this.gameLevel);
-		});
-		setTimeout(() => { this.setState({stepNum:newStepNum}); this.stepChange = false; }, easeTime);
-	}
+	// setStep=(delta)=>{
+	// 	const {stepNum, maxStepNum} = this.state;
+	// 	if ((stepNum <= 0 || stepNum <= maxStepNum - 5) && delta === -1) return;
+	// 	if (stepNum >= maxStepNum && delta === 1) return;
+	// 	const newStepNum = stepNum + delta;
+	// 	const stepInfo = this.stepArr[newStepNum];
+	// 	this.stepChange = true;
+	// 	this.transform.detach();
+	// 	this.setState({transMesh:null});
+	// 	this.gameMeshArr.forEach((mesh, idx) => {
+	// 		const posInfo = stepInfo[idx].pos;
+	// 		const rotInfo = stepInfo[idx].rot;
+	// 		SetTween(mesh, "position", {x:posInfo.x, y:posInfo.y, z:posInfo.z}, easeTime);
+	// 		SetTween(mesh, "rotation", {x:rotInfo.x, y:rotInfo.y, z:rotInfo.z}, easeTime, this.gameLevel);
+	// 	});
+	// 	setTimeout(() => { this.setState({stepNum:newStepNum}); this.stepChange = false; }, easeTime);
+	// }
 
 	setHotMeshCol=(arr, str, overCol, noCol)=>{
 		arr.forEach(mesh => {
@@ -208,7 +206,7 @@ export default class Home extends Component {
 	}
 
 	setEndGame=()=>{
-		this.setState({gameStatus:null, transMesh:null});
+		this.setState({gameStatus:null, transMesh:null, transChange:false});
 		this.gameGroup.visible = false;
 		this.totalGroup.children.forEach(island => { island.visible = true; });
 		this.transform.detach();
@@ -263,6 +261,7 @@ export default class Home extends Component {
 		const rotVal = mesh.rotation;
 		if (this.gameLevel === "gameMedium") SetTween(mesh, "rotation", {x:rotVal.x, y:rotVal.y, z:rotVal.z+Math.PI/2*dir}, easeTime);
 		else 								 SetTween(mesh, "rotation", {x:rotVal.x, y:rotVal.y+Math.PI/2*dir, z:rotVal.z}, easeTime);
+		this.setState({transChange:true});
 	}
 
 	setTrans=(str)=>{
@@ -288,6 +287,17 @@ export default class Home extends Component {
 		}, childArr.length * easeTime / 2 + 1000);
 	}
 
+	setPlace=()=>{
+		if (!this.transform.object) return;
+		this.checkGameStatus();
+		const checkClashStatus = CheckClash(this.gameMeshArr, this.transform.object, this.gameLevel);
+		if (checkClashStatus) {
+			this.setState({crashModalId:checkClashStatus});
+			setTimeout(() => { this.setState({crashModalId:false}); }, 1500);
+		}
+		this.transform.detach(); this.setState({transMesh:null, transChange:false});
+	}
+
 	setAssist=()=>{
 		var diffMesh;
 		this.gameMeshArr.forEach(mesh => {
@@ -302,11 +312,15 @@ export default class Home extends Component {
 		if (diffMesh) {
 			const oriPos = diffMesh.oriPos, oriRot=diffMesh.oriRot;
 			this.transform.attach(diffMesh);
-			this.setState({transMesh:diffMesh});
 			this.props.callGameStatus(false);
 			SetTween(diffMesh, "position", {x:oriPos.x, y:oriPos.y, z:oriPos.z}, easeTime);
 			SetTween(diffMesh, "rotation", {x:oriRot.x, y:oriRot.y, z:oriRot.z}, easeTime);
-			setTimeout(() => { this.checkGameStatus(); this.setState({gameAssist:false}); this.props.callGameStatus(true); }, easeTime);
+			setTimeout(() => {
+				this.transform.detach();
+				this.checkGameStatus();
+				this.setState({gameAssist:false, transMesh:null, transChange:false});
+				this.props.callGameStatus(true);
+			}, easeTime);
 		}
 	}
 
@@ -441,8 +455,8 @@ export default class Home extends Component {
 	}
 	
 	render() {
-		const {maxStepNum, stepNum, selTrans, gameStatus, gameTime, crashModalId, transMesh} = this.state;
-		const rotateClassStr=(transMesh)?"":"disable";
+		const {maxStepNum, stepNum, selTrans, gameStatus, gameTime, crashModalId, transMesh, transChange} = this.state;
+		const rotateClassStr=(transMesh)?"":"disable", placeClassStr=(transChange)?"":"disable";
 		return (
 			<div className="home">
 				<div id="container"></div>
@@ -469,10 +483,10 @@ export default class Home extends Component {
 
 						<div className="rotate-wrapper">
 							<div className={`rotate-item ${rotateClassStr}`} onClick={()=>this.setRotate(-1)}>
-								<img className="rotate-img" src={undoImg}></img>
+								<img className="mesh-control rotate-img" src={undoImg}></img>
 							</div>
 							<div className={`rotate-item  ${rotateClassStr}`} onClick={()=>this.setRotate(1)}>
-								<img className="rotate-img" src={redoImg}></img>
+								<img className="mesh-control rotate-img" src={redoImg}></img>
 							</div>
 						</div>
 
@@ -490,6 +504,7 @@ export default class Home extends Component {
 								<div className="clash-des">{modalInfo[crashModalId].description}</div>
 							</div>
 						}
+						<div className={"mesh-control set-place "+placeClassStr} onClick={this.setPlace}>Place</div>
 					</div>
 				}
 				<div id="test_hotspot"></div>
