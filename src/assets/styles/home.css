@@ -30,7 +30,8 @@
 .home .rotate-wrapper{
   position: absolute;
   bottom: 30px;
-  left: calc(50% - 60px);
+  transform: translateX(-50%);
+  left: 50%;
   /* display: none; */
 }
 .home .rotate-wrapper .rotate-item{
@@ -128,4 +129,37 @@
     height: 50px;
     background: red;
     position: absolute;
+}
+
+
+
+.game-ready{
+  position: absolute;
+  bottom: 100px;
+  height: 100px;
+  transform: translateX(-50%);
+  left: 50%;
+}
+.game-ready .title{
+  /* margin-bottom: 20px; */
+  margin-top: 10px;
+  font-size: 60px;
+  font-weight: 400;
+}
+.game-ready .start-time{
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: 50%;
+  left: 50%;
+}
+.game-ready .start-time .game-ready-label{
+  /* margin-top: 17px; */
+  text-align: center;
+  font-size: 120px;
+  font-weight: 700;
+  color: white;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  top: 50%;
+  left: 50%;
 }

@@ -444,12 +444,9 @@ export default class Home extends Component {
 			<div className="home">
 				<div id="container"></div>
 				{gameStatus === "start" &&
-					<div className="over-pan">
-						<div className="modal-wrapper game-ready">
-							<div className="title">Get ready ...</div>
-							<div className="start-time">
-								<div className="game-ready-label">{gameTime - this.totalTime}</div>
-							</div>
+					<div className="game-ready">
+						<div className="start-time">
+							<div className="game-ready-label">{gameTime - this.totalTime}</div>
 						</div>
 					</div>
 				}

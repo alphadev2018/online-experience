@@ -43,12 +43,18 @@ body {
     width: 220px;
     height: 60px;
   }
+  .menu-toggle {
+    display: block;
+  }
 }
 @media (min-width: 578px) {  
   .header .logo-icon {
     background-image: url(assets/images/logo/logo.png);
     width: 525px;
     height: 49px;
+  }
+  .menu-toggle {
+    display: none;
   }
 }
 .header .logo-label{

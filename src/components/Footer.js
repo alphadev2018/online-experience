@@ -51,9 +51,9 @@ export default class Footer extends Component {
 					<div className="life-lines">
 						<div className="title">Lifelines</div>
 						<div className="life-btn-wrapper">
-							{this.footerBtnArr.map(item =>
+							{this.footerBtnArr.map((item, index) =>
 								<div className={`life-item `} onClick={()=>this.clickItem(item.value)} key={item.value}>
-									<label>{item.label}</label>
+									<label style={{lineHeight: index ? 'normal' : '0.9'}}>{item.label}</label>
 								</div>
 							)}
 						</div>
