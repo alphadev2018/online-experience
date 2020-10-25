@@ -17,7 +17,7 @@ export default class Header extends Component {
 			<div className="header">
 				<div className="logo-icon" />
 				<a href="#" className="menu-toggle">
-					<i class="fa fa-bars" aria-hidden="true"></i>
+					<i className="fa fa-bars" aria-hidden="true"></i>
 				</a>
 			</div>
 		);
