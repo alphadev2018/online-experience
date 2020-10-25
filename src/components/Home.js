@@ -419,9 +419,10 @@ export default class Home extends Component {
 		this.transform.addEventListener( 'dragging-changed', function ( event ) { self.controls.enabled = ! event.value; } );
 
 		const ambientLight = new THREE.AmbientLight( 0xFFFFFF, 0.3 ); this.scene.add( ambientLight );
-		this.mainLight = new THREE.DirectionalLight( 0xFFFFFF, 1.5 ); this.scene.add( this.mainLight );
-		this.mainLight.position.set(-50, 50, 50);
-		this.mainLight.castShadow = true;
+		this.mainLight = new THREE.DirectionalLight( 0xFFFFFF, 1.0 ); this.scene.add( this.mainLight );
+		this.mainLight.position.set(-50, 50, 50); this.mainLight.castShadow = true;
+
+		this.subLight = new THREE.DirectionalLight( 0xFFFFFF, 0.5 ); this.scene.add( this.subLight );
 		modelArr.forEach(modelInfo => { this.loadIslandModel(modelInfo); });
 		gameInfoArr.forEach(gameInfo => { this.loadGameModel(gameInfo); });
 	}
@@ -434,6 +435,8 @@ export default class Home extends Component {
 		AnimateReturn(this.cloudArr, "position", "x", 0.05);
 		AnimateReturn(this.tonArr, "rotation", "y", 0.01);
 		this.camera.lookAt( 0, 0, 0 );
+		const camPos = this.camera.position;
+		this.subLight.position.set(camPos.x, camPos.y, camPos.z);
 		this.renderer.render(this.scene, this.camera);
 	}
 	
