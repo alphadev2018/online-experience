@@ -153,7 +153,7 @@ export default class Home extends Component {
 	mouseUp = (event) => {
 		if (this.state.gameStatus !== "process") return;
 		if (this.transform.object && event.target.className.indexOf("mesh-control") > -1) return;
-		if (this.mouseStatus === "down" && this.state.transMesh === null) {
+		if (this.mouseStatus === "down" && this.state.transChange === false) {
 			const intersect = GetRayCastObject(this, event.clientX, event.clientY, this.gameMeshArr);
 			if (intersect) { this.transform.attach(intersect.object); this.setState({transMesh:intersect.object});}
 		}
