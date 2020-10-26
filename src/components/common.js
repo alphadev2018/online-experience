@@ -25,7 +25,7 @@ export const hotNameArr = ["EMEA", "AMERICA", "ACPA"];
 
 autoPlay(true);
 
-export const easeTime = 1000, gameReadyTime = 5;
+export const easeTime = 1000, gameReadyTime = 1;
 export const menuHomeArr=[
 	{label:"home0", value:"home0"},
 	{label:"home1", value:"home1"},
@@ -46,7 +46,7 @@ export const modelArr = [
 	// {file:island3,     size:15, pos:{x:  0, y:0, z: 35}, islandName:menuArr[1].value},
 ];
 export const gameInfoArr = [
-	{id:"building", file:gameModelBuilding, size:5, time:100, basicName:"Basic", snapDis:4.6},
+	{id:"building", file:gameModelBuilding, size:5, time:500, basicName:"Basic", snapDis:4.6},
 	{id:"bridge", file:gameModelBridge, size:2, time:500, basicName:"Support_0", snapDis:40},
 	{id:"stadium", file:gameModelStadium, size:1.6, time:500, basicName:"Asphalt", snapDis:60}
 ];
@@ -57,7 +57,8 @@ export function SetTween (obj, attr, info, easeTime) {
    	// .repeat(Infinity)  .yoyo(true)
 	const easeType = Easing.Cubic.InOut; //, Easing.Quadratic.Out
 	if (attr === "rotation") {
-		tweenData = {'x':info.x, 'y':info.y, 'z':info.z };
+		if 		(info.axis === "y") tweenData = {"y":info.rot};
+		else if (info.axis === "z") tweenData = {"z":info.rot};
 		new Tween(obj.rotation).to( tweenData , easeTime ).easing(easeType).start();
 	}
 	else {
@@ -179,16 +180,36 @@ export function CheckGameModel(children, level) {
 		});
 		remainCount--;
 	}
-	else {
+	else if (level === "gameEasy") {
 		children.forEach(item => {
-			const oriPos = item.oriPos, oriRot = item.oriRot, curPos = item.position, curRot = item.rotation;
+			const oriPos = item.oriPos, oriRot = item.oriRot, curPos = item.position, curRot = item.rotation.y;
 			var subCheckVal = true;
 			["x", "y", "z"].forEach(axis => {
-				if (Math.round(oriPos[axis]) !== Math.round(curPos[axis]) ||
-					Math.round(oriRot[axis] * 100) !== Math.round(curRot[axis] * 100) )
-					subCheckVal = false;
+				if (CheckRoundVal(oriPos[axis], curPos[axis]) === false) subCheckVal = false;
 			});
+			if (CheckRoundVal(oriRot, curRot) === false) subCheckVal = false;
 			if (subCheckVal === false) { remainCount++; }
+		});
+	}
+	else if (level === "gameDifficult") {
+		children.forEach(item => {
+			const oriPos = item.oriPos, oriRot = item.oriRot, curPos = item.position, curRot = item.rotation.y;
+			if (item.name.indexOf("projector") > -1) {
+				var lightCheck = false;
+				lightArr.forEach(lightItem => {
+					if (curPos.x === lightItem.posX && curPos.z === lightItem.posZ && CheckRoundVal(lightItem.rot, curRot) === true)
+						lightCheck = true;
+				});
+				if (lightCheck === false) remainCount++;
+			}
+			else {
+				var subCheckVal = true;
+				["x", "y", "z"].forEach(axis => {
+					if (CheckRoundVal(oriPos[axis], curPos[axis]) === false) subCheckVal = false;
+				});
+				if (CheckRoundVal(oriRot, curRot) === false) subCheckVal = false;
+				if (subCheckVal === false) { remainCount++; }
+			}
 		});
 	}
 	return 100 - Math.round(remainCount / children.length * 100);
@@ -230,16 +251,27 @@ export function GetStepInfo(newArr, oldArr) {
 	return (checkDiff === true)?stepInfo:false;
 }
 
-export function CheckClash(meshArr, selMesh, level) {
-	var clash = false, checkPosRot = true;
-	const selMeshPos = selMesh.position, selMeshRot = selMesh.rotation; //, selMeshArea = selMesh.posArea;
+export function CheckClash(meshArr, selMesh, level, rotAxis) {
+	const roundDelta = (level === "gameEasy")?10:1;
 	["x", "y", "z"].forEach(axis => {
-		if (selMeshPos[axis] != selMesh.oriPos[axis]) checkPosRot = false;
-		if (selMeshRot[axis] != selMesh.oriRot[axis]) checkPosRot = false;
+		selMesh.position[axis] = Math.round(selMesh.position[axis] * roundDelta) / roundDelta;
 	});
+
+	var clash = false, checkPosRot = true;
+	const selMeshPos = selMesh.position;
+	["x", "y", "z"].forEach(axis => {
+		if (selMeshPos[axis] !== selMesh.oriPos[axis]) checkPosRot = false;
+	});
+	// console.log(selMeshPos, selMesh.oriPos);
+	if (CheckRoundVal(selMesh.rotation[rotAxis], selMesh.oriRot) === false) checkPosRot = false;
+	// console.log(checkPosRot);
+	// console.log(selMesh.rotation[rotAxis], selMesh.oriRot);
 	if (checkPosRot === true) return false;
 
-	if (level === "gameMedium") {
+	if (level === "gameEasy") {
+
+	}
+	else if (level === "gameMedium") {
 		var keyArr = [{name:"Road", y:120}, {name:"Support", y:0}, {name:"Suspenders", y:120}], posZArr=[-480, 0, 480];
 		const {x, y, z} = selMesh.position;
 		var subCheckVal = true;
@@ -251,6 +283,17 @@ export function CheckClash(meshArr, selMesh, level) {
 			});
 		});
 		if (subCheckVal === false) return false;
+	}
+	else if (level === "gameDifficult") {
+		if (selMesh.name.indexOf("projector") > -1) {
+			const curPos = selMesh.position, curRot = selMesh.rotation.y;
+			var lightCheck = false;
+			lightArr.forEach(lightItem => {
+				if (curPos.x === lightItem.posX && curPos.z === lightItem.posZ && CheckRoundVal(lightItem.rot, curRot) === true)
+					lightCheck = true;
+			});
+			if (lightCheck === true) return false;
+		}
 	}
 
 	// var originPoint = selMesh.position.clone();
@@ -313,3 +356,19 @@ function GetMeshArea(mesh) {
 	});
 	return vPos;
 }
+
+export function CheckRoundVal(val0, val1) {
+	// if (val1 === undefined || val1 === null) {
+	// 	return Math.round(val0 * 10) / 10;
+	// }
+	// else {
+		return (Math.round(val0 * 10) / 10 === Math.round(val1 * 10) / 10)?true:false;
+	// }
+}
+
+const lightArr = [
+	{posX:-240, posZ: 240, rot:-0.25 * Math.PI},
+	{posX: 240, posZ: 240, rot:-0.25 * Math.PI},
+	{posX: 240, posZ:-240, rot: 0.25 * Math.PI},
+	{posX:-240, posZ:-240, rot: 0.25 * Math.PI},
+]
