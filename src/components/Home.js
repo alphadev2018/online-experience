@@ -5,7 +5,7 @@ import {FBXLoader} from "three/examples/jsm/loaders/FBXLoader";
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
 import {TransformControls} from 'three/examples/jsm/controls/TransformControls';
 
-import {modelArr, gameInfoArr, easeTime, gameReadyTime, SetTween, AnimateReturn, AnimateRotate, GotoIsland, GetRayCastObject, CheckGameModel, hotNameArr, GetStepInfo, CheckClash, modalInfo} from "./common";
+import {modelArr, gameInfoArr, easeTime, gameReadyTime, SetTween, AnimateReturn, AnimateRotate, GotoIsland, GetRayCastObject, CheckGameModel, hotNameArr, GetStepInfo, CheckClash, modalInfo, CheckRoundVal} from "./common";
 import '../assets/styles/home.css';
 import '../assets/styles/overPan.css';
 
@@ -68,16 +68,16 @@ export default class Home extends Component {
 				else  child.material = new THREE.LineBasicMaterial({color:transRotCol, depthTest:false});
 			});
 
-			this.gameLevel = nextProps.game;
+			this.gameLevel = nextProps.game; 
 			const gameModelId = {gameEasy:"building", gameMedium:"bridge", gameDifficult:"stadium"};
 			this.gameGroup.children.forEach((gameModel, idx) => {
 				if (gameModelId[nextProps.game] === gameModel.gameId) {
-					this.gameModel = gameModel;
+					this.gameModel = gameModel; this.rotAxis = gameModel.rotAxis;
 					this.totalTime = gameModel.gameTime;
 					gameModel.visible = true;
 					gameModel.children.forEach(child => {
 						child.position.set(child.oriPos.x, child.oriPos.y, child.oriPos.z);
-						child.rotation.set(child.oriRot.x, child.oriRot.y, child.oriRot.z);
+						child.rotation[this.rotAxis] = child.oriRot;
 					});
 				}
 				else gameModel.visible = false;
@@ -239,14 +239,11 @@ export default class Home extends Component {
 		const dis = this.gameModel.areaDis, snapDis = this.gameModel.snapDis, dAngle = Math.PI * 2/this.gameMeshArr.length, rIdx = Math.round(Math.random() * 6);
 		this.transform.setTranslationSnap(snapDis);
 		this.gameMeshArr.forEach((mesh, idx) => {
-			// const posX = Math.round(Math.random() * dis/snapDis) * snapDis - dis/2;
-			// const posZ = Math.round(Math.random() * dis/snapDis) * snapDis - dis/2;
 			const posX = Math.sin(dAngle * (idx+rIdx)) * dis/2;
 			const posZ = Math.cos(dAngle * (idx+rIdx)) * dis/2;
-			const rotY = mesh.oriRot.y + Math.round(Math.random() * 2) * Math.PI/2;
+			const rotY = Math.round(Math.random() * 2) * Math.PI/2;
 			SetTween(mesh, "position", {x:posX, y:0, z:posZ}, easeTime);
-			if (this.gameLevel === "gameMedium") SetTween(mesh, "rotation", {x:mesh.oriRot.x, y:mesh.oriRot.y, z:rotY}, easeTime);
-			else 								 SetTween(mesh, "rotation", {x:mesh.oriRot.x, y:rotY, z:mesh.oriRot.z}, easeTime);
+			SetTween(mesh, "rotation", {axis:this.rotAxis, rot:mesh.oriRot + rotY}, easeTime);
 		});
 		setTimeout(() => {
 			const stepInfo = GetStepInfo(this.gameMeshArr, []);
@@ -258,16 +255,15 @@ export default class Home extends Component {
 	setRotate=(dir)=>{
 		var mesh = this.transform.object;
 		if (!mesh) return;
-		const rotVal = mesh.rotation;
-		if (this.gameLevel === "gameMedium") SetTween(mesh, "rotation", {x:rotVal.x, y:rotVal.y, z:rotVal.z+Math.PI/2*dir}, easeTime);
-		else 								 SetTween(mesh, "rotation", {x:rotVal.x, y:rotVal.y+Math.PI/2*dir, z:rotVal.z}, easeTime);
+		SetTween(mesh, "rotation", {axis:this.rotAxis, rot:mesh.rotation[this.rotAxis] + Math.PI/2*dir}, easeTime);
 		setTimeout(() => {
-			const {rAxis, rRange} = mesh;
+			const {rRange} = mesh;
 			// while (mesh.rotation[rAxis] >= rRange || mesh.rotation[rAxis] < -rRange) {
-				if (mesh.rotation[rAxis] >= rRange) mesh.rotation[rAxis] -= rRange ;
-				if (mesh.rotation[rAxis] < -rRange) mesh.rotation[rAxis] += rRange;
+				if (mesh.rotation[this.rotAxis] >= rRange) mesh.rotation[this.rotAxis] -= rRange * 2;
+				if (mesh.rotation[this.rotAxis] < -rRange) mesh.rotation[this.rotAxis] += rRange * 2;
+				console.log(mesh.rotation[this.rotAxis]);
 			// }
-		}, easeTime);
+		}, easeTime + 10);
 		this.setState({transChange:true});
 	}
 
@@ -284,7 +280,7 @@ export default class Home extends Component {
 			setTimeout(() => {
 				const oriPos = childArr[i].oriPos, oriRot=childArr[i].oriRot;
 				SetTween(childArr[i], "position", {x:oriPos.x, y:oriPos.y, z:oriPos.z}, easeTime);
-				SetTween(childArr[i], "rotation", {x:oriRot.x, y:oriRot.y, z:oriRot.z}, easeTime);
+				SetTween(childArr[i], "rotation", {axis:this.rotAxis, rot:childArr[i].oriRot}, easeTime);
 			}, i * easeTime / 2);
 		}
 		setTimeout(() => {
@@ -297,7 +293,7 @@ export default class Home extends Component {
 	setPlace=()=>{
 		if (!this.transform.object) return;
 		this.checkGameStatus();
-		const checkClashStatus = CheckClash(this.gameMeshArr, this.transform.object, this.gameLevel);
+		const checkClashStatus = CheckClash(this.gameMeshArr, this.transform.object, this.gameLevel, this.rotAxis);
 		if (checkClashStatus) {
 			this.setState({crashModalId:checkClashStatus});
 			setTimeout(() => { this.setState({crashModalId:false}); }, 1500);
@@ -309,25 +305,28 @@ export default class Home extends Component {
 		var diffMesh;
 		this.gameMeshArr.forEach(mesh => {
 			if (diffMesh) return;
-			var pos = mesh.position, rot = mesh.rotation, checkDiff = false;
+			var pos = mesh.position;
 			["x", "y", "z"].forEach(axis => {
-				if (Math.round(pos[axis]) !== Math.round(mesh.oriPos[axis]) ||
-					Math.round(rot[axis] * 100) !== Math.round(mesh.oriRot[axis] * 100))
-					diffMesh = mesh;
+				if (CheckRoundVal(mesh.oriPos[axis], pos[axis]) === false) diffMesh = mesh;
 			});
+			if (CheckRoundVal(mesh.oriRot, mesh.rotation[this.rotAxis])  === false) {
+				console.log(mesh.rotation);
+				console.log(mesh.oriRot);
+				diffMesh = mesh;
+			}
 		});
 		if (diffMesh) {
 			const oriPos = diffMesh.oriPos, oriRot=diffMesh.oriRot;
 			this.transform.attach(diffMesh);
 			this.props.callGameStatus(false);
 			SetTween(diffMesh, "position", {x:oriPos.x, y:oriPos.y, z:oriPos.z}, easeTime);
-			SetTween(diffMesh, "rotation", {x:oriRot.x, y:oriRot.y, z:oriRot.z}, easeTime);
+			SetTween(diffMesh, "rotation", {axis:this.rotAxis, rot:diffMesh.oriRot}, easeTime);
 			setTimeout(() => {
 				this.transform.detach();
 				this.checkGameStatus();
 				this.setState({gameAssist:false, transMesh:null, transChange:false});
 				this.props.callGameStatus(true);
-			}, easeTime);
+			}, easeTime + 10);
 		}
 	}
 
@@ -379,21 +378,37 @@ export default class Home extends Component {
 
 	loadGameModel(info) {
 		new FBXLoader().load(info.file, (object)=>{
+			const roundDelta = (info.id === "building")?10:1;
+			switch (info.id) {
+				case "building":object.rotAxis = "y"; break;
+				case "bridge":	object.rotAxis = "z"; break;
+				case "stadium":	object.rotAxis = "y"; break;
+				default: 		object.rotAxis = "y";  break;
+			}
 			object.children.forEach(child => {
+				["x", "y", "z"].forEach(axis => {
+					child.position[axis] = Math.round(child.position[axis] * roundDelta) / roundDelta;
+				});
 				if (info.id === "building") {
-					child.rAxis = "y"; child.rRange = Math.PI / 2;
+					child.rRange = Math.PI / 2;
 					if (child.name !== "Basic") child.rotation.y = Math.PI/-6;
 				}
 				else if (info.id === "bridge") {
-					child.rAxis = "z"; child.rRange = Math.PI / 2; child.rotation.z = 0;
+					child.rRange = Math.PI / 2; child.rotation.z = 0;
 				}
 				else if (info.id === "stadium") {
-					child.rAxis = "y"; child.rRange = Math.PI / 2;
-					child.rotation.y = 0;
+					child.rRange = Math.PI / 2;
+					if 		(child.name === "display") {child.rotation.y = Math.PI / -2; child.rRange = Math.PI;}
+					else if (child.name === "projector") {child.rotation.y = Math.PI / -4; child.rRange = Math.PI;}
+					else if (child.name === "projector001") {child.rotation.y = Math.PI / -4; child.rRange = Math.PI;}
+					else if (child.name === "projector002") {child.rotation.y = Math.PI / 4; child.rRange = Math.PI;}
+					else if (child.name === "projector003") {child.rotation.y = Math.PI / 4; child.rRange = Math.PI;}
+					if (child.name.indexOf("projector") > -1) console.log(child);
 				}
-				const childPos = child.position, childRot = child.rotation;
-				child.oriPos = {x:childPos.x, y:childPos.y, z:childPos.z};
-				child.oriRot = {x:childRot.x, y:childRot.y, z:childRot.z};
+				const childPos = child.position, childRot = child.rotation[object.rotAxis];
+				child.oriPos = {x:Math.round(childPos.x * 10) / 10, y:Math.round(childPos.y * 10) / 10, z: Math.round(childPos.z * 10) / 10};
+				child.position.set(child.oriPos.x, child.oriPos.y, child.oriPos.z);
+				child.oriRot = childRot;
 				// child.geometry = new THREE.Geometry().fromBufferGeometry( child.geometry );
 				child.castShadow = true;
 				child.receiveShadow = true;
