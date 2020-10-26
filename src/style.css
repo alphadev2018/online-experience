@@ -57,6 +57,16 @@ body {
     display: none;
   }
 }
+
 .header .logo-label{
   margin-top: 5px;
+}
+.modal-wrapper {
+  width: auto !important;
+  margin: 10px;
+}
+@media (min-width: 600px) {
+  .modal-wrapper {
+      margin: 30px auto;
+  }
 }

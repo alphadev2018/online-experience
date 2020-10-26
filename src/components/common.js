@@ -163,6 +163,7 @@ export function GetRayCastObject(self, mouseX, mouseY, meshArr) {
 
 export function CheckGameModel(children, level) {
 	var remainCount = 0; // children = model.children, 
+	console.log(children);
 	if (level === "gameMedium") {
 		var keyArr = [{name:"Road", y:120}, {name:"Support", y:0}, {name:"Suspenders", y:120}], posZArr=[-480, 0, 480];
 		posZArr.forEach(posZ => {

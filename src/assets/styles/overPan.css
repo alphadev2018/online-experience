@@ -102,9 +102,9 @@
     border: 2px solid white;
     
     position: absolute;
-    transform: translate(-50%, -50%);
+    transform: translateY(-50%);
     top: 50%;
-    left: 50%;
+    max-width: 600px;
 /* 37A7DB */
 }
 .modal-wrapper.game-menu{
@@ -130,8 +130,7 @@
     position: relative;
     transition: all 0.5s;
     cursor: pointer;    
-    transform: translateX(-50%);
-    left: 50%;
+    margin-left: calc(50% - 100px);
 }
 .modal-wrapper .game-menu-item .game-menu-icon{
     position: absolute;
