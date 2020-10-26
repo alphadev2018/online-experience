@@ -41,7 +41,7 @@ export default class OverPan extends Component {
 		for (let i = 0; i < 7; i++) {
 			this.leaderBoardArr[i] = {no:i+1, name:"Person_"+i, score:Math.round(Math.random() * 300)};
 		}
-		this.state = {itemArr:[], hide:"hide", modalInfo:props.modalInfo, overPanClass:"", gameRuleNum:0, loadPro:0};
+		this.state = {itemArr:[], hide:"hide", modalInfo:props.modalInfo, overPanClass:"", gameRuleNum:0,gameLevelNum:0, loadPro:0};
 	}
 
 	componentDidMount() {
@@ -72,8 +72,15 @@ export default class OverPan extends Component {
 		this.setState({gameRuleNum:gameRuleNum});
 	}
 
+	setLevelStepNum=(delta)=>{
+		if (this.state.gameLevelNum <= 0 && delta < 0) return;
+		if (this.state.gameLevelNum >= 2 && delta > 0) return;
+		const gameLevelNum = this.state.gameLevelNum + delta;
+		this.setState({gameLevelNum:gameLevelNum});
+	}
+
 	render() {
-		const {modalInfo, gameRuleNum, loadPro} = this.state;
+		const {modalInfo, gameRuleNum, gameLevelNum, loadPro} = this.state;
 		var totalTime, gameTime, level, gamePro, hotStr="";
 		// const loadingClassStr = (loadPro < 100)?"back-loading":"back-enter";
 		if (this.props && this.props.modalDetailInfo) {
@@ -132,6 +139,31 @@ export default class OverPan extends Component {
 									</div>
 								</div>
 							)}
+						</div>
+						<div className="body-mobile">
+							<div style={{margin: 'auto'}}>
+								{this.gameLevelArr.map((item, idx) => {
+									if (gameLevelNum !== idx)
+										return;
+									return <div className="game-level-item" key={idx} onClick={()=>this.clickButton(item.value, true)}>
+										<div className="img">
+											<img src={item.imgSrc}></img>
+										</div>
+										<div className="label">
+											{item.label}
+										</div>
+									</div>
+								})}
+							</div>
+							<div className="rule-step">
+								<BtnPreIcon className="btn-rule btn-rule-pre" onClick={()=>this.setLevelStepNum(-1)}></BtnPreIcon>
+								<BtnNextIcon className="btn-rule btn-rule-next" onClick={()=>this.setLevelStepNum(1)}></BtnNextIcon>
+								<div className="dot-wrapper">
+									{[0,1,2].map((idx) =>
+										<div className={`game-rule-dot ${gameLevelNum===idx?"active":""}`} key={idx}></div>
+									)}
+								</div>
+							</div>
 						</div>
 					</div>
 				}
