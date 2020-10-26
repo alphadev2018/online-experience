@@ -24,7 +24,9 @@
   width: 100%;
   text-align: center;
   color: white;
-  margin-top: 10px;
+  position: absolute;
+  transform: translateY(-50%);
+  top: 50%;
 }
 
 .home .rotate-wrapper{

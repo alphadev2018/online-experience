@@ -121,16 +121,18 @@ export default class OverPan extends Component {
 				{modalInfo === "play" &&
 					<div className="modal-wrapper game-level">
 						<div className="title game-level-title">Choose Difficulty</div>
-						{this.gameLevelArr.map((item, idx) =>
-							<div className="game-level-item" key={idx} onClick={()=>this.clickButton(item.value, true)}>
-								<div className="img">
-									<img src={item.imgSrc}></img>
+						<div className="body">
+							{this.gameLevelArr.map((item, idx) =>
+								<div className="game-level-item" key={idx} onClick={()=>this.clickButton(item.value, true)}>
+									<div className="img">
+										<img src={item.imgSrc}></img>
+									</div>
+									<div className="label">
+										{item.label}
+									</div>
 								</div>
-								<div className="label">
-									{item.label}
-								</div>
-							</div>
-						)}
+							)}
+						</div>
 					</div>
 				}
 				{modalInfo === "rule" &&

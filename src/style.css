@@ -3,6 +3,10 @@
   src: url("./assets/fonts/Calibri_Bold.TTF");
 }
 @font-face {
+  font-family: calibri_light;
+  src: url("./assets/fonts/Calibri_Light.ttf");
+}
+@font-face {
   font-family: Artifakt;
   src: url("./assets/fonts/Artifakt.ttf");
 }
@@ -35,6 +39,7 @@ body {
 .header .menu-toggle {
   color: white;
   margin-right: 60px;
+  z-index: 99;
 }
 
 @media (max-width: 578px) {
