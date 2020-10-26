@@ -261,6 +261,13 @@ export default class Home extends Component {
 		const rotVal = mesh.rotation;
 		if (this.gameLevel === "gameMedium") SetTween(mesh, "rotation", {x:rotVal.x, y:rotVal.y, z:rotVal.z+Math.PI/2*dir}, easeTime);
 		else 								 SetTween(mesh, "rotation", {x:rotVal.x, y:rotVal.y+Math.PI/2*dir, z:rotVal.z}, easeTime);
+		setTimeout(() => {
+			const {rAxis, rRange} = mesh;
+			// while (mesh.rotation[rAxis] >= rRange || mesh.rotation[rAxis] < -rRange) {
+				if (mesh.rotation[rAxis] >= rRange) mesh.rotation[rAxis] -= rRange ;
+				if (mesh.rotation[rAxis] < -rRange) mesh.rotation[rAxis] += rRange;
+			// }
+		}, easeTime);
 		this.setState({transChange:true});
 	}
 
@@ -373,6 +380,17 @@ export default class Home extends Component {
 	loadGameModel(info) {
 		new FBXLoader().load(info.file, (object)=>{
 			object.children.forEach(child => {
+				if (info.id === "building") {
+					child.rAxis = "y"; child.rRange = Math.PI / 2;
+					if (child.name !== "Basic") child.rotation.y = Math.PI/-6;
+				}
+				else if (info.id === "bridge") {
+					child.rAxis = "z"; child.rRange = Math.PI / 2; child.rotation.z = 0;
+				}
+				else if (info.id === "stadium") {
+					child.rAxis = "y"; child.rRange = Math.PI / 2;
+					child.rotation.y = 0;
+				}
 				const childPos = child.position, childRot = child.rotation;
 				child.oriPos = {x:childPos.x, y:childPos.y, z:childPos.z};
 				child.oriRot = {x:childRot.x, y:childRot.y, z:childRot.z};
