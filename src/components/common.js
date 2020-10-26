@@ -15,7 +15,6 @@ const islandGame = require("assets/models/island_game.fbx");
 const islandMedia = require("assets/models/island_media.fbx");
 // const island3 = require("assets/models/island_3.fbx");
 
-
 const gameModelCrane = require("assets/models/crane.fbx");
 const gameModelBuilding = require("assets/models/building.fbx");
 const gameModelBridge = require("assets/models/bridge_old.fbx");
@@ -27,15 +26,15 @@ autoPlay(true);
 
 export const easeTime = 1000, gameReadyTime = 5;
 export const menuHomeArr=[
-	{label:"home0", value:"home0"},
-	{label:"home1", value:"home1"},
-	{label:"home2", value:"home2"}
+	{label:"home0", value:"home0", label:"EMEA"},
+	{label:"home1", value:"home1", label:"APAC"},
+	{label:"home2", value:"home2", label:"Americas"}
 ];
 export const menuArr = [
-	{label:"Media", 	value:"media"},
-	{label:"Game", 		value:"game"},
-	{label:"Map", 		value:"map"},
-	{label:"Conductive",value:"conductive"}
+	{label:"Media", 	value:"media", label:"Media Island"},
+	{label:"Game", 		value:"game", label:"Game Island"},
+	{label:"Map", 		value:"map", label:"Map"},
+	{label:"Conductive",value:"conductive", label:"Autodesk Construnction"}
 ];
 export const modelArr = [
 	{file:islandHome0, size:12, pos:{x: 20, y:0, z: 20}, islandName:menuHomeArr[0].value},

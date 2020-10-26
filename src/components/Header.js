@@ -10,21 +10,32 @@ export default class Header extends Component {
 
 	constructor(props) {
 		super(props);
+		this.state={menuItem:"first"};
 	}
 
 	componentDidMount() {
 	}
 
+	UNSAFE_componentWillReceiveProps(nextProps) {
+		console.log(nextProps);
+		if (this.state.menuItem !== nextProps.menuItem) {
+			console.log(nextProps.menuItem);
+			this.setState({menuItem:nextProps.menuItem});
+		}
+	}
+
 	render() {
-		const { menu } = this.state;
+		const { menuItem } = this.state;
 		return (
 			<div className="header">
 				<div className="logo-icon" />
-				<a href="#" className="menu-toggle" onClick={()=>{
-					
-				}}>
-					<i className="fa fa-bars" aria-hidden="true"></i>
-				</a>
+				{menuItem && menuItem !== "first" &&
+					<a href="#" className="menu-toggle" onClick={()=>{
+						this.props.callMobileMenu();
+					}}>
+						<i className="fa fa-bars" aria-hidden="true"></i>
+					</a>
+				}
 			</div>
 		);
 	}

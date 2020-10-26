@@ -14,7 +14,7 @@ import { easeTime } from './components/common';
 export default class App extends Component {
 	constructor(props) {
 		super(props);
-		this.state={menuItem:"first", modalInfo:"first", first:true, selGame:false, gameResult:null, autoBuild:false, loadPro:0, gameStatus:false};
+		this.state={menuItem:"first", modalInfo:"first", first:true, selGame:false, gameResult:null, autoBuild:false, loadPro:0, gameStatus:false, showMobileMenu:false};
 	}
 
 	componentDidMount() {
@@ -51,9 +51,12 @@ export default class App extends Component {
 		}
 		this.setState({modalInfo:false});
 	}
+	callMobileMenu=()=>{
+		this.setState({showMobileMenu:!this.state.showMobileMenu});
+	}
 
 	render() {
-		const {selGame,modalInfo, first, menuItem, autoBuild, gameAssist, modalDetailInfo, loadPro, gameStatus} = this.state;
+		const {selGame,modalInfo, first, menuItem, autoBuild, gameAssist, modalDetailInfo, loadPro, gameStatus, showMobileMenu} = this.state;
 		return (
 			<div>
 				<Home
@@ -69,7 +72,10 @@ export default class App extends Component {
 					callHotSpot={this.callHotSpot}
 					callAddLoadNum={this.callAddLoadNum}
 				></Home>
-				<Header></Header>
+				<Header
+					menuItem={menuItem}
+					callMobileMenu={this.callMobileMenu}
+				></Header>
 				<Footer
 					gameStatus={gameStatus}
 					game={selGame}
@@ -78,7 +84,9 @@ export default class App extends Component {
 				></Footer>
 				<Sidebar
 					menuItem={menuItem}
+					showMobileMenu={showMobileMenu}
 					callMenuItem={this.callMenuItem}
+					callMobileMenu={this.callMobileMenu}
 				></Sidebar>
 				{modalInfo &&
 					<OverPan

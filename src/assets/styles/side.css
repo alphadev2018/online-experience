@@ -35,13 +35,14 @@
 }
 
 .side-bar .side-item{
+	position: relative;
 	margin: 15px 7px;
 	font-size: 20px;
 	width: 46px;
 	height: 46px;
 	border-radius: 50%;
 	/* border: 1px solid white; */
-	overflow: hidden;
+	/* overflow: hidden; */
 	cursor: pointer;
 	transition: all 0.5s;
 	box-shadow: 0 1px 1px rgba(0,0,0,0.25), 0 2px 2px rgba(0,0,0,0.2), 0 4px 4px rgba(0,0,0,0.15), 0 8px 8px rgba(0,0,0,0.1), 0 16px 16px rgba(0,0,0,0.05);
@@ -74,4 +75,31 @@
 
 .side .side-item.active{
 	/* border-color: white; */
+}
+
+.side.mobile {
+	width: 100vw;
+	height: 100vh;
+	right: -100vw;
+	background-color: rgba(4, 102, 146, 0.8);
+}
+.side.mobile.active {
+	right: 0px	;
+}
+
+.side.mobile .side-bar:first-child {
+	margin-top: calc(50% - 50px);
+}
+.side.mobile .side-bar {
+	margin-left: calc(100vw - 100px);
+}
+.side.mobile .side-bar .side-item .menu-label{
+	position: absolute;
+    top: 10px;
+    right: 70px;
+    width: calc(100vw - 130px);
+    color: white;
+    font-size: 22px;
+    font-weight: 500;
+    text-align: right;
 }

@@ -16,7 +16,8 @@ import 'assets/styles/home.css';
 export default class Sidebar extends Component {
 	constructor(props) {
 		super(props);
-		this.state = {selMenu:""}
+		this.state = {selMenu:"", showMobileMenu:false}
+		this.device = ( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) )?"mobile":"web";
 	}
 
 	componentDidMount() {
@@ -26,27 +27,38 @@ export default class Sidebar extends Component {
 		if (this.state.selMenu !== nextProps.menuItem) {
 			this.setState({selMenu:nextProps.menuItem});
 		}
+		if (this.state.showMobileMenu !== nextProps.showMobileMenu) {
+			this.setState({showMobileMenu:nextProps.showMobileMenu});
+		}
 	}
 
 	clickItem=(str)=>{
 		// if (str.indexOf("home") > -1) str = "home";
-		if (this.state.selMenu === str) return;
+		if (this.device === "web" && this.state.selMenu === str) return;
 		this.setState({selMenu:str});
 		setTimeout(() => {
 			this.props.callMenuItem(str);
+			if (this.device === "mobile") this.props.callMobileMenu();
 		}, 0);
 	}
 
 	render() {
+		var menuActive = false;
+		if (this.device === "web") {
+			if (this.state.selMenu !== "" && this.state.selMenu !== "first") menuActive = true;
+		}
+		else {
+			if (this.state.showMobileMenu === true) menuActive = true;
+		}
 		return (
-			<div className={`side ${(this.state.selMenu !== "" && this.state.selMenu !== "first")?"active":""}`}>
+			<div className={`side ${(menuActive === true)?"active":""} ${this.device}`}>
 				<div className="side-bar side-bar-top">
 					{menuHomeArr.map(menuItem =>
 						<div className={`side-item ${(this.state.selMenu === menuItem.value)?"active":""}`} onClick={()=>this.clickItem(menuItem.value)} key={menuItem.value}>
 							{menuItem.value === "home0" && <MenuHomeIcon0 className="home0"></MenuHomeIcon0>}
 							{menuItem.value === "home1" && <MenuHomeIcon1 className="home1"></MenuHomeIcon1>}
 							{menuItem.value === "home2" && <MenuHomeIcon2 className="home2"></MenuHomeIcon2>}
-							{/* <img src={menuItem.img}></img> */}
+							{this.device === "mobile" && <div className="menu-label">{menuItem.label}</div> }
 						</div>
 					)}
 				</div>
@@ -57,7 +69,7 @@ export default class Sidebar extends Component {
 							{menuItem.value === "game" && <MenuGameIcon></MenuGameIcon>}
 							{menuItem.value === "map" && <MenuMapIcon></MenuMapIcon>}
 							{menuItem.value === "conductive" && <MenuConductiveIcon></MenuConductiveIcon>}
-							{/* <img src={menuItem.img}></img> */}
+							{this.device === "mobile" && <div className="menu-label">{menuItem.label}</div> }
 						</div>
 					)}
 
