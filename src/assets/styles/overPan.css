@@ -160,11 +160,66 @@
 
 .modal-wrapper.game-level{
     position: relative;
-    height: 300px;
 }
 .modal-wrapper.game-level .body {
     display: flex;
     justify-content: center;
+}
+.modal-wrapper.game-level .body-mobile {
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-wrapper.game-level .rule-step{
+    margin-top: 20px;
+    height: 40px;
+    width: 100%;
+    position: relative;
+}
+.modal-wrapper.game-level .rule-step .dot-wrapper{
+    position: absolute;
+    top: 10px;
+    transform: translateX(-50%);
+    left: 50%;
+}
+.modal-wrapper.game-level .rule-step .dot-wrapper .game-rule-dot{
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 2px solid white;
+    float: left;
+    margin: 0 10px;
+}
+.modal-wrapper.game-level .rule-step .dot-wrapper .game-rule-dot.active{
+    background-color: white;
+}
+.modal-wrapper.game-level .rule-step .btn-rule {
+    position: absolute;
+    top: 0px;
+    cursor: pointer;
+}
+.modal-wrapper.game-level .rule-step .btn-rule-pre {
+    left: 0px;
+}
+.modal-wrapper.game-level .rule-step .btn-rule-next {
+    right: 0px;
+}
+
+@media (max-width: 578px) {
+    .modal-wrapper.game-level .body{
+        display: none;
+    }
+    .modal-wrapper.game-level .body-mobile{
+        display: flex;
+    }
+}
+@media (min-width: 578px) {  
+    .modal-wrapper.game-level .body{
+        display: flex;
+    }
+    .modal-wrapper.game-level .body-mobile{
+        display: none !important;
+    }
 }
 .modal-wrapper.game-level .game-level-title{
     font-size: 32px;
@@ -224,7 +279,8 @@
 .modal-wrapper.game-rule .rule-step .dot-wrapper{
     position: absolute;
     top: 10px;
-    left: calc(50% - 50px);
+    transform: translateX(-50%);
+    left: 50%;
 }
 .modal-wrapper.game-rule .rule-step .dot-wrapper .game-rule-dot{
     width: 10px;
@@ -232,7 +288,7 @@
     border-radius: 50%;
     border: 2px solid white;
     float: left;
-    margin-left: 20px;
+    margin: 0 10px;
 }
 .modal-wrapper.game-rule .rule-step .dot-wrapper .game-rule-dot.active{
     background-color: white;
@@ -312,12 +368,13 @@
     align-items: center;
 }
 @media (max-width: 578px) {
-    .modal-wrapper .game-button{
+    .modal-wrapper.game-end .game-button{
         flex-direction: column;
+        margin-top: 20px;
     }
 }
 @media (min-width: 578px) {  
-    .modal-wrapper .game-button{
+    .modal-wrapper.game-end .game-button{
         flex-direction: row;
     }
 }
