@@ -542,8 +542,8 @@ export default class Home extends Component {
 						</div>
 						{crashModalId !== false &&
 							<div className="clash-modal">
-								<div className="clash-title">{modalInfo['clash'].title}</div>
-								<div className="clash-des">{modalInfo['clash'].description}</div>
+								<div className="clash-title">{modalInfo[crashModalId].title}</div>
+								<div className="clash-des">{modalInfo[crashModalId].description}</div>
 							</div>
 						}
 						<div className={"mesh-control set-place "+placeClassStr} onClick={this.setPlace}>Place</div>

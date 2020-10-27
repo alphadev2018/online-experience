@@ -427,6 +427,8 @@
 
 .modal-wrapper.hotspot {
     position: relative;
+    display: flex;
+    flex-direction: column;
 }
 
 .modal-wrapper.hotspot .sub-content .description{
