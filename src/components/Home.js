@@ -77,7 +77,8 @@ export default class Home extends Component {
 					gameModel.visible = true;
 					gameModel.children.forEach(child => {
 						child.position.set(child.oriPos.x, child.oriPos.y, child.oriPos.z);
-						child.rotation[this.rotAxis] = child.oriRot;
+						const rotAxis = (child.name.indexOf("light") > -1)?"z":this.rotAxis;
+						child.rotation[rotAxis] = child.oriRot;
 					});
 				}
 				else gameModel.visible = false;
@@ -242,8 +243,9 @@ export default class Home extends Component {
 			const posX = Math.sin(dAngle * (idx+rIdx)) * dis/2;
 			const posZ = Math.cos(dAngle * (idx+rIdx)) * dis/2;
 			const rotY = Math.round(Math.random() * 2) * Math.PI/2;
+			const rotAxis = (mesh.name.indexOf("light") > -1)?"z":this.rotAxis;
 			SetTween(mesh, "position", {x:posX, y:0, z:posZ}, easeTime);
-			SetTween(mesh, "rotation", {axis:this.rotAxis, rot:mesh.oriRot + rotY}, easeTime);
+			SetTween(mesh, "rotation", {axis:rotAxis, rot:mesh.oriRot + rotY}, easeTime);
 		});
 		setTimeout(() => {
 			const stepInfo = GetStepInfo(this.gameMeshArr, []);
@@ -255,13 +257,14 @@ export default class Home extends Component {
 	setRotate=(dir)=>{
 		var mesh = this.transform.object;
 		if (!mesh) return;
-		SetTween(mesh, "rotation", {axis:this.rotAxis, rot:mesh.rotation[this.rotAxis] + Math.PI/2*dir}, easeTime);
+		const rotAxis = (mesh.name.indexOf("light") > -1)?"z":this.rotAxis;
+		SetTween(mesh, "rotation", {axis:rotAxis, rot:mesh.rotation[rotAxis] + Math.PI/2*dir}, easeTime);
 		setTimeout(() => {
 			const {rRange} = mesh;
 			// while (mesh.rotation[rAxis] >= rRange || mesh.rotation[rAxis] < -rRange) {
-				if (mesh.rotation[this.rotAxis] >= rRange) mesh.rotation[this.rotAxis] -= rRange * 2;
-				if (mesh.rotation[this.rotAxis] < -rRange) mesh.rotation[this.rotAxis] += rRange * 2;
-				console.log(mesh.rotation[this.rotAxis]);
+				if (mesh.rotation[rotAxis] >= rRange) mesh.rotation[rotAxis] -= rRange * 2;
+				if (mesh.rotation[rotAxis] < -rRange) mesh.rotation[rotAxis] += rRange * 2;
+				console.log(mesh.rotation[rotAxis]);
 			// }
 		}, easeTime + 10);
 		this.setState({transChange:true});
@@ -317,10 +320,11 @@ export default class Home extends Component {
 		});
 		if (diffMesh) {
 			const oriPos = diffMesh.oriPos, oriRot=diffMesh.oriRot;
+			const rotAxis = (diffMesh.name.indexOf("light") > -1)?"z":this.rotAxis;
 			this.transform.attach(diffMesh);
 			this.props.callGameStatus(false);
 			SetTween(diffMesh, "position", {x:oriPos.x, y:oriPos.y, z:oriPos.z}, easeTime);
-			SetTween(diffMesh, "rotation", {axis:this.rotAxis, rot:diffMesh.oriRot}, easeTime);
+			SetTween(diffMesh, "rotation", {axis:rotAxis, rot:diffMesh.oriRot}, easeTime);
 			setTimeout(() => {
 				this.transform.detach();
 				this.checkGameStatus();
@@ -386,6 +390,7 @@ export default class Home extends Component {
 				default: 		object.rotAxis = "y";  break;
 			}
 			object.children.forEach(child => {
+				const rotAxis = (child.name.indexOf("light") > -1)?"z":object.rotAxis;
 				["x", "y", "z"].forEach(axis => {
 					child.position[axis] = Math.round(child.position[axis] * roundDelta) / roundDelta;
 				});
@@ -399,13 +404,15 @@ export default class Home extends Component {
 				else if (info.id === "stadium") {
 					child.rRange = Math.PI / 2;
 					if 		(child.name === "display") {child.rotation.y = Math.PI / -2; child.rRange = Math.PI;}
-					else if (child.name === "projector") {child.rotation.y = Math.PI / -4; child.rRange = Math.PI;}
-					else if (child.name === "projector001") {child.rotation.y = Math.PI / -4; child.rRange = Math.PI;}
-					else if (child.name === "projector002") {child.rotation.y = Math.PI / 4; child.rRange = Math.PI;}
-					else if (child.name === "projector003") {child.rotation.y = Math.PI / 4; child.rRange = Math.PI;}
-					if (child.name.indexOf("projector") > -1) console.log(child);
+					else if (child.name.indexOf("light") > -1) {
+						child.rRange = Math.PI;
+						if		(child.name === "light_000") {child.rotation.z = Math.PI / -4; }
+						else if (child.name === "light_001") {child.rotation.z = Math.PI / 4; }
+						else if (child.name === "light_002") {child.rotation.z = Math.PI * 3 / 4;}
+						else if (child.name === "light_003") {child.rotation.z = Math.PI * 3 /-4;}
+					}
 				}
-				const childPos = child.position, childRot = child.rotation[object.rotAxis];
+				const childPos = child.position, childRot = child.rotation[rotAxis];
 				child.oriPos = {x:Math.round(childPos.x * 10) / 10, y:Math.round(childPos.y * 10) / 10, z: Math.round(childPos.z * 10) / 10};
 				child.position.set(child.oriPos.x, child.oriPos.y, child.oriPos.z);
 				child.oriRot = childRot;
@@ -413,11 +420,13 @@ export default class Home extends Component {
 				child.castShadow = true;
 				child.receiveShadow = true;
 				
-				if 		(child.name.indexOf("Suspenders") > -1) child.material.color.setHex(0xA75A00);
-				else if (child.name.indexOf("Road") > -1) child.material.color.setHex(0x666666);
+				// if 		(child.name.indexOf("Suspenders") > -1) child.material.color.setHex(0xA75A00);
+				// else if (child.name.indexOf("Road") > -1) child.material.color.setHex(0x666666);
 				if (child.material.length) {
 					child.material.forEach(mat => {
-						if (mat.name.indexOf("0x") > -1) mat.color.setHex("0x"+mat.name.substring(2));
+						mat.side = THREE.DoubleSide;
+						// if (mat.name.indexOf("0x") > -1) mat.color.setHex("0x"+mat.name.substring(2));
+						// child.material.side = THREE.DoubleSide;
 					});
 				}
 				else child.material.side = THREE.DoubleSide;

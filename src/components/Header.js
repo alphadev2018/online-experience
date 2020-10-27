@@ -17,9 +17,7 @@ export default class Header extends Component {
 	}
 
 	UNSAFE_componentWillReceiveProps(nextProps) {
-		console.log(nextProps);
 		if (this.state.menuItem !== nextProps.menuItem) {
-			console.log(nextProps.menuItem);
 			this.setState({menuItem:nextProps.menuItem});
 		}
 	}

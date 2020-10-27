@@ -17,7 +17,7 @@ const islandMedia = require("assets/models/island_media.fbx");
 
 const gameModelCrane = require("assets/models/crane.fbx");
 const gameModelBuilding = require("assets/models/building.fbx");
-const gameModelBridge = require("assets/models/bridge_old.fbx");
+const gameModelBridge = require("assets/models/bridge.fbx");
 const gameModelStadium = require("assets/models/stadium.fbx");
 
 export const hotNameArr = ["EMEA", "AMERICA", "ACPA"];
@@ -46,8 +46,8 @@ export const modelArr = [
 ];
 export const gameInfoArr = [
 	{id:"building", file:gameModelBuilding, size:5, time:500, basicName:"Basic", snapDis:4.6},
-	{id:"bridge", file:gameModelBridge, size:2, time:500, basicName:"Support_0", snapDis:1},
-	{id:"stadium", file:gameModelStadium, size:1.6, time:500, basicName:"Asphalt", snapDis:1}
+	{id:"bridge", file:gameModelBridge, size:2, time:500, basicName:"Support_000", snapDis:3},
+	{id:"stadium", file:gameModelStadium, size:1.6, time:500, basicName:"ground", snapDis:1}
 ];
 
 export function SetTween (obj, attr, info, easeTime) {
@@ -163,9 +163,8 @@ export function GetRayCastObject(self, mouseX, mouseY, meshArr) {
 
 export function CheckGameModel(children, level) {
 	var remainCount = 0; // children = model.children, 
-	console.log(children);
 	if (level === "gameMedium") {
-		var keyArr = [{name:"Road", y:120}, {name:"Support", y:0}, {name:"Suspenders", y:120}], posZArr=[-480, 0, 480];
+		var keyArr = [{name:"Road", y:3}, {name:"Support", y:0}, {name:"Line", y:3}], posZArr=[-12, 0, 12];
 		posZArr.forEach(posZ => {
 			keyArr.forEach(key => {
 				var subCheckVal = false;
@@ -194,10 +193,10 @@ export function CheckGameModel(children, level) {
 	else if (level === "gameDifficult") {
 		children.forEach(item => {
 			const oriPos = item.oriPos, oriRot = item.oriRot, curPos = item.position, curRot = item.rotation.y;
-			if (item.name.indexOf("projector") > -1) {
+			if (item.name.indexOf("light") > -1) {
 				var lightCheck = false;
 				lightArr.forEach(lightItem => {
-					if (curPos.x === lightItem.posX && curPos.z === lightItem.posZ && CheckRoundVal(lightItem.rot, curRot) === true)
+					if (curPos.x === lightItem.posX && curPos.z === lightItem.posZ && CheckRoundVal(lightItem.rot, item.rotation.z) === true)
 						lightCheck = true;
 				});
 				if (lightCheck === false) remainCount++;
@@ -272,7 +271,7 @@ export function CheckClash(meshArr, selMesh, level, rotAxis) {
 
 	}
 	else if (level === "gameMedium") {
-		var keyArr = [{name:"Road", y:120}, {name:"Support", y:0}, {name:"Suspenders", y:120}], posZArr=[-480, 0, 480];
+		var keyArr = [{name:"Road", y:3}, {name:"Support", y:0}, {name:"Line", y:3}], posZArr=[-12, 0, 12];
 		const {x, y, z} = selMesh.position;
 		var subCheckVal = true;
 		posZArr.forEach(posZ => {
@@ -285,14 +284,21 @@ export function CheckClash(meshArr, selMesh, level, rotAxis) {
 		if (subCheckVal === false) return false;
 	}
 	else if (level === "gameDifficult") {
-		if (selMesh.name.indexOf("projector") > -1) {
+		if (selMesh.name.indexOf("light") > -1) {
 			const curPos = selMesh.position, curRot = selMesh.rotation.y;
 			var lightCheck = false;
+			console.log(selMesh);
 			lightArr.forEach(lightItem => {
-				if (curPos.x === lightItem.posX && curPos.z === lightItem.posZ && CheckRoundVal(lightItem.rot, curRot) === true)
+				if (curPos.x === lightItem.posX && curPos.z === lightItem.posZ) {
+					console.log(lightItem.rot );
+					console.log(selMesh.rotation.z);
+					console.log(CheckRoundVal(lightItem.rot, selMesh.rotation.z));
+				}
+					
+				if (curPos.x === lightItem.posX && curPos.z === lightItem.posZ && CheckRoundVal(lightItem.rot, selMesh.rotation.z) === true)
 					lightCheck = true;
 			});
-			if (lightCheck === true) return false;
+			if (lightCheck === true) {console.log(lightCheck); return false;}
 		}
 	}
 
@@ -367,8 +373,8 @@ export function CheckRoundVal(val0, val1) {
 }
 
 const lightArr = [
-	{posX:-240, posZ: 240, rot:-0.25 * Math.PI},
-	{posX: 240, posZ: 240, rot:-0.25 * Math.PI},
-	{posX: 240, posZ:-240, rot: 0.25 * Math.PI},
-	{posX:-240, posZ:-240, rot: 0.25 * Math.PI},
+	{posX:-6, posZ: 6, rot:-0.25 * Math.PI},
+	{posX: 6, posZ: 6, rot: 0.25 * Math.PI},
+	{posX: 6, posZ:-6, rot: 0.75 * Math.PI},
+	{posX:-6, posZ:-6, rot:-0.75 * Math.PI},
 ]
