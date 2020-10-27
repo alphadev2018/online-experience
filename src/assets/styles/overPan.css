@@ -312,6 +312,7 @@
 
 .modal-wrapper.game-end {
     position: relative;
+    top: calc( 50% - 45px ) !important;
 }
 .modal-wrapper.game-end .game-result{
     color: white;
@@ -324,7 +325,7 @@
     font-family: calibri_bold;
     font-size: 24px;
     font-weight: 700;
-    margin-bottom: 10px;
+    margin-bottom: 30px;
     margin-top: -40px;
 }
 .modal-wrapper.game-end .game-result .assemble{
@@ -351,6 +352,7 @@
 .modal-wrapper.game-end .game-result .half-left{
     text-align: right;
     font-weight: 300;
+    font-family: 'calibri_light';
 }
 .modal-wrapper.game-end .game-result .half-right{
     text-align: left;
@@ -359,6 +361,15 @@
 .modal-wrapper.game-end .game-result .label{
     width: 100%;
     text-align: center;
+}
+.modal-wrapper.game-end .game-button{
+    margin-top: 25px;
+    position: absolute;
+    transform: translateX(-50%);
+    left: 50%;
+}
+.modal-wrapper.game-end .game-button .game-menu-item{
+    margin: 5px;
 }
 
 .modal-wrapper .game-button{
@@ -370,7 +381,6 @@
 @media (max-width: 578px) {
     .modal-wrapper.game-end .game-button{
         flex-direction: column;
-        margin-top: 20px;
     }
 }
 @media (min-width: 578px) {  
@@ -410,6 +420,9 @@
     width: 33%;
     text-align: center;
     color: white;
+}
+.modal-wrapper.leader-board .game-button {
+    margin-top: 20px;
 }
 
 .modal-wrapper.hotspot {
