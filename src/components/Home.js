@@ -512,7 +512,7 @@ export default class Home extends Component {
 				// if (idx === 0) { console.log(this.mask2DPosArr[idx]); }
 			});
 			this.setState({maskPosArr});
-			console.log(maskPosArr[0]);
+			// console.log(maskPosArr[0]);
 		}
 		this.renderer.render(this.scene, this.camera);
 	}
@@ -575,6 +575,9 @@ export default class Home extends Component {
 					<div>
 						{maskPosArr.map((pos, idx) =>
 							<div className="mask-item" style={{left:pos.x, top:pos.y}} onClick={()=>this.clickMask(idx)}>
+								<div className="item-icon" data-detail="Autodesk BIM Collaborate">
+									<i className="fa fa-heart"></i>
+								</div>
 							</div>
 						)}
 					</div>

@@ -61,6 +61,10 @@ export default class OverPan extends Component {
 			this.setState({hide:"hide"});
 			setTimeout(() => { this.props.callClickButton(str); }, 500);
 		}
+		if (str === "first") {
+			document.getElementById('background_music').volume = 0.1;
+			document.getElementById('background_music').play();
+		}
 		this.setState({modalInfo:str});
 		if (str === "rule") this.setState({gameRuleNum:0});
 	}

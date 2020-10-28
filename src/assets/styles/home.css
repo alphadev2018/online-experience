@@ -242,10 +242,28 @@
 }
 .home .mask-item{
   position: absolute;
-  top: 100vh;
-  left: 100vw;
-  width: 30px;
-  height: 30px;
+}
+.home .mask-item .item-icon {
+  background: #0577B1;
+  border-radius: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.home .mask-item .item-icon i {
   border-radius: 50%;
-  background-color: red;
+  background-color: #FFFDF9;
+  border: 3px solid #084E78;
+  color: #5CB6D8;
+  font-size: 22px;
+  padding: 5px;
+}
+
+.home .mask-item .item-icon:hover::after {
+  content: attr(data-detail);
+  color: white;
+  height: auto;
+  overflow-wrap: break-word;
+  padding: 5px 10px;
+  margin: auto;
 }
