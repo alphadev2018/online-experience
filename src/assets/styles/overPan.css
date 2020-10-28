@@ -466,3 +466,49 @@
 .modal-wrapper.hotspot .close-hot img{
     width: 100%;
 }
+
+
+.modal-wrapper.product{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+.modal-wrapper.product .title{
+    color: white;
+    font-weight: 700;
+    text-align: left;
+    padding: 1rem;
+    margin-bottom: 0;
+}
+.modal-wrapper.product .body{
+    color: white;
+    font-size: 18px;
+    position: relative;
+    flex: 1 1 auto;
+    padding: 1rem;
+}
+.modal-wrapper.product .body p{
+    font-family: 'calibri_light';
+}
+.modal-wrapper.product .body label{
+    font-size: 1.2em;
+}
+.modal-wrapper.product a {
+    background: #06587E;
+    padding: 7px 15px;
+    border-radius: 10px;
+    color: white;
+    text-decoration: none;
+    font-family: 'calibri_light';
+}
+.modal-wrapper.product .close-btn{
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 30px;
+    cursor: pointer;
+    opacity: 0.8;
+}
+.modal-wrapper.product .close-btn img{
+    width: 100%;
+}

@@ -14,6 +14,8 @@ import redoImg from "../assets/images/redo.png";
 import {ReactComponent as TransMoveIcon} from "../assets/images/trans_move.svg";
 import {ReactComponent as TransRotateIcon} from "../assets/images/trans_rotate.svg";
 
+import { products } from '@db/database';
+
 export default class Home extends Component {
 	constructor(props) {
 		super(props);
@@ -338,7 +340,7 @@ export default class Home extends Component {
 	}
 
 	clickMask=(idx)=>{
-		console.log(idx);
+		this.props.callProduct( products[idx] );
 	}
 
 	loadIslandModel=(info)=>{
@@ -508,10 +510,6 @@ export default class Home extends Component {
 				// if (idx === 0) { console.log(this.mask2DPosArr[idx]); }
 			});
 			this.setState({maskPosArr});
-<<<<<<< HEAD
-			// console.log(maskPosArr[0]);
-=======
->>>>>>> 8b90c0eba209d395dc46aee996ad619eefd481f9
 		}
 		this.renderer.render(this.scene, this.camera);
 	}
@@ -573,8 +571,8 @@ export default class Home extends Component {
 					// <div className="mask-item" style={{left:"50x", top:"50px"}}></div>
 					<div>
 						{maskPosArr.map((pos, idx) =>
-							<div className="mask-item" style={{left:pos.x, top:pos.y}} onClick={()=>this.clickMask(idx)}>
-								<div className="item-icon" data-detail="Autodesk BIM Collaborate">
+							<div className="mask-item" key={idx} style={{left:pos.x, top:pos.y}} onClick={()=>this.clickMask(maskPosArr.length - idx)}>
+								<div className="item-icon" data-detail={products[maskPosArr.length - idx].title}>
 									<i className="fa fa-heart"></i>
 								</div>
 							</div>

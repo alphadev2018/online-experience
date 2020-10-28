@@ -38,6 +38,10 @@ export default class App extends Component {
 		this.setState({modalInfo:"hotSpot", modalDetailInfo:str});
 	}
 
+	callProduct=(product)=>{
+		this.setState({modalInfo:"product", modalDetailInfo: product});
+	}
+
 	callGameResult=(status, totalTime, gameTime, gamePro, transError)=>{
 		this.setState({modalInfo:status, selGame:false, modalDetailInfo:{totalTime, gameTime, level:this.state.selGame, gamePro, transError}});
 	}
@@ -68,6 +72,7 @@ export default class App extends Component {
 					callGameStatus={(val)=>this.setState({gameStatus:val})}
 					callGameResult={this.callGameResult}
 					callHotSpot={this.callHotSpot}
+					callProduct={this.callProduct}
 					callAddLoadNum={this.callAddLoadNum}
 				></Home>
 				<Header

@@ -18,7 +18,7 @@ import resultBimImg from "../assets/images/result_bim.png";
 import resultBuildingImg from "../assets/images/result_building.png";
 import resultPlangridImg from "../assets/images/result_plangrid.png";
 
-import {hotModalInfo} from "./common";
+import {hotModalInfo, GotoIsland} from "./common";
 
 export default class OverPan extends Component {
 	constructor(props) {
@@ -85,6 +85,10 @@ export default class OverPan extends Component {
 		if (this.state.gameLevelNum >= 2 && delta > 0) return;
 		const gameLevelNum = this.state.gameLevelNum + delta;
 		this.setState({gameLevelNum:gameLevelNum});
+	}
+
+	linkProduct = (details) => {
+		// GotoIsland(null, 'media');
 	}
 
 	render() {
@@ -238,7 +242,7 @@ export default class OverPan extends Component {
 								<div className="single assemble">
 									<div className="result-img"><img src={resultImg}></img></div>
 								</div>
-								<div className="single game-menu-item media-link">Link to product media library</div>
+								<div className="single game-menu-item media-link" onClick={()=>this.linkProduct(this.props.modalDetailInfo)}>Link to product media library</div>
 							</div>
 						</div>
 						<div className="game-button">
@@ -288,7 +292,25 @@ export default class OverPan extends Component {
 							</div>
 						</div>
 						<div className="close-hot" onClick={()=>this.clickButton("", true)}>
-							<img src={closeImg}></img>
+							<i className="fa fa-close" style={{color: 'white'}}></i>
+						</div>
+					</div>
+				}
+				{modalInfo === "product" &&
+					<div className="modal-wrapper product">
+						<div className="title">{this.props.modalDetailInfo.title}</div>
+						<div className="close-btn" onClick={()=>this.clickButton("", true)}>
+							<i className="fa fa-close" style={{color: 'white'}}></i>
+						</div>
+						<div className="body">
+							<p>{this.props.modalDetailInfo.description}</p>
+							<label>Capabilities</label>
+							<p>{this.props.modalDetailInfo.capabilities}</p>
+						</div>
+						<div style={{padding: '1rem'}}>
+							<a href={this.props.modalDetailInfo.murl} target="_blank">
+								More information
+							</a>
 						</div>
 					</div>
 				}
