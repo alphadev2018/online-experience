@@ -81,6 +81,9 @@ export function AnimateReturn(arr, type, axis, value) {
 	arr.forEach(modelItem => {
 		modelItem.curVal += modelItem.dir;
 		modelItem[type][axis] += modelItem.dir * value;
+		// if (modelItem.parent.islandName === 'home0' && !modelItem.name.indexOf('cloud')) {
+		// 	modelItem[type]['z'] += modelItem.dir * value * 3;
+		// }
 		if 		(modelItem.curVal >= 100) modelItem.dir = -1;
 		else if (modelItem.curVal <= 0) modelItem.dir = 1;
 	});

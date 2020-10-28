@@ -307,7 +307,7 @@ export default class Home extends Component {
 	setAssist=()=>{
 		var diffMesh;
 		this.gameMeshArr.forEach(mesh => {
-			if (diffMesh) return;
+			// if (diffMesh) return;
 			var pos = mesh.position;
 			["x", "y", "z"].forEach(axis => {
 				if (CheckRoundVal(mesh.oriPos[axis], pos[axis]) === false) diffMesh = mesh;
@@ -355,7 +355,12 @@ export default class Home extends Component {
 				else if (child.name.indexOf("crane") > -1 || child.name.indexOf("cloud") > -1) {
 					child.curVal = Math.round(Math.random() * 100);
 					child.dir = (Math.random() > 0.5)? 1:-1;
-					if (child.name.indexOf("cloud") > -1) this.cloudArr.push(child);
+					if (child.name.indexOf("cloud") > -1) {
+						// if (info.islandName === 'home0') {
+							child['position']['y'] += 8;
+						// }
+						this.cloudArr.push(child);
+					}
 					else if (child.name.indexOf("crane") > -1) this.tonArr.push(child);
 				}
 				else if (child.name.indexOf("roundPlay") > -1) this.roundPlayArr.push(child);
@@ -481,6 +486,7 @@ export default class Home extends Component {
 		this.subLight = new THREE.DirectionalLight( 0xFFFFFF, 0.5 ); this.scene.add( this.subLight );
 		modelArr.forEach(modelInfo => { this.loadIslandModel(modelInfo); });
 		gameInfoArr.forEach(gameInfo => { this.loadGameModel(gameInfo); });
+		console.log(this.cloudArr);
 	}
 
 	animate () {

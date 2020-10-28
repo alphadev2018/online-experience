@@ -317,6 +317,10 @@
 .modal-wrapper.game-end .game-result{
     color: white;
 }
+.modal-wrapper.game-end .game-result-timeOut{
+    display: flex;
+    flex-direction: column;
+}
 .modal-wrapper.game-end .game-result .single{
     width: 100%;
     text-align: center;
@@ -325,7 +329,7 @@
     font-family: calibri_bold;
     font-size: 24px;
     font-weight: 700;
-    margin-bottom: 30px;
+    margin-bottom: 10px;
     margin-top: -40px;
 }
 .modal-wrapper.game-end .game-result .assemble{
@@ -341,7 +345,7 @@
     margin: 10px 0;
 }
 .modal-wrapper.game-end .game-result .half-row{
-    height: 40px;
+    line-height: 1.5;
 }
 .modal-wrapper.game-end .game-result .half-part{
     width: calc(50% - 20px);
@@ -360,6 +364,7 @@
 }
 .modal-wrapper.game-end .game-result .label{
     width: 100%;
+    margin-top: 20px;
     text-align: center;
 }
 .modal-wrapper.game-end .game-button{
