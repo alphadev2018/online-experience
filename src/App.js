@@ -59,8 +59,8 @@ export default class App extends Component {
 	callMobileMenu=()=>{
 		this.setState({showMobileMenu:!this.state.showMobileMenu});
 	}
-	callLinkProduct=()=>{
-		this.setState({menuItem:"media", modalInfo:false});
+	callLinkProduct=(product)=>{
+		this.setState({menuItem:"media", modalDetailInfo: product});
 	}
 
 	render() {

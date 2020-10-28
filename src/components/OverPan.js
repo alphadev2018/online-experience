@@ -19,6 +19,7 @@ import resultBuildingImg from "../assets/images/result_building.png";
 import resultPlangridImg from "../assets/images/result_plangrid.png";
 
 import {hotModalInfo, GotoIsland} from "./common";
+import {products} from "@db/database";
 
 export default class OverPan extends Component {
 	constructor(props) {
@@ -88,7 +89,25 @@ export default class OverPan extends Component {
 	}
 
 	linkProduct = (details) => {
-		setTimeout(() => { this.props.callLinkProduct(); }, 100);
+		let product = products[2];
+
+		if (details.transError) {
+			if (details.transError.quality >= 2) {
+				product = products[0];
+			}
+
+			if (details.transError.clash >= 2) {
+				product = products[3];
+			}
+		}
+		this.props.modalDetailInfo = product;
+		this.setState({ modalInfo: false });
+		setTimeout(() => { 
+			this.props.callLinkProduct(product);
+		}, 100);
+		setTimeout(() => {
+			this.setState({ modalInfo: "product" });
+		}, 1000);
 	}
 
 	render() {
