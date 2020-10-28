@@ -218,7 +218,7 @@ export default class OverPan extends Component {
 								</div>
 								<div className="half-row">
 									<div className="half-part half-left">Wrong moves</div>
-									<div className="half-part half-right">4</div>
+									<div className="half-part half-right">{this.props.modalDetailInfo.transError.clash + this.props.modalDetailInfo.transError.quality}</div>
 								</div>
 								<div className="label">You could improve this by using</div>
 								<div className="single assemble">Assemble</div>

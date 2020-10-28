@@ -24,10 +24,11 @@ export default class Home extends Component {
 		this.meshArr = []; this.selLandName = ""; this.mouseStatus = "";
 		this.cloudArr = []; this.windBaseArr = []; this.ballonArr = []; this.tonArr = []; this.roundPlayArr = [];
 		this.device = ( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) )?"mobile":"web";
-		this.state = { overModal:true, gameStatus:null, gameTime:-1, autoBuild:false, selHot:"", stepNum:-1, maxStepNum:-1, selTrans:"translate", crashModalId:false, transMesh:null, transChange:false, maskPosArr:[] };
+		this.state = { overModal:true, gameStatus:null, gameTime:-1, selHot:"", stepNum:-1, maxStepNum:-1, selTrans:"translate", crashModalId:false, transMesh:null, transChange:false, maskPosArr:[] };
 		this.gameMeshArr = []; this.gameIslandPlane = null; this.gameIslandLine = null;
 		this.hotMeshArr = []; this.hotOverArr = []; this.stepArr = []; this.maskArr = [];
 		this.totalModelCount = modelArr.length + gameInfoArr.length; this.loadModelNum = 0;
+		this.transError = {clash:0, quality:0};
 	}
 	
 	componentDidMount() {
@@ -47,7 +48,6 @@ export default class Home extends Component {
 			// if (this.totalModelCount > this.loadModelNum) return;
 			if (this.selLandName === "") SetTween(this.scene.fog, "far", 50, easeTime);
 			GotoIsland(this, nextProps.menuItem);
-			console.log(this.selLandName);
 		}
 		if (this.state.overModal !== nextProps.overModal) {
 			this.setState({overModal:nextProps.overModal});
@@ -86,22 +86,7 @@ export default class Home extends Component {
 			});
 			this.setState({gameTime:this.totalTime+gameReadyTime, gameStatus:"start", gamePro:0}, ()=>{this.setStartTime();});
 		}
-		else if (this.state.gameStatus && !nextProps.game) {
-			this.setEndGame();
-		}
-		if (this.state.autoBuild !== nextProps.autoBuild) {
-			if (nextProps.autoBuild) {
-				if (this.state.gameStatus === "process") {
-					this.setState({autoBuild:true});
-					this.setAutoBuild();
-				}
-			}
-			else {this.setState({autoBuild:false});}
-		}
-		if (!this.state.gameAssist && nextProps.gameAssist) {
-			this.setState({gameAssist:true});
-			this.setAssist();
-		}
+		else if (this.state.gameStatus && !nextProps.game) { this.setEndGame(); }
 	}
 
 	setCanvasSize = () => {
@@ -114,8 +99,24 @@ export default class Home extends Component {
 		}
 	}
 
-	processClickEvent=(mouseX, mouseY)=>{
-		if (this.state.overModal || this.state.gameStatus === "process") return;
+	processClickEvent=(mouseX, mouseY, target)=>{
+		if (this.state.overModal) return;
+		if (this.state.gameStatus === "process") {
+			if (target) {
+				const item = jQuery(target).closest(".life-item ")[0];
+				if (!this.autoBuild && !this.footerId && item) {
+					this.footerId = jQuery(item).attr("id");
+					var {gameTime} = this.state, panaltyTime = 0, delayTime = 2000;
+					if 		(this.footerId === "footer_assist") {this.setAssist(); panaltyTime = 20; delayTime = 1000;}
+					else if (this.footerId === "footer_auto") this.setAutoBuild();
+					else if (this.footerId === "footer_design") { panaltyTime = 30;  delayTime = 3000;}
+					this.setState({gameTime:gameTime - panaltyTime});
+					setTimeout(() => { this.footerId = undefined; }, delayTime);
+					console.log(this.footerId);
+				}
+			}
+			return;
+		}
 		const hotIntersect = GetRayCastObject(this, mouseX, mouseY, this.hotMeshArr);
 		const intersect = GetRayCastObject(this, mouseX, mouseY, this.meshArr);
 		if (hotIntersect) this.props.callHotSpot(intersect.object.hotStr);
@@ -128,7 +129,7 @@ export default class Home extends Component {
 		}
 	}
 	touchEnd = (event) => { this.processClickEvent(event.changedTouches[0].pageX, event.changedTouches[0].pageY); }
-	mouseClick = (event) => { this.processClickEvent(event.clientX, event.clientY); }
+	mouseClick = (event) => { this.processClickEvent(event.clientX, event.clientY, event.target); }
 
 	mouseDown = (event) => {
 		this.mouseStatus = "down";
@@ -169,7 +170,7 @@ export default class Home extends Component {
 		const checkGamePro = CheckGameModel(this.gameMeshArr, this.gameLevel);
 		this.setState({gamePro:checkGamePro});
 		if (checkGamePro === 100) {
-			this.props.callGameResult("success", this.totalTime, this.state.gameTime, checkGamePro);
+			this.props.callGameResult("success", this.totalTime, this.state.gameTime, checkGamePro, this.transError);
 		}
 		else {
 			const stepInfo = GetStepInfo(this.gameMeshArr, this.stepArr[this.state.stepNum]);
@@ -211,7 +212,7 @@ export default class Home extends Component {
 		this.setState({gameStatus:null, transMesh:null, transChange:false});
 		this.gameGroup.visible = false;
 		this.totalGroup.children.forEach(island => { island.visible = true; });
-		this.transform.detach();
+		this.transform.detach(); this.autoBuild = false; this.transError = {clash:0, quality:0};
 	}
 
 	setStartTime=()=> {
@@ -221,7 +222,7 @@ export default class Home extends Component {
 			const remainTime = this.state.gameTime;
 			if (remainTime <= 0) {
 				this.setEndGame();
-				this.props.callGameResult("timeOut", this.totalTime, this.state.gameTime, this.state.gamePro);
+				this.props.callGameResult("timeOut", this.totalTime, this.state.gameTime, this.state.gamePro, this.transError);
 			}
 			else {
 				if		(remainTime > this.totalTime) { this.setState({gameStatus:"start"}); }
@@ -278,6 +279,7 @@ export default class Home extends Component {
 	}
 
 	setAutoBuild=()=>{
+		this.autoBuild = true;
 		var childArr = this.gameModel.children;
 		this.props.callGameStatus(false);
 		for (let i = 0; i < childArr.length; i++) {
@@ -290,8 +292,8 @@ export default class Home extends Component {
 		setTimeout(() => {
 			this.setEndGame();
 			this.setState({autoBuild:false});
-			this.props.callGameResult("autoBuild", this.totalTime, this.state.gameTime, this.state.gamePro);
-		}, childArr.length * easeTime / 2 + 1000);
+			this.props.callGameResult("autoBuild", this.totalTime, this.state.gameTime, this.state.gamePro, this.transError);
+		}, childArr.length * easeTime / 2 + 500);
 	}
 
 	setPlace=()=>{
@@ -299,6 +301,7 @@ export default class Home extends Component {
 		this.checkGameStatus();
 		const checkClashStatus = CheckClash(this.gameMeshArr, this.transform.object, this.gameLevel, this.rotAxis);
 		if (checkClashStatus) {
+			if (checkClashStatus === "clash") this.transError.clash++; else this.transError.quality++;
 			this.setState({crashModalId:checkClashStatus});
 			setTimeout(() => { this.setState({crashModalId:false}); }, 1500);
 		}
@@ -309,13 +312,11 @@ export default class Home extends Component {
 		var diffMesh;
 		this.gameMeshArr.forEach(mesh => {
 			// if (diffMesh) return;
-			var pos = mesh.position;
+			const pos = mesh.position, rotAxis = (mesh.name.indexOf("light") > -1)?"z":this.rotAxis;
 			["x", "y", "z"].forEach(axis => {
 				if (CheckRoundVal(mesh.oriPos[axis], pos[axis]) === false) diffMesh = mesh;
 			});
-			if (CheckRoundVal(mesh.oriRot, mesh.rotation[this.rotAxis])  === false) {
-				console.log(mesh.rotation);
-				console.log(mesh.oriRot);
+			if (CheckRoundVal(mesh.oriRot, mesh.rotation[rotAxis])  === false) {
 				diffMesh = mesh;
 			}
 		});
@@ -329,7 +330,7 @@ export default class Home extends Component {
 			setTimeout(() => {
 				this.transform.detach();
 				this.checkGameStatus();
-				this.setState({gameAssist:false, transMesh:null, transChange:false});
+				this.setState({transMesh:null, transChange:false});
 				this.props.callGameStatus(true);
 			}, easeTime + 10);
 		}
@@ -431,14 +432,8 @@ export default class Home extends Component {
 				child.castShadow = true;
 				child.receiveShadow = true;
 				
-				// if 		(child.name.indexOf("Suspenders") > -1) child.material.color.setHex(0xA75A00);
-				// else if (child.name.indexOf("Road") > -1) child.material.color.setHex(0x666666);
 				if (child.material.length) {
-					child.material.forEach(mat => {
-						mat.side = THREE.DoubleSide;
-						// if (mat.name.indexOf("0x") > -1) mat.color.setHex("0x"+mat.name.substring(2));
-						// child.material.side = THREE.DoubleSide;
-					});
+					child.material.forEach(mat => { mat.side = THREE.DoubleSide; });
 				}
 				else child.material.side = THREE.DoubleSide;
 				if (child.name.indexOf("__") > -1) {
@@ -512,7 +507,6 @@ export default class Home extends Component {
 				// if (idx === 0) { console.log(this.mask2DPosArr[idx]); }
 			});
 			this.setState({maskPosArr});
-			console.log(maskPosArr[0]);
 		}
 		this.renderer.render(this.scene, this.camera);
 	}

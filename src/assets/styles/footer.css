@@ -63,7 +63,7 @@
     bottom: 250px;
     left: 40px;
     width: 300px;
-    height: 300px;
+    height: 320px;
     border-radius: 5px;
     border: 2px solid white;
 }
@@ -82,4 +82,11 @@
 }
 .footer .image-wrapper img{
     width: 100%;
+}
+.footer .image-wrapper .description {
+    position: absolute;
+    bottom: 10px;
+    width: 100%;
+    color: white;
+    text-align: center;
 }

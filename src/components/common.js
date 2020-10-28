@@ -24,7 +24,7 @@ export const hotNameArr = ["EMEA", "AMERICA", "ACPA"];
 
 autoPlay(true);
 
-export const easeTime = 1000, gameReadyTime = 5;
+export const easeTime = 1000, gameReadyTime = 1;
 export const menuHomeArr=[
 	{label:"home0", value:"home0", label:"EMEA"},
 	{label:"home1", value:"home1", label:"APAC"},
@@ -45,7 +45,7 @@ export const modelArr = [
 	// {file:island3,     size:15, pos:{x:  0, y:0, z: 35}, islandName:menuArr[1].value},
 ];
 export const gameInfoArr = [
-	{id:"building", file:gameModelBuilding, size:5, time:500, basicName:"Basic", snapDis:4.6},
+	{id:"building", file:gameModelBuilding, size:5, time:100, basicName:"Basic", snapDis:4.6},
 	{id:"bridge", file:gameModelBridge, size:2, time:500, basicName:"Support_000", snapDis:3},
 	{id:"stadium", file:gameModelStadium, size:1.6, time:500, basicName:"ground", snapDis:1}
 ];

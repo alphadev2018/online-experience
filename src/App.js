@@ -14,7 +14,7 @@ import { easeTime } from './components/common';
 export default class App extends Component {
 	constructor(props) {
 		super(props);
-		this.state={menuItem:"first", modalInfo:"first", first:true, selGame:false, gameResult:null, autoBuild:false, loadPro:0, gameStatus:false, showMobileMenu:false};
+		this.state={menuItem:"first", modalInfo:"first", first:true, selGame:false, gameResult:null, loadPro:0, gameStatus:false, showMobileMenu:false}; //, autoBuild:false
 	}
 
 	componentDidMount() {
@@ -38,8 +38,8 @@ export default class App extends Component {
 		this.setState({modalInfo:"hotSpot", modalDetailInfo:str});
 	}
 
-	callGameResult=(status, totalTime, gameTime, gamePro)=>{
-		this.setState({modalInfo:status, selGame:false, modalDetailInfo:{totalTime, gameTime, level:this.state.selGame, gamePro}, autoBuild:false});
+	callGameResult=(status, totalTime, gameTime, gamePro, transError)=>{
+		this.setState({modalInfo:status, selGame:false, modalDetailInfo:{totalTime, gameTime, level:this.state.selGame, gamePro, transError}});
 	}
 
 	callModalButton=(str)=>{
@@ -56,7 +56,7 @@ export default class App extends Component {
 	}
 
 	render() {
-		const {selGame,modalInfo, first, menuItem, autoBuild, gameAssist, modalDetailInfo, loadPro, gameStatus, showMobileMenu} = this.state;
+		const {selGame,modalInfo, first, menuItem, modalDetailInfo, loadPro, gameStatus, showMobileMenu} = this.state;
 		return (
 			<div>
 				<Home
@@ -64,8 +64,6 @@ export default class App extends Component {
 					overModal={modalInfo}
 					first={first}
 					menuItem={menuItem}
-					autoBuild={autoBuild}
-					gameAssist={gameAssist}
 					callMenuItem={this.callMenuItem}
 					callGameStatus={(val)=>this.setState({gameStatus:val})}
 					callGameResult={this.callGameResult}
@@ -79,8 +77,6 @@ export default class App extends Component {
 				<Footer
 					gameStatus={gameStatus}
 					game={selGame}
-					callAutoBuild={()=>this.setState({autoBuild:true})}
-					callAssist={()=>this.setState({gameAssist:true}, ()=>this.setState({gameAssist:false}))}
 				></Footer>
 				<Sidebar
 					menuItem={menuItem}
