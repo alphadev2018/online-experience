@@ -88,7 +88,7 @@ export default class OverPan extends Component {
 	}
 
 	linkProduct = (details) => {
-		this.props.callClickButton("media");
+		setTimeout(() => { this.props.callLinkProduct(); }, 100);
 	}
 
 	render() {
@@ -217,7 +217,7 @@ export default class OverPan extends Component {
 						</div>
 						<div className="game-result">
 							<div className="game-result-timeOut">
-								<div className="single sub-title">You Scored {this.props.modalDetailInfo.gameTime} points</div>
+								<div className="single sub-title">You Scored {gameTime + gamePro} points</div>
 								<div className="half-row">
 									<div className="half-part half-left">Time taken</div>
 									<div className="half-part half-right">{totalTime - gameTime} s</div>

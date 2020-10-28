@@ -25,6 +25,7 @@ export default class App extends Component {
 	}
 
 	callMenuItem=(str)=>{
+		console.log(str);
 		this.setState({menuItem:str, selGame:false}, ()=>{
 			if (str === "game") 
 				setTimeout(() => { this.setState({modalInfo:"game"}); }, easeTime);
@@ -53,13 +54,13 @@ export default class App extends Component {
 		else if (str.indexOf("game") > -1) {
 			this.setState({selGame:str, gameStatus:false});
 		}
-		else if (str === "media") {
-			this.callMenuItem("media");
-		}
 		this.setState({modalInfo:false});
 	}
 	callMobileMenu=()=>{
 		this.setState({showMobileMenu:!this.state.showMobileMenu});
+	}
+	callLinkProduct=()=>{
+		this.setState({menuItem:"media", modalInfo:false});
 	}
 
 	render() {
@@ -98,6 +99,7 @@ export default class App extends Component {
 						modalInfo={modalInfo}
 						modalDetailInfo={modalDetailInfo}
 						callClickButton={this.callModalButton}
+						callLinkProduct={this.callLinkProduct}
 					></OverPan>
 				}
 			</div>
