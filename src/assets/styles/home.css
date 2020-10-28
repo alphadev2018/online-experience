@@ -215,3 +215,12 @@
   top: 50%;
   left: 50%;
 }
+.home .mask-item{
+  position: absolute;
+  top: 100vh;
+  left: 100vw;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background-color: red;
+}

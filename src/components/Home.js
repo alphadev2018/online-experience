@@ -5,7 +5,7 @@ import {FBXLoader} from "three/examples/jsm/loaders/FBXLoader";
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
 import {TransformControls} from 'three/examples/jsm/controls/TransformControls';
 
-import {modelArr, gameInfoArr, easeTime, gameReadyTime, SetTween, AnimateReturn, AnimateRotate, GotoIsland, GetRayCastObject, CheckGameModel, hotNameArr, GetStepInfo, CheckClash, modalInfo, CheckRoundVal} from "./common";
+import {modelArr, gameInfoArr, easeTime, gameReadyTime, SetTween, AnimateReturn, AnimateRotate, GotoIsland, GetRayCastObject, CheckGameModel, hotNameArr, GetStepInfo, CheckClash, modalInfo, CheckRoundVal, Get2DPos} from "./common";
 import '../assets/styles/home.css';
 import '../assets/styles/overPan.css';
 
@@ -24,9 +24,9 @@ export default class Home extends Component {
 		this.meshArr = []; this.selLandName = ""; this.mouseStatus = "";
 		this.cloudArr = []; this.windBaseArr = []; this.ballonArr = []; this.tonArr = []; this.roundPlayArr = [];
 		this.device = ( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) )?"mobile":"web";
-		this.state = { overModal:true, gameStatus:null, gameTime:-1, autoBuild:false, selHot:"", stepNum:-1, maxStepNum:-1, selTrans:"translate", crashModalId:false, transMesh:null, transChange:false };
+		this.state = { overModal:true, gameStatus:null, gameTime:-1, autoBuild:false, selHot:"", stepNum:-1, maxStepNum:-1, selTrans:"translate", crashModalId:false, transMesh:null, transChange:false, maskPosArr:[] };
 		this.gameMeshArr = []; this.gameIslandPlane = null; this.gameIslandLine = null;
-		this.hotMeshArr = []; this.hotOverArr = []; this.stepArr = [];
+		this.hotMeshArr = []; this.hotOverArr = []; this.stepArr = []; this.maskArr = [];
 		this.totalModelCount = modelArr.length + gameInfoArr.length; this.loadModelNum = 0;
 	}
 	
@@ -47,6 +47,7 @@ export default class Home extends Component {
 			// if (this.totalModelCount > this.loadModelNum) return;
 			if (this.selLandName === "") SetTween(this.scene.fog, "far", 50, easeTime);
 			GotoIsland(this, nextProps.menuItem);
+			console.log(this.selLandName);
 		}
 		if (this.state.overModal !== nextProps.overModal) {
 			this.setState({overModal:nextProps.overModal});
@@ -334,6 +335,10 @@ export default class Home extends Component {
 		}
 	}
 
+	clickMask=(idx)=>{
+		console.log(idx);
+	}
+
 	loadIslandModel=(info)=>{
 		new FBXLoader().load(info.file, (object)=>{
 			object.children.forEach(child => {
@@ -360,6 +365,7 @@ export default class Home extends Component {
 				}
 				else if (child.name.indexOf("roundPlay") > -1) this.roundPlayArr.push(child);
 				else if (child.name.indexOf("ballon") > -1) this.ballonArr.push(child);
+				else if (child.name.indexOf("mask") > -1) {this.maskArr.push(child); child.visible = false;}
 				hotNameArr.forEach(str => {
 					if (child.name === "hot_"+str+"_hover") {child.hotStr=str; this.hotOverArr.push(child);}
 					else if (child.name === "hot_"+str) {child.hotStr=str; this.hotMeshArr.push(child);}
@@ -493,11 +499,20 @@ export default class Home extends Component {
 		this.camera.lookAt( 0, 0, 0 );
 		const camPos = this.camera.position;
 		this.subLight.position.set(camPos.x, camPos.y, camPos.z);
+		if (this.selLandName === "media") {
+			const maskPosArr = [];
+			this.maskArr.forEach((maskMesh, idx) => {
+				maskPosArr[idx] = Get2DPos(maskMesh, this.cWidth, this.cHeight, this.camera);
+				// if (idx === 0) { console.log(this.mask2DPosArr[idx]); }
+			});
+			this.setState({maskPosArr});
+			console.log(maskPosArr[0]);
+		}
 		this.renderer.render(this.scene, this.camera);
 	}
 	
 	render() {
-		const {maxStepNum, stepNum, selTrans, gameStatus, gameTime, crashModalId, transMesh, transChange} = this.state;
+		const {maxStepNum, stepNum, selTrans, gameStatus, gameTime, crashModalId, transMesh, transChange, maskPosArr} = this.state;
 		const rotateClassStr=(transMesh)?"":"disable", placeClassStr=(transChange)?"":"disable";
 		return (
 			<div className="home">
@@ -547,6 +562,15 @@ export default class Home extends Component {
 							</div>
 						}
 						<div className={"mesh-control set-place "+placeClassStr} onClick={this.setPlace}>Place</div>
+					</div>
+				}
+				{ this.selLandName === "media" &&
+					// <div className="mask-item" style={{left:"50x", top:"50px"}}></div>
+					<div>
+						{maskPosArr.map((pos, idx) =>
+							<div className="mask-item" style={{left:pos.x, top:pos.y}} onClick={()=>this.clickMask(idx)}>
+							</div>
+						)}
 					</div>
 				}
 				<div id="test_hotspot"></div>

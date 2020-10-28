@@ -378,3 +378,15 @@ const lightArr = [
 	{posX: 6, posZ:-6, rot: 0.75 * Math.PI},
 	{posX:-6, posZ:-6, rot:-0.75 * Math.PI},
 ]
+
+export function Get2DPos(obj, cWidth, cHeight, camera) {
+	var vector = new THREE.Vector3();
+	var widthHalf = 0.5 * cWidth;
+	var heightHalf = 0.5 * cHeight;
+	obj.updateMatrixWorld();
+	vector.setFromMatrixPosition(obj.matrixWorld);
+	vector.project(camera);
+	vector.x = ( vector.x * widthHalf ) + widthHalf;
+	vector.y = - ( vector.y * heightHalf ) + heightHalf;
+	return {  x: vector.x, y: vector.y };
+};
