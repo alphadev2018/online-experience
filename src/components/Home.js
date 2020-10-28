@@ -170,7 +170,8 @@ export default class Home extends Component {
 		const checkGamePro = CheckGameModel(this.gameMeshArr, this.gameLevel);
 		this.setState({gamePro:checkGamePro});
 		if (checkGamePro === 100) {
-			this.props.callGameResult("success", this.totalTime, this.state.gameTime, checkGamePro, this.transError);
+			const gameTime = (this.state.gameTime < 0)?0:this.state.gameTime
+			this.props.callGameResult("success", this.totalTime, gameTime, checkGamePro, this.transError);
 		}
 		else {
 			const stepInfo = GetStepInfo(this.gameMeshArr, this.stepArr[this.state.stepNum]);
