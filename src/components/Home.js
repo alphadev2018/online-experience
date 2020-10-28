@@ -287,15 +287,16 @@ export default class Home extends Component {
 		this.props.callGameStatus(false);
 		for (let i = 0; i < childArr.length; i++) {
 			setTimeout(() => {
-				const oriPos = childArr[i].oriPos, oriRot=childArr[i].oriRot;
+				const oriPos = childArr[i].oriPos, rotAxis = (childArr[i].name.indexOf("light") > -1)?"z":this.rotAxis;
+				
 				SetTween(childArr[i], "position", {x:oriPos.x, y:oriPos.y, z:oriPos.z}, easeTime);
-				SetTween(childArr[i], "rotation", {axis:this.rotAxis, rot:childArr[i].oriRot}, easeTime);
+				SetTween(childArr[i], "rotation", {axis:rotAxis, rot:childArr[i].oriRot}, easeTime);
 			}, i * easeTime / 2);
 		}
 		setTimeout(() => {
 			this.setEndGame();
 			this.setState({autoBuild:false});
-			this.props.callGameResult("autoBuild", this.totalTime, this.state.gameTime, this.state.gamePro, this.transError);
+			this.props.callGameResult("autoBuild", this.totalTime, 60, this.state.gamePro, this.transError);
 		}, childArr.length * easeTime / 2 + 500);
 	}
 
