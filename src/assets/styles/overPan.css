@@ -312,9 +312,14 @@
 
 .modal-wrapper.game-end {
     position: relative;
+    top: calc( 50% - 45px ) !important;
 }
 .modal-wrapper.game-end .game-result{
     color: white;
+}
+.modal-wrapper.game-end .game-result-timeOut{
+    display: flex;
+    flex-direction: column;
 }
 .modal-wrapper.game-end .game-result .single{
     width: 100%;
@@ -340,7 +345,7 @@
     margin: 10px 0;
 }
 .modal-wrapper.game-end .game-result .half-row{
-    height: 40px;
+    line-height: 1.5;
 }
 .modal-wrapper.game-end .game-result .half-part{
     width: calc(50% - 20px);
@@ -351,6 +356,7 @@
 .modal-wrapper.game-end .game-result .half-left{
     text-align: right;
     font-weight: 300;
+    font-family: 'calibri_light';
 }
 .modal-wrapper.game-end .game-result .half-right{
     text-align: left;
@@ -358,7 +364,17 @@
 }
 .modal-wrapper.game-end .game-result .label{
     width: 100%;
+    margin-top: 20px;
     text-align: center;
+}
+.modal-wrapper.game-end .game-button{
+    margin-top: 25px;
+    position: absolute;
+    transform: translateX(-50%);
+    left: 50%;
+}
+.modal-wrapper.game-end .game-button .game-menu-item{
+    margin: 5px;
 }
 
 .modal-wrapper .game-button{
@@ -370,7 +386,6 @@
 @media (max-width: 578px) {
     .modal-wrapper.game-end .game-button{
         flex-direction: column;
-        margin-top: 20px;
     }
 }
 @media (min-width: 578px) {  
@@ -411,9 +426,14 @@
     text-align: center;
     color: white;
 }
+.modal-wrapper.leader-board .game-button {
+    margin-top: 20px;
+}
 
 .modal-wrapper.hotspot {
     position: relative;
+    display: flex;
+    flex-direction: column;
 }
 
 .modal-wrapper.hotspot .sub-content .description{

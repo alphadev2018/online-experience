@@ -72,8 +72,6 @@
 
 .home .set-place{
   position: absolute;
-  bottom: 72px;
-  right: calc(50% - 290px);
   padding: 10px 20px;
   border-radius: 5px;
   border: 3px solid;
@@ -121,22 +119,34 @@
 }
 .home .clash-modal{
   position: absolute;
-    top: 50vh;
-    left: 50px;
-    border-radius: 5px;
-    width: 300px;
-    background-image: linear-gradient(rgb(5, 109, 156), rgb(3, 79, 114));
-    padding: 20px;
+  border-radius: 5px;
+  padding: 50px 30px;
+  background-color: #e02929e0;
+  border: 1px solid white;
+  transform: translate(-50%, -50%);
+  top: 50%;
+  left: 50%;
+  text-align: center;
+  min-height: 300px;
+  min-width: 240px;
+  z-index: 99;
+  display: flex;
+  flex-direction: column;
 }
 .home .clash-modal .clash-title{
   color: white;
   font-size: 24px;
   font-weight: 700;
+  text-align: center;
+  padding: 1rem;
 }
 .home .clash-modal .clash-des{
-  margin-top: 20px;
+  width: 300px;
   color: white;
   font-size: 18px;
+  position: relative;
+  flex: 1 1 auto;
+  padding: 1rem;
 }
 
 
@@ -182,6 +192,14 @@
     left: 50%;
     top: 50%;
   }
+
+  .set-place {
+    left: 40px;
+    top: calc( 50% - 170px );
+    transform: translateY(-50%);
+    bottom: auto !important;
+    right: auto !important;
+  }
 }
 @media (min-width: 578px) {  
   .game-ready{
@@ -190,6 +208,13 @@
     height: 100px;
     transform: translateX(-50%);
     left: 50%;
+  }
+
+  .set-place {
+    bottom: 72px;
+    right: calc(50% - 290px);
+    left: auto;
+    top: auto;
   }
 }
 .game-ready .title{
