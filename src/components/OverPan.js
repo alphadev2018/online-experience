@@ -100,7 +100,7 @@ export default class OverPan extends Component {
 				product = products[3];
 			}
 		}
-		this.props.modalDetailInfo = product;
+		
 		this.setState({ modalInfo: false });
 		setTimeout(() => { 
 			this.props.callLinkProduct(product);
