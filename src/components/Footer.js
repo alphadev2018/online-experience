@@ -58,14 +58,14 @@ export default class Footer extends Component {
 					<div className="image-wrapper assist">
 						<div className="label">Team Assist</div>
 						<img src={this.gamePreImg[game]}></img>
-						<div className="description">20 point panalty</div>
+						<div className="description">20 point penalty</div>
 					</div>
 				}
 				{selButton === "design" &&
 					<div className="image-wrapper design">
 						<div className="label">Design Reveal</div>
 						<img src={this.gamePreImg[game]}></img>
-						<div className="description">30 point panalty</div>
+						<div className="description">30 point penalty</div>
 					</div>
 				}
 			</div>

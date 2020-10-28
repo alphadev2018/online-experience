@@ -242,7 +242,7 @@ export default class OverPan extends Component {
 								<div className="single assemble">
 									<div className="result-img"><img src={resultImg}></img></div>
 								</div>
-								<div className="single game-menu-item media-link" onClick={()=>this.linkProduct(this.props.modalDetailInfo)}>Link to product media library</div>
+								<div className="single game-menu-item media-link" onClick={()=>this.linkProduct(this.props.modalDetailInfo)}>View more information</div>
 							</div>
 						</div>
 						<div className="game-button">

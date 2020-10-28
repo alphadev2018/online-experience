@@ -349,8 +349,8 @@ export function CheckClash(meshArr, selMesh, level, rotAxis) {
 }
 
 export const modalInfo = {
-	clash:{title:"CLASH WARNING!", description : "Your design is poorly coordinated, this has coursed a clash on site, you have been penalized $xxx for rework costs."},
-	wrong:{title:"QUALITY WARNING!", description : "You have incorrectly laid out the design, an issue has been raised, you have been penalized $xxx for rework costs."}
+	clash:{title:"CLASH WARNING!", description : "Your design is poorly coordinated, this has coursed a clash on site, you have been penalized $15 for rework costs."},
+	wrong:{title:"QUALITY WARNING!", description : "You have incorrectly laid out the design, an issue has been raised, you have been penalized $10 for rework costs."}
 }
 
 function GetMeshArea(mesh) {
