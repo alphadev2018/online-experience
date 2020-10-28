@@ -13,6 +13,10 @@ import gameImgEasy from "../assets/images/game_easy.png";
 import gameImgMedium from "../assets/images/game_medium.png";
 import gameImgDifficult from "../assets/images/game_difficult.png";
 import closeImg from "../assets/images/close.png";
+import resultAssembleImg from "../assets/images/result_assemble.png";
+import resultBimImg from "../assets/images/result_bim.png";
+import resultBuildingImg from "../assets/images/result_building.png";
+import resultPlangridImg from "../assets/images/result_plangrid.png";
 
 import {hotModalInfo} from "./common";
 
@@ -85,7 +89,7 @@ export default class OverPan extends Component {
 
 	render() {
 		const {modalInfo, gameRuleNum, gameLevelNum, loadPro} = this.state;
-		var totalTime, gameTime, level, gamePro, hotStr="";
+		var totalTime, gameTime, level, gamePro, hotStr="", transError, resultImg;
 		// const loadingClassStr = (loadPro < 100)?"back-loading":"back-enter";
 		if (this.props && this.props.modalDetailInfo) {
 			const detailInfo = this.props.modalDetailInfo;
@@ -93,6 +97,12 @@ export default class OverPan extends Component {
 			gameTime = detailInfo.gameTime;
 			level = detailInfo.level;
 			gamePro = detailInfo.gamePro;
+			transError = detailInfo.transError;
+			resultImg = resultPlangridImg;
+			if (transError) {
+				if (transError.quality >= 2) resultImg = resultAssembleImg;
+				if (transError.clash >= 2) resultImg = resultBimImg; 
+			}
 			hotStr = detailInfo;
 		}
 		return (
@@ -222,10 +232,12 @@ export default class OverPan extends Component {
 								</div>
 								<div className="half-row">
 									<div className="half-part half-left">Wrong moves</div>
-									<div className="half-part half-right">4</div>
+									<div className="half-part half-right">{transError.clash + transError.quality}</div>
 								</div>
 								<div className="label">You could improve this by using</div>
-								<div className="single assemble">Assemble</div>
+								<div className="single assemble">
+									<div className="result-img"><img src={resultImg}></img></div>
+								</div>
 								<div className="single game-menu-item media-link">Link to product media library</div>
 							</div>
 						</div>

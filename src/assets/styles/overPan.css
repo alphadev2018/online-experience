@@ -332,6 +332,9 @@
     margin-bottom: 10px;
     margin-top: -40px;
 }
+.modal-wrapper.game-end .game-result .result-img img{
+    height: 30px;
+}
 .modal-wrapper.game-end .game-result .assemble{
     margin: 23px;
     font-size: 24px;

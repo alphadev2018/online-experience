@@ -30,17 +30,12 @@ export default class Footer extends Component {
 		}
 	}
 	clickItem=(str)=>{
-		if (this.state.selButton) return;
-		if (!this.state.gameStatus) return;
+		if (this.state.selButton || !this.state.gameStatus) return;
 		this.setState({selButton:str});
-		if (str === "auto") this.props.callAutoBuild();
-		else if (str === "assist") {
-			this.props.callAssist();
-			setTimeout(() => { this.setState({selButton:null}); }, 1000);
-		}
-		else if (str === "design") {
-			setTimeout(() => { this.setState({selButton:null}); }, 3000);
-		}
+		var delayTime = 2000;
+		if 		(str === "assist") delayTime = 1000;
+		else if (str === "design") delayTime = 3000;
+		setTimeout(() => { this.setState({selButton:null}); }, delayTime);
 	}
 
 	render() {
@@ -52,23 +47,25 @@ export default class Footer extends Component {
 						<div className="title">Lifelines</div>
 						<div className="life-btn-wrapper">
 							{this.footerBtnArr.map((item, index) =>
-								<div className={`life-item `} onClick={()=>this.clickItem(item.value)} key={item.value}>
+								<div id={"footer_"+item.value} className={`life-item `} onClick={()=>this.clickItem(item.value)} key={item.value}>
 									<label style={{lineHeight: index ? 'normal' : '0.9'}}>{item.label}</label>
 								</div>
 							)}
 						</div>
 					</div>
 				}
-				{/* {selButton === "assist" &&
+				{selButton === "assist" &&
 					<div className="image-wrapper assist">
 						<div className="label">Team Assist</div>
 						<img src={this.gamePreImg[game]}></img>
+						<div className="description">20 point panalty</div>
 					</div>
-				} */}
+				}
 				{selButton === "design" &&
 					<div className="image-wrapper design">
 						<div className="label">Design Reveal</div>
 						<img src={this.gamePreImg[game]}></img>
+						<div className="description">30 point panalty</div>
 					</div>
 				}
 			</div>
