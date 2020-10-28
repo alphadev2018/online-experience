@@ -53,4 +53,10 @@ export const products = [
 		description: 'Pype uses unparalleled machine-learning algorithms to elevate your project management process and help you achieve full contract compliance from precon through closeout', 
 		murl: 'https://construction.autodesk.com/products/pype' 
 	},
+	{ 
+		title: 'Pype', 
+		capabilities: 'Project Management, Project Closeout', 
+		description: 'Pype uses unparalleled machine-learning algorithms to elevate your project management process and help you achieve full contract compliance from precon through closeout', 
+		murl: 'https://construction.autodesk.com/products/pype' 
+	},
 ]
