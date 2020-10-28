@@ -88,7 +88,7 @@ export default class OverPan extends Component {
 	}
 
 	linkProduct = (details) => {
-		// GotoIsland(null, 'media');
+		this.props.callClickButton("media");
 	}
 
 	render() {

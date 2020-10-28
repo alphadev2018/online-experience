@@ -53,6 +53,9 @@ export default class App extends Component {
 		else if (str.indexOf("game") > -1) {
 			this.setState({selGame:str, gameStatus:false});
 		}
+		else if (str === "media") {
+			this.callMenuItem("media");
+		}
 		this.setState({modalInfo:false});
 	}
 	callMobileMenu=()=>{
