@@ -580,8 +580,8 @@ export default class Home extends Component {
 					// <div className="mask-item" style={{left:"50x", top:"50px"}}></div>
 					<div>
 						{maskPosArr.map((pos, idx) =>
-							<div className="mask-item" key={idx} style={{left:pos.x, top:pos.y}} onClick={()=>this.clickMask(maskPosArr.length - idx)}>
-								<div className="item-icon" data-detail={products[maskPosArr.length - idx].title}>
+							<div className="mask-item" key={idx} style={{left:pos.x, top:pos.y}} onClick={()=>this.clickMask(maskPosArr.length - idx - 1)}>
+								<div className="item-icon" data-detail={products[maskPosArr.length - idx - 1].title}>
 									<i className="fa fa-heart"></i>
 								</div>
 							</div>
