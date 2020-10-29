@@ -8,7 +8,7 @@ import hotImgACPA from "../assets/images/hot_ACPA.png";
 import hotImgAMERICA from "../assets/images/hot_AMERICA.png";
 
 // const island0 = require("assets/models/island_0.fbx");
-const islandHome0 = require("assets/models/EMEA_custom_test.fbx");//  building
+const islandHome0 = require("assets/models/EMEA_custom.fbx");// _test building
 const islandHome1 = require("assets/models/APAC_custom.fbx"); // _test
 const islandHome2 = require("assets/models/AMERACAS_custom.fbx"); //_test
 const islandGame = require("assets/models/island_game.fbx");
