@@ -9,7 +9,7 @@ import hotImgAMERICA from "../assets/images/hot_AMERICA.png";
 
 // const island0 = require("assets/models/island_0.fbx");
 const islandHome0 = require("assets/models/EMEA_custom_test.fbx");//  building
-const islandHome1 = require("assets/models/APAC_custom_test.fbx");
+const islandHome1 = require("assets/models/APAC.fbx"); // _custom_test
 const islandHome2 = require("assets/models/AMERACAS_custom_test.fbx");
 const islandGame = require("assets/models/island_game.fbx");
 const islandMedia = require("assets/models/island_media.fbx");
@@ -86,6 +86,15 @@ export function AnimateReturn(arr, type, axis, value) {
 		// }
 		if 		(modelItem.curVal >= 100) modelItem.dir = -1;
 		else if (modelItem.curVal <= 0) modelItem.dir = 1;
+	});
+}
+
+export function AnimatePlane(arr) {
+	arr.forEach(item => {
+		item.position.x += 0.05 * item.dir;
+		if (item.position.x >= 30) {item.dir = -1; item.rotation.y = Math.PI/-2;}
+		if (item.position.x <= -30) {item.dir = 1;item.rotation.y = Math.PI/2;}
+		item.children[0].rotation.y += 0.18;
 	});
 }
 

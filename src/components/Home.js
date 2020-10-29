@@ -5,7 +5,7 @@ import {FBXLoader} from "three/examples/jsm/loaders/FBXLoader";
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
 import {TransformControls} from 'three/examples/jsm/controls/TransformControls';
 
-import {modelArr, gameInfoArr, easeTime, gameReadyTime, SetTween, AnimateReturn, AnimateRotate, GotoIsland, GetRayCastObject, CheckGameModel, hotNameArr, GetStepInfo, CheckClash, modalInfo, CheckRoundVal, Get2DPos} from "./common";
+import {modelArr, gameInfoArr, easeTime, gameReadyTime, SetTween, AnimateReturn, AnimateRotate, AnimatePlane, GotoIsland, GetRayCastObject, CheckGameModel, hotNameArr, GetStepInfo, CheckClash, modalInfo, CheckRoundVal, Get2DPos} from "./common";
 import '../assets/styles/home.css';
 import '../assets/styles/overPan.css';
 
@@ -24,7 +24,7 @@ export default class Home extends Component {
 		this.raycaster = new THREE.Raycaster(); this.mouse = new THREE.Vector2();
 		this.animate = this.animate.bind(this);
 		this.meshArr = []; this.selLandName = ""; this.mouseStatus = "";
-		this.cloudArr = []; this.windBaseArr = []; this.ballonArr = []; this.tonArr = []; this.roundPlayArr = [];
+		this.cloudArr = []; this.windBaseArr = []; this.ballonArr = []; this.tonArr = []; this.roundPlayArr = []; this.airPlaneArr = [];
 		this.device = ( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) )?"mobile":"web";
 		this.state = { overModal:true, gameStatus:null, gameTime:-1, selHot:"", stepNum:-1, maxStepNum:-1, selTrans:"translate", crashModalId:false, transMesh:null, transChange:false, maskPosArr:[] };
 		this.gameMeshArr = []; this.gameIslandPlane = null; this.gameIslandLine = null;
@@ -350,6 +350,12 @@ export default class Home extends Component {
 				if (child instanceof THREE.Mesh) {
 					child.landChildName = info.islandName; this.meshArr.push(child);
 					if (info.islandName === "game") child.receiveShadow = true;
+					if (child.material.length) {
+						child.material.forEach(mat => {
+							mat.side = THREE.DoubleSide;
+						});
+					}
+					else child.material.side=THREE.DoubleSide;
 				}
 				if (child.name.indexOf("__") > -1) {
 					const colVal = child.name.split("__")[1];
@@ -376,6 +382,7 @@ export default class Home extends Component {
 				else if (child.name.indexOf("roundPlay") > -1) this.roundPlayArr.push(child);
 				else if (child.name.indexOf("ballon") > -1) this.ballonArr.push(child);
 				else if (child.name.indexOf("mask") > -1) {this.maskArr.push(child); child.visible = false;}
+				else if (child.name === "plane") {child.dir = 1; this.airPlaneArr.push(child);}
 				hotNameArr.forEach(str => {
 					if (child.name === "hot_"+str+"_hover") {child.hotStr=str; this.hotOverArr.push(child);}
 					else if (child.name === "hot_"+str) {child.hotStr=str; this.hotMeshArr.push(child);}
@@ -501,6 +508,7 @@ export default class Home extends Component {
 		AnimateRotate(this.roundPlayArr, "x", 0.005);
 		AnimateReturn(this.cloudArr, "position", "x", 0.05);
 		AnimateReturn(this.tonArr, "rotation", "y", 0.01);
+		AnimatePlane(this.airPlaneArr);
 		this.camera.lookAt( 0, 0, 0 );
 		const camPos = this.camera.position;
 		this.subLight.position.set(camPos.x, camPos.y, camPos.z);
