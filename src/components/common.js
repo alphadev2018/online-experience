@@ -9,7 +9,7 @@ import hotImgAMERICA from "../assets/images/hot_AMERICA.png";
 
 // const island0 = require("assets/models/island_0.fbx");
 const islandHome0 = require("assets/models/EMEA_custom_test.fbx");//  building
-const islandHome1 = require("assets/models/APAC.fbx"); // _custom_test
+const islandHome1 = require("assets/models/APAC_custom.fbx"); // _test
 const islandHome2 = require("assets/models/AMERACAS_custom.fbx"); //_test
 const islandGame = require("assets/models/island_game.fbx");
 const islandMedia = require("assets/models/island_media.fbx");
@@ -41,7 +41,7 @@ export const modelArr = [
 	{file:islandHome1, size:20, pos:{x:-20, y:0, z: 20}, islandName:menuHomeArr[1].value},
 	{file:islandHome2, size:20, pos:{x:  0, y:0, z:-30}, islandName:menuHomeArr[2].value},
 	{file:islandGame,  size:15, pos:{x: 25, y:0, z:-25}, islandName:menuArr[1].value},
-	{file:islandMedia, size:15, pos:{x:-25, y:0, z:-25}, islandName:menuArr[0].value},
+	{file:islandMedia, size:10, pos:{x:-25, y:0, z:-25}, islandName:menuArr[0].value},
 	// {file:island3,     size:15, pos:{x:  0, y:0, z: 35}, islandName:menuArr[1].value},
 ];
 export const gameInfoArr = [
