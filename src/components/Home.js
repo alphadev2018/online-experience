@@ -352,7 +352,7 @@ export default class Home extends Component {
 					if (info.islandName === "game") child.receiveShadow = true;
 					if (child.material.length) {
 						child.material.forEach(mat => {
-							mat.side = THREE.DoubleSide;
+							// mat.side = THREE.DoubleSide;
 						});
 					}
 					else child.material.side=THREE.DoubleSide;
@@ -383,6 +383,7 @@ export default class Home extends Component {
 				else if (child.name.indexOf("ballon") > -1) this.ballonArr.push(child);
 				else if (child.name.indexOf("mask") > -1) {this.maskArr.push(child); child.visible = false;}
 				else if (child.name === "plane") {child.dir = 1; this.airPlaneArr.push(child);}
+				else if (child.name === "Loft011") { child.material = new THREE.MeshPhongMaterial({color:0x0C1723, side: 2}); }
 				hotNameArr.forEach(str => {
 					if (child.name === "hot_"+str+"_hover") {child.hotStr=str; this.hotOverArr.push(child);}
 					else if (child.name === "hot_"+str) {child.hotStr=str; this.hotMeshArr.push(child);}
@@ -390,10 +391,12 @@ export default class Home extends Component {
 			});
 			var vSize = new THREE.Box3().setFromObject(object).getSize();
 			var scl = info.size/vSize.x;
+			
 			if (info.islandName.indexOf("home") > -1) scl = 0.09;
 			object.scale.set(scl, scl, scl);
 			object.position.set(info.pos.x, info.pos.y, info.pos.z);
 			object.islandName = info.islandName;
+			if (info.islandName === "home2") console.log(object);
 			this.totalGroup.add(object);
 			this.addLoadModelNum();
 		}, undefined, ( error )=> { console.error( error ); this.addLoadModelNum(); } );
@@ -498,7 +501,6 @@ export default class Home extends Component {
 		this.subLight = new THREE.DirectionalLight( 0xFFFFFF, 0.5 ); this.scene.add( this.subLight );
 		modelArr.forEach(modelInfo => { this.loadIslandModel(modelInfo); });
 		gameInfoArr.forEach(gameInfo => { this.loadGameModel(gameInfo); });
-		console.log(this.cloudArr);
 	}
 
 	animate () {
