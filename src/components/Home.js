@@ -162,8 +162,14 @@ export default class Home extends Component {
 			const intersect = GetRayCastObject(this, event.clientX, event.clientY, this.gameMeshArr);
 			if (intersect) { this.transform.attach(intersect.object); this.setState({transMesh:intersect.object});}
 		}
-		else {
-			this.checkGameStatus();
+		else { 
+			const stepInfo = GetStepInfo(this.gameMeshArr, this.stepArr[this.state.stepNum]);
+			if (stepInfo) {
+				if (this.state.transMesh) this.setState({transChange:true});
+				const newStepNum = this.state.stepNum + 1;
+				this.stepArr[newStepNum] = stepInfo;
+				this.setState({stepNum:newStepNum, maxStepNum:newStepNum});
+			}//			this.checkGameStatus();
 		}
 		this.mouseStatus = "";
 	}
@@ -175,15 +181,7 @@ export default class Home extends Component {
 			const gameTime = (this.state.gameTime < 0)?0:this.state.gameTime
 			this.props.callGameResult("success", this.totalTime, gameTime, checkGamePro, this.transError);
 		}
-		else {
-			const stepInfo = GetStepInfo(this.gameMeshArr, this.stepArr[this.state.stepNum]);
-			if (stepInfo) {
-				if (this.state.transMesh) this.setState({transChange:true});
-				const newStepNum = this.state.stepNum + 1;
-				this.stepArr[newStepNum] = stepInfo;
-				this.setState({stepNum:newStepNum, maxStepNum:newStepNum});
-			}
-		}
+		return checkGamePro;
 	}
 
 	// setStep=(delta)=>{
@@ -247,7 +245,7 @@ export default class Home extends Component {
 		this.gameMeshArr.forEach((mesh, idx) => {
 			const posX = Math.sin(dAngle * (idx+rIdx)) * dis/2;
 			const posZ = Math.cos(dAngle * (idx+rIdx)) * dis/2;
-			const rotY = Math.round(Math.random() * 2) * Math.PI/2;
+			const rotY = Math.round(Math.random() * 1) * Math.PI/2;
 			const rotAxis = (mesh.name.indexOf("light") > -1)?"z":this.rotAxis;
 			SetTween(mesh, "position", {x:posX, y:0, z:posZ}, easeTime);
 			SetTween(mesh, "rotation", {axis:rotAxis, rot:mesh.oriRot + rotY}, easeTime);
@@ -269,7 +267,6 @@ export default class Home extends Component {
 			// while (mesh.rotation[rAxis] >= rRange || mesh.rotation[rAxis] < -rRange) {
 				if (mesh.rotation[rotAxis] >= rRange) mesh.rotation[rotAxis] -= rRange * 2;
 				if (mesh.rotation[rotAxis] < -rRange) mesh.rotation[rotAxis] += rRange * 2;
-				console.log(mesh.rotation[rotAxis]);
 			// }
 		}, easeTime + 10);
 		this.setState({transChange:true});
@@ -302,7 +299,7 @@ export default class Home extends Component {
 
 	setPlace=()=>{
 		if (!this.transform.object) return;
-		this.checkGameStatus();
+		if (this.checkGameStatus() === 100) return;
 		const checkClashStatus = CheckClash(this.gameMeshArr, this.transform.object, this.gameLevel, this.rotAxis);
 		if (checkClashStatus) {
 			if (checkClashStatus === "clash") this.transError.clash++; else this.transError.quality++;

@@ -183,7 +183,7 @@ export function CheckGameModel(children, level) {
 				children.forEach(child => {
 					if (child.name.indexOf(key.name) > -1) {
 						const {x, y, z} = child.position;
-						if (Math.round(x) === 0 && Math.round(y) === key.y && Math.round(z) === posZ) subCheckVal = true;
+						if (Math.round(x) === 0 && Math.round(y) === key.y && Math.round(z) === posZ && CheckRoundVal(child.rotation.z, 0)) subCheckVal = true;
 					}
 				});
 				if (subCheckVal === false) remainCount++;
@@ -274,7 +274,8 @@ export function CheckClash(meshArr, selMesh, level, rotAxis) {
 		if (selMeshPos[axis] !== selMesh.oriPos[axis]) checkPosRot = false;
 	});
 	// console.log(selMeshPos, selMesh.oriPos);
-	if (CheckRoundVal(selMesh.rotation[rotAxis], selMesh.oriRot) === false) checkPosRot = false;
+	var selRotAxis = (selMesh.name.indexOf("light") > -1)?"z":rotAxis;
+	if (CheckRoundVal(selMesh.rotation[selRotAxis], selMesh.oriRot) === false) checkPosRot = false;
 	// console.log(checkPosRot);
 	// console.log(selMesh.rotation[rotAxis], selMesh.oriRot);
 	if (checkPosRot === true) return false;
@@ -289,7 +290,7 @@ export function CheckClash(meshArr, selMesh, level, rotAxis) {
 		posZArr.forEach(posZ => {
 			keyArr.forEach(key => {
 				if (selMesh.name.indexOf(key.name) > -1) {
-					if (Math.round(x) === 0 && Math.round(y) === key.y && Math.round(z) === posZ) subCheckVal = false;
+					if (Math.round(x) === 0 && Math.round(y) === key.y && Math.round(z) === posZ && CheckRoundVal(selMesh.rotation.z, 0)) subCheckVal = false;
 				}
 			});
 		});
