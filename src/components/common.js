@@ -24,7 +24,7 @@ export const hotNameArr = ["EMEA", "AMERICA", "ACPA"];
 
 autoPlay(true);
 
-export const easeTime = 1000, gameReadyTime = 5;
+export const easeTime = 1000, gameReadyTime = 5, controlsMin = 8.5, controlsMax = 30;
 export const menuHomeArr=[
 	{label:"home0", value:"home0", label:"EMEA"},
 	{label:"home1", value:"home1", label:"APAC"},
@@ -152,7 +152,7 @@ export function GotoIsland(self, str) {
 		}, easeTime);
 	}
 	else if (self.selLandName === "map") {
-		self.controls.minDistance = 5;
+		self.controls.minDistance = controlsMin;
 		SetTween(self.camera, "camPos", 3, easeTime);
 		SetTween(self.camera, "position", {x:0, z:10}, easeTime);
 		SetTween(self.scene.fog, "far", 50, easeTime);

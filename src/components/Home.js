@@ -5,7 +5,7 @@ import {FBXLoader} from "three/examples/jsm/loaders/FBXLoader";
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
 import {TransformControls} from 'three/examples/jsm/controls/TransformControls';
 
-import {modelArr, gameInfoArr, easeTime, gameReadyTime, SetTween, AnimateReturn, AnimateRotate, AnimatePlane, GotoIsland, GetRayCastObject, CheckGameModel, hotNameArr, GetStepInfo, CheckClash, modalInfo, CheckRoundVal, Get2DPos} from "./common";
+import {modelArr, gameInfoArr, easeTime, gameReadyTime, SetTween, AnimateReturn, AnimateRotate, AnimatePlane, GotoIsland, GetRayCastObject, CheckGameModel, hotNameArr, GetStepInfo, CheckClash, modalInfo, CheckRoundVal, Get2DPos, controlsMin, controlsMax} from "./common";
 import '../assets/styles/home.css';
 import '../assets/styles/overPan.css';
 
@@ -62,7 +62,7 @@ export default class Home extends Component {
 			});
 			this.controls.minDistance = 0.1;
 			SetTween(this.camera, "position", {x:-10, y:this.camera.position.y, z:0}, easeTime);
-			setTimeout(() => { this.controls.minDistance = 5; }, easeTime);
+			setTimeout(() => { this.controls.minDistance = controlsMin; }, easeTime);
 			this.gameGroup.visible = true;
 			var gamePlaneTrans = false, gamePlaneCol = 0x2ECE3A, transRotCol = "#0000FF";
 			if (nextProps.game === "gameMedium") { gamePlaneTrans = true; gamePlaneCol = 0x083D8A; transRotCol="#00FF00";}
@@ -418,7 +418,7 @@ export default class Home extends Component {
 					child.rRange = Math.PI / 2;
 					if 		(child.name === "display") {child.rotation.y = Math.PI / -2; child.rRange = Math.PI;}
 					else if (child.name === "gate") {child.rRange = Math.PI;}
-					else if (child.name === "floor_0") {child.rRange = Math.PI;}
+					else if (child.name === "floor_0" || child.name === "floor_2") {child.rRange = Math.PI;}
 					else if (child.name.indexOf("light") > -1) {
 						child.rRange = Math.PI;
 						if		(child.name === "light_000") {child.rotation.z = Math.PI / -4; }
@@ -476,7 +476,7 @@ export default class Home extends Component {
 		this.gameGroup = new THREE.Group(); this.scene.add(this.gameGroup); this.gameGroup.visible = false;
 
 		this.controls = new OrbitControls(this.camera, this.renderer.domElement); this.controls.enablePan = false;
-		this.controls.minDistance = 5; this.controls.maxDistance = 30; this.controls.maxPolarAngle = Math.PI/2;
+		this.controls.minDistance = controlsMin; this.controls.maxDistance = controlsMax; this.controls.maxPolarAngle = Math.PI/2;
 
         this.transform = new TransformControls( this.camera, this.renderer.domElement ); this.scene.add(this.transform);
         this.transform.setTranslationSnap(10); this.transform.setRotationSnap( THREE.MathUtils.degToRad( 90 ) );
