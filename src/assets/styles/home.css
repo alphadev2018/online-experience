@@ -240,7 +240,7 @@
   top: 50%;
   left: 50%;
 }
-.home .mask-item{
+.home .mask-item, .home .hot-item{
   position: absolute;
 }
 .home .mask-item .item-icon {
@@ -266,4 +266,21 @@
   overflow-wrap: break-word;
   padding: 5px 10px;
   margin: auto;
+}
+
+.home .hot-item{
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 7px solid white;
+  background-color: red;
+  display: none;
+  transition: background-color 0.5s;
+}
+.home .hot-item.show{
+  display: block;
+  cursor: pointer;
+}
+.home .hot-item.show:hover{
+  background-color: white;
 }

@@ -26,9 +26,9 @@ export default class Home extends Component {
 		this.meshArr = []; this.selLandName = ""; this.mouseStatus = "";
 		this.cloudArr = []; this.windBaseArr = []; this.ballonArr = []; this.tonArr = []; this.roundPlayArr = []; this.airPlaneArr = [];
 		this.device = ( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) )?"mobile":"web";
-		this.state = { overModal:true, gameStatus:null, gameTime:-1, selHot:"", stepNum:-1, maxStepNum:-1, selTrans:"translate", crashModalId:false, transMesh:null, transChange:false, maskPosArr:[] };
+		this.state = { overModal:true, gameStatus:null, gameTime:-1, selHot:"", stepNum:-1, maxStepNum:-1, selTrans:"translate", crashModalId:false, transMesh:null, transChange:false, maskPosArr:[], hotPosArr:[], menuItem:"" };
 		this.gameMeshArr = []; this.gameIslandPlane = null; this.gameIslandLine = null;
-		this.hotMeshArr = []; this.hotOverArr = []; this.stepArr = []; this.maskArr = [];
+		this.hotMeshArr = []; this.stepArr = []; this.maskArr = [];
 		this.totalModelCount = modelArr.length + gameInfoArr.length; this.loadModelNum = 0;
 		this.transError = {clash:0, quality:0};
 	}
@@ -50,6 +50,7 @@ export default class Home extends Component {
 			// if (this.totalModelCount > this.loadModelNum) return;
 			if (this.selLandName === "") SetTween(this.scene.fog, "far", 50, easeTime);
 			GotoIsland(this, nextProps.menuItem);
+			this.setState({menuItem:nextProps.menuItem});
 		}
 		if (this.state.overModal !== nextProps.overModal) {
 			this.setState({overModal:nextProps.overModal});
@@ -63,9 +64,11 @@ export default class Home extends Component {
 			SetTween(this.camera, "position", {x:-10, y:this.camera.position.y, z:0}, easeTime);
 			setTimeout(() => { this.controls.minDistance = 5; }, easeTime);
 			this.gameGroup.visible = true;
-			var gamePlaneTrans = false, gamePlaneCol = 0x0E5E1A, transRotCol = "#0000FF";
+			var gamePlaneTrans = false, gamePlaneCol = 0x2ECE3A, transRotCol = "#0000FF";
 			if (nextProps.game === "gameMedium") { gamePlaneTrans = true; gamePlaneCol = 0x083D8A; transRotCol="#00FF00";}
-			this.gameIslandPlane.material = new THREE.MeshPhongMaterial({transparent:gamePlaneTrans, opacity:0.7, color:gamePlaneCol});
+			this.gameIslandPlane.material.color.setHex(gamePlaneCol);
+			this.gameIslandPlane.material.transparent = gamePlaneTrans;
+			// this.gameIslandPlane.material = new THREE.MeshPhongMaterial({transparent:gamePlaneTrans, opacity:0.7, color:gamePlaneCol});
 			this.transform.children[0].children[1].children.forEach(child => {
 				if (child instanceof THREE.Mesh) child.material = new THREE.MeshBasicMaterial({color:transRotCol, depthTest:false});
 				else  child.material = new THREE.LineBasicMaterial({color:transRotCol, depthTest:false});
@@ -119,10 +122,8 @@ export default class Home extends Component {
 			}
 			return;
 		}
-		const hotIntersect = GetRayCastObject(this, mouseX, mouseY, this.hotMeshArr);
 		const intersect = GetRayCastObject(this, mouseX, mouseY, this.meshArr);
-		if (hotIntersect) this.props.callHotSpot(intersect.object.hotStr);
-		else if (intersect) {
+		if (intersect) {
 			const landName = intersect.object.landChildName;
 			if (landName !== this.selLandName) {
 				GotoIsland(this, landName);
@@ -139,25 +140,18 @@ export default class Home extends Component {
 	}
 
 	mouseMove = (event) => {
-		const intersect = GetRayCastObject(this, event.clientX, event.clientY, this.hotMeshArr);
-		if (intersect) {
-			const hotStr = intersect.object.hotStr;
-			// this.setHotMeshCol(this.hotMeshArr, hotStr, 0xFF8888, 0xFFFFFF);
-			this.setHotMeshCol(this.hotOverArr, hotStr, 0xFFFFFF, 0xFF0000);
-			document.getElementById("container").style.cursor = "pointer";
-		}
-		else {
-			// this.setHotMeshCol(this.hotMeshArr, "", 0xFF8888, 0xFFFFFF);
-			this.setHotMeshCol(this.hotOverArr, "", 0xFFFFFF, 0xFF0000);
-			document.getElementById("container").style.cursor = "default";
-		}
 		this.mouseStatus = "move";
 		if (this.state.gameStatus !== "process") return;
 	}
 
 	mouseUp = (event) => {
+		if (this.selLandName === "media") {
+			const controlAngle = this.controls.getAzimuthalAngle();
+			console.log(controlAngle);
+		}
 		if (this.state.gameStatus !== "process") return;
-		if (this.transform.object && event.target.className.indexOf("mesh-control") > -1) return;
+		if (this.transform.object) return;
+		if ((typeof event.target.className === "string") && event.target.className.indexOf("mesh-control") > -1) return;
 		if (this.mouseStatus === "down" && this.state.transChange === false) {
 			const intersect = GetRayCastObject(this, event.clientX, event.clientY, this.gameMeshArr);
 			if (intersect) { this.transform.attach(intersect.object); this.setState({transMesh:intersect.object});}
@@ -169,7 +163,7 @@ export default class Home extends Component {
 				const newStepNum = this.state.stepNum + 1;
 				this.stepArr[newStepNum] = stepInfo;
 				this.setState({stepNum:newStepNum, maxStepNum:newStepNum});
-			}//			this.checkGameStatus();
+			}
 		}
 		this.mouseStatus = "";
 	}
@@ -201,13 +195,6 @@ export default class Home extends Component {
 	// 	});
 	// 	setTimeout(() => { this.setState({stepNum:newStepNum}); this.stepChange = false; }, easeTime);
 	// }
-
-	setHotMeshCol=(arr, str, overCol, noCol)=>{
-		arr.forEach(mesh => {
-			if (mesh.hotStr === str) mesh.material.color.setHex(overCol);
-			else mesh.material.color.setHex(noCol);
-		});
-	}
 
 	setEndGame=()=>{
 		this.setState({gameStatus:null, transMesh:null, transChange:false});
@@ -346,7 +333,7 @@ export default class Home extends Component {
 			object.children.forEach(child => {
 				if (child instanceof THREE.Mesh) {
 					child.landChildName = info.islandName; this.meshArr.push(child);
-					if (info.islandName === "game") child.receiveShadow = true;
+					if (info.islandName === "game" && child.name.indexOf("sea_trans") > -1) {console.log(child.name); child.receiveShadow = true;}
 					if (child.material.length) {
 						child.material.forEach(mat => {
 							// mat.side = THREE.DoubleSide;
@@ -382,8 +369,12 @@ export default class Home extends Component {
 				else if (child.name === "plane") {child.dir = 1; this.airPlaneArr.push(child);}
 				else if (child.name === "Road") { child.material = new THREE.MeshPhongMaterial({color:0x0C1723, side: 2}); }
 				hotNameArr.forEach(str => {
-					if (child.name === "hot_"+str+"_hover") {child.hotStr=str; this.hotOverArr.push(child);}
-					else if (child.name === "hot_"+str) {child.hotStr=str; this.hotMeshArr.push(child);}
+					if (child.name === "hot_"+str) {
+						child.visible = false;
+						child.hotName = str;
+						child.islandName = info.islandName;
+						this.hotMeshArr.push(child);
+					}
 				});
 			});
 			var vSize = new THREE.Box3().setFromObject(object).getSize();
@@ -426,6 +417,8 @@ export default class Home extends Component {
 				else if (info.id === "stadium") {
 					child.rRange = Math.PI / 2;
 					if 		(child.name === "display") {child.rotation.y = Math.PI / -2; child.rRange = Math.PI;}
+					else if (child.name === "gate") {child.rRange = Math.PI;}
+					else if (child.name === "floor_0") {child.rRange = Math.PI;}
 					else if (child.name.indexOf("light") > -1) {
 						child.rRange = Math.PI;
 						if		(child.name === "light_000") {child.rotation.z = Math.PI / -4; }
@@ -511,18 +504,24 @@ export default class Home extends Component {
 		const camPos = this.camera.position;
 		this.subLight.position.set(camPos.x, camPos.y, camPos.z);
 		if (this.selLandName === "media") {
-			const maskPosArr = [];
+			var maskPosArr = [];
 			this.maskArr.forEach((maskMesh, idx) => {
 				maskPosArr[idx] = Get2DPos(maskMesh, this.cWidth, this.cHeight, this.camera);
-				// if (idx === 0) { console.log(this.mask2DPosArr[idx]); }
 			});
 			this.setState({maskPosArr});
 		}
+		var hotPosArr = [];
+		this.hotMeshArr.forEach((hotMesh, idx) => {
+			hotPosArr[idx] = Get2DPos(hotMesh, this.cWidth, this.cHeight, this.camera);
+			hotPosArr[idx].islandName = hotMesh.islandName;
+			hotPosArr[idx].hotName = hotMesh.hotName;
+		});
+		this.setState({hotPosArr});
 		this.renderer.render(this.scene, this.camera);
 	}
 	
 	render() {
-		const {maxStepNum, stepNum, selTrans, gameStatus, gameTime, crashModalId, transMesh, transChange, maskPosArr} = this.state;
+		const {maxStepNum, stepNum, selTrans, gameStatus, gameTime, crashModalId, transMesh, transChange, maskPosArr, hotPosArr, menuItem} = this.state;
 		const rotateClassStr=(transMesh)?"":"disable", placeClassStr=(transChange)?"":"disable";
 		return (
 			<div className="home">
@@ -574,8 +573,10 @@ export default class Home extends Component {
 						<div className={"mesh-control set-place "+placeClassStr} onClick={this.setPlace}>Place</div>
 					</div>
 				}
+				{hotPosArr.map((pos, idx) =>
+					<div className={`hot-item ${(pos.islandName===menuItem)?"show":""}`} key={idx} style={{left:pos.x, top:pos.y}} onClick={()=>this.props.callHotSpot(pos.hotName)}></div>
+				)}
 				{ this.selLandName === "media" &&
-					// <div className="mask-item" style={{left:"50x", top:"50px"}}></div>
 					<div>
 						{maskPosArr.map((pos, idx) =>
 							<div className="mask-item" key={idx} style={{left:pos.x, top:pos.y}} onClick={()=>this.clickMask(maskPosArr.length - idx - 1)}>
