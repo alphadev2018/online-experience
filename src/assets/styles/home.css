@@ -284,3 +284,17 @@
 .home .hot-item.show:hover{
   background-color: white;
 }
+
+
+.footer-menu {
+  position: fixed;
+  display: flex;
+  justify-content: space-between;
+  width: 50px;
+  left: 30px;
+  bottom: 20px;
+  font-size: 24px;
+}
+.footer-menu a {
+  color: white;
+}

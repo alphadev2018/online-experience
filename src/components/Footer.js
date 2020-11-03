@@ -37,30 +37,11 @@ export default class Footer extends Component {
 		else if (str === "design") delayTime = 3000;
 		setTimeout(() => { this.setState({selButton:null}); }, delayTime);
 	}
-	mute = () => {
-		let element = document.getElementById('background_music');
-		if (element.volume === 0.1) {
-			element.volume = 0;
-		} else {
-			element.volume = 0.1;
-		}
-	}
-	fullScreen = () => {
-		window.toggleFullScreen();
-	}
 
 	render() {
 		const {game, selButton}=this.state;
 		return (
 			<div className="footer">
-				<div className="footer-menu">
-					<a href="#" onClick={this.fullScreen}>
-						<i class="fa fa-window-maximize" aria-hidden="true"></i>
-					</a>
-					<a href="#" onClick={this.mute}>
-						<i class="fa fa-volume-off" aria-hidden="true"></i>
-					</a>
-				</div>
 				{ game !== false &&
 					<div className="life-lines">
 						<div className="title">Lifelines</div>
