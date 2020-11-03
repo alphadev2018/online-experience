@@ -28,7 +28,7 @@ export default class Home extends Component {
 		this.device = ( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) )?"mobile":"web";
 		this.state = { overModal:true, gameStatus:null, gameTime:-1, selHot:"", stepNum:-1, maxStepNum:-1, selTrans:"translate", crashModalId:false, transMesh:null, transChange:false, mask_A_PosArr:[], mask_B_PosArr:[], hotPosArr:[], menuItem:"" };
 		this.gameMeshArr = []; this.gameIslandPlane = null; this.gameIslandLine = null;
-		this.hotMeshArr = []; this.stepArr = []; this.mask_A_Arr = []; this.mask_B_Arr = [];
+		this.hotMeshArr = []; this.stepArr = []; this.mask_A_Arr = []; this.mask_B_Arr = []; this.hotBuildingArr = [];
 		this.totalModelCount = modelArr.length + gameInfoArr.length; this.loadModelNum = 0;
 		this.transError = {clash:0, quality:0};
 	}
@@ -129,6 +129,9 @@ export default class Home extends Component {
 				GotoIsland(this, landName);
 				this.props.callMenuItem(landName);
 			}
+			else if (intersect.object.name.indexOf("hot_building") > -1) {
+				this.setState({maskAShow:true, maskBShow:true});
+			}
 		}
 	}
 	touchEnd = (event) => { this.processClickEvent(event.changedTouches[0].pageX, event.changedTouches[0].pageY); }
@@ -141,14 +144,22 @@ export default class Home extends Component {
 
 	mouseMove = (event) => {
 		this.mouseStatus = "move";
-		if (this.state.gameStatus !== "process") return;
+		if (this.selLandName === "media") {
+			const intersect = GetRayCastObject(this, event.clientX, event.clientY, this.hotBuildingArr);
+			const buildingCol = intersect?0xFF0000:0xFFFFFF;
+			this.hotBuildingArr.forEach(hotBuilding => {
+				// console.log(hotBuilding);
+				if (hotBuilding.material.length) {
+					hotBuilding.material.forEach(mat => {
+						mat.color.setHex(buildingCol);
+					});
+				}
+				else hotBuilding.material.color.setHex(buildingCol);
+			});
+		}
 	}
 
 	mouseUp = (event) => {
-		if (this.selLandName === "media") {
-			const controlAngle = this.controls.getAzimuthalAngle();
-			console.log(controlAngle);
-		}
 		if (this.state.gameStatus !== "process") return;
 		if ((typeof event.target.className === "string") && event.target.className.indexOf("mesh-control") > -1) return;
 		if (this.mouseStatus === "down" && this.state.transChange === false) {
@@ -325,6 +336,7 @@ export default class Home extends Component {
 
 	clickMask=(idx)=>{
 		this.props.callProduct( products[idx] );
+		this.setState({maskAShow:false, maskBShow:false});
 	}
 
 	loadIslandModel=(info)=>{
@@ -364,10 +376,11 @@ export default class Home extends Component {
 				}
 				else if (child.name.indexOf("roundPlay") > -1) this.roundPlayArr.push(child);
 				else if (child.name.indexOf("ballon") > -1) this.ballonArr.push(child);
-				else if (child.name.indexOf("mask_00") > -1) {this.mask_A_Arr.push(child); child.visible = false;}
-				else if (child.name.indexOf("mask_B0") > -1) {this.mask_B_Arr.push(child); child.visible = false;}
+				else if (child.name.indexOf("mask_0") > -1) {this.mask_A_Arr.push(child); child.visible = false;}
+				else if (child.name.indexOf("mask_B") > -1) {this.mask_B_Arr.push(child); child.visible = false;}
 				else if (child.name === "plane") {child.dir = 1; this.airPlaneArr.push(child);}
 				else if (child.name === "Road") { child.material = new THREE.MeshPhongMaterial({color:0x0C1723, side: 2}); }
+				else if (child.name.indexOf("hot_building") > -1) this.hotBuildingArr.push(child);
 				hotNameArr.forEach(str => {
 					if (child.name === "hot_"+str) {
 						child.visible = false;
@@ -512,6 +525,10 @@ export default class Home extends Component {
 				mask_B_PosArr[idx] = Get2DPos(mask_B_Mesh, this.cWidth, this.cHeight, this.camera);
 			});
 			this.setState({mask_A_PosArr, mask_B_PosArr});
+			// const controlAngle = this.controls.getAzimuthalAngle();
+			// const maskAShow = (controlAngle < 0 );
+			// const maskBShow = (controlAngle > -2.3 && controlAngle < 0.7);
+			// this.setState({maskAShow, maskBShow});
 		}
 		var hotPosArr = [];
 		this.hotMeshArr.forEach((hotMesh, idx) => {
@@ -524,7 +541,7 @@ export default class Home extends Component {
 	}
 	
 	render() {
-		const {maxStepNum, stepNum, selTrans, gameStatus, gameTime, crashModalId, transMesh, transChange, mask_A_PosArr, mask_B_PosArr, hotPosArr, menuItem} = this.state;
+		const {maxStepNum, stepNum, selTrans, gameStatus, gameTime, crashModalId, transMesh, transChange, mask_A_PosArr, mask_B_PosArr, hotPosArr, menuItem, maskAShow, maskBShow} = this.state;
 		const rotateClassStr=(transMesh)?"":"disable", placeClassStr=(transChange)?"":"disable";
 		return (
 			<div className="home">
@@ -581,16 +598,17 @@ export default class Home extends Component {
 				)}
 				{ this.selLandName === "media" &&
 					<div>
-						{mask_A_PosArr.map((pos, idx) =>
+						{maskAShow && mask_A_PosArr.map((pos, idx) =>
 							<div className="mask-item" key={idx} style={{left:pos.x, top:pos.y}} onClick={()=>this.clickMask(mask_A_PosArr.length - idx - 1)}>
-								<div className="item-icon" data-detail={products[mask_A_PosArr.length - idx - 1].title}>
+								<div className="item-icon" data-detail={"title_A"}>
+									{/* data-detail={products[mask_A_PosArr.length - idx - 1].title} */}
 									<i className="fa fa-heart"></i>
 								</div>
 							</div>
 						)}
-						{mask_B_PosArr.map((pos, idx) =>
+						{maskBShow && mask_B_PosArr.map((pos, idx) =>
 							<div className="mask-item" key={idx} style={{left:pos.x, top:pos.y}} onClick={()=>this.clickMask(mask_B_PosArr.length - idx - 1)}>
-								<div className="item-icon" data-detail={"title"}>
+								<div className="item-icon" data-detail={"title_B"}>
 									<i className="fa fa-heart"></i>
 								</div>
 							</div>
