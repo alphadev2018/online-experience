@@ -26,15 +26,15 @@ autoPlay(true);
 
 export const easeTime = 1000, gameReadyTime = 5, controlsMin = 8.5, controlsMax = 30;
 export const menuHomeArr=[
-	{label:"home0", value:"home0", label:"EMEA"},
-	{label:"home1", value:"home1", label:"APAC"},
-	{label:"home2", value:"home2", label:"Americas"}
+	{label:"home0", value:"home0", label:"EMEA Island"},
+	{label:"home1", value:"home1", label:"APAC Island"},
+	{label:"home2", value:"home2", label:"AMER Island"}
 ];
 export const menuArr = [
-	{label:"Media", 	value:"media", label:"Media Island"},
+	{label:"Media", 	value:"media", label:"Product Island"},
 	{label:"Game", 		value:"game", label:"Game Island"},
-	{label:"Map", 		value:"map", label:"Map"},
-	{label:"Conductive",value:"conductive", label:"Autodesk Construnction"}
+	{label:"Map", 		value:"map", label:"Plan View"},
+	{label:"Conductive",value:"conductive", label:"Back to AU Construction"}
 ];
 export const modelArr = [
 	{file:islandHome0, size:12, pos:{x: 20, y:0, z: 20}, islandName:menuHomeArr[0].value},

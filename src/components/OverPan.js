@@ -35,9 +35,9 @@ export default class OverPan extends Component {
 			{type:"img-button", imgSrc:gameImgDifficult, label:"Difficult", classStr:"difficult", value:"gameDifficult", hide:true}
 		];
 		this.gameRuleArr = [
-			"1. this is first game rule. first game rule is simple and not difficult",
-			"2. this is second game rule. second game rule is a little difficult",
-			"3. this is third game rule. third game rule is very difficult and complex",
+			"Select either Easy, Medium or Hard difficulty to start playing.",
+			`The idea is to build the building in the quickest time.\n\n- Select a piece and either move it in X,Y,Z axis, or click one of the orange rotate buttons to turn the piece in ninety degrees.\n- Once you have finished moving the piece, press "Place". If the piece is not in the correct position, you will receive a warning.`,
+			`Click one of the Lifelines to help the process:\n\n- Projects Team Assist moves the next piece into the correct place, and costs 20s time penalty\n- Design Reveal shows a picture of the finished model and costs 30s time penalty\n- Auto Complete finishes the build and ends the game`,
 		];
 		this.leaderColumns = [{ Header: 'Position', accessor: 'no'},
 							{ Header: 'Time taken', accessor: 'name' },
@@ -209,7 +209,7 @@ export default class OverPan extends Component {
 						<div className="title">Game Rules</div>
 						{this.gameRuleArr.map((item, idx) =>
 							<div className={`game-rule-item ${gameRuleNum===idx?"show":""}`} key={idx}>
-								<div className="text"> {item} </div>
+								<div className="text" style={{whiteSpace: 'pre-wrap'}}> {item} </div>
 								<div className="rule-img"></div>
 							</div>
 						)}
