@@ -90,14 +90,3 @@
     color: white;
     text-align: center;
 }
-.footer .footer-menu {
-    display: flex;
-    justify-content: space-between;
-    width: 50px;
-    position: absolute;
-    left: 30px;
-    font-size: 24px;
-}
-.footer .footer-menu a {
-    color: white;
-}

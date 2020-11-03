@@ -54,7 +54,7 @@ export default class Sidebar extends Component {
 			<div className={`side ${(menuActive === true)?"active":""} ${this.device}`}>
 				<div className="side-bar side-bar-top">
 					{menuHomeArr.map(menuItem =>
-						<div className={`side-item ${(this.state.selMenu === menuItem.value)?"active":""}`} onClick={()=>this.clickItem(menuItem.value)} key={menuItem.value}>
+						<div className={`side-item ${(this.state.selMenu === menuItem.value)?"active":""}`} onClick={()=>this.clickItem(menuItem.value)} key={menuItem.value} data-detail={menuItem.label}>
 							{menuItem.value === "home0" && <MenuHomeIcon0 className="home0"></MenuHomeIcon0>}
 							{menuItem.value === "home1" && <MenuHomeIcon1 className="home1"></MenuHomeIcon1>}
 							{menuItem.value === "home2" && <MenuHomeIcon2 className="home2"></MenuHomeIcon2>}
@@ -64,7 +64,7 @@ export default class Sidebar extends Component {
 				</div>
 				<div className="side-bar side-bar-bottom">
 					{menuArr.map(menuItem =>
-						<div className={`side-item ${(this.state.selMenu === menuItem.value)?"active":""}`} onClick={()=>this.clickItem(menuItem.value)} key={menuItem.value}>
+						<div className={`side-item ${(this.state.selMenu === menuItem.value)?"active":""}`} onClick={()=>this.clickItem(menuItem.value)} key={menuItem.value} data-detail={menuItem.label}>
 							{menuItem.value === "media" && <MenuMediaIcon></MenuMediaIcon>}
 							{menuItem.value === "game" && <MenuGameIcon></MenuGameIcon>}
 							{menuItem.value === "map" && <MenuMapIcon></MenuMapIcon>}

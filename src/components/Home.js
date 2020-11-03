@@ -507,6 +507,7 @@ export default class Home extends Component {
 			var maskPosArr = [];
 			this.maskArr.forEach((maskMesh, idx) => {
 				maskPosArr[idx] = Get2DPos(maskMesh, this.cWidth, this.cHeight, this.camera);
+				// console.log(Get3DPos(maskMesh, this.cWidth, this.cHeight, this.camera));
 			});
 			this.setState({maskPosArr});
 		}
