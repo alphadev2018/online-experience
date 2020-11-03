@@ -26,9 +26,9 @@ export default class Home extends Component {
 		this.meshArr = []; this.selLandName = ""; this.mouseStatus = "";
 		this.cloudArr = []; this.windBaseArr = []; this.ballonArr = []; this.tonArr = []; this.roundPlayArr = []; this.airPlaneArr = [];
 		this.device = ( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) )?"mobile":"web";
-		this.state = { overModal:true, gameStatus:null, gameTime:-1, selHot:"", stepNum:-1, maxStepNum:-1, selTrans:"translate", crashModalId:false, transMesh:null, transChange:false, maskPosArr:[], hotPosArr:[], menuItem:"" };
+		this.state = { overModal:true, gameStatus:null, gameTime:-1, selHot:"", stepNum:-1, maxStepNum:-1, selTrans:"translate", crashModalId:false, transMesh:null, transChange:false, mask_A_PosArr:[], mask_B_PosArr:[], hotPosArr:[], menuItem:"" };
 		this.gameMeshArr = []; this.gameIslandPlane = null; this.gameIslandLine = null;
-		this.hotMeshArr = []; this.stepArr = []; this.maskArr = [];
+		this.hotMeshArr = []; this.stepArr = []; this.mask_A_Arr = []; this.mask_B_Arr = [];
 		this.totalModelCount = modelArr.length + gameInfoArr.length; this.loadModelNum = 0;
 		this.transError = {clash:0, quality:0};
 	}
@@ -365,7 +365,8 @@ export default class Home extends Component {
 				}
 				else if (child.name.indexOf("roundPlay") > -1) this.roundPlayArr.push(child);
 				else if (child.name.indexOf("ballon") > -1) this.ballonArr.push(child);
-				else if (child.name.indexOf("mask") > -1) {this.maskArr.push(child); child.visible = false;}
+				else if (child.name.indexOf("mask_00") > -1) {this.mask_A_Arr.push(child); child.visible = false;}
+				else if (child.name.indexOf("mask_B0") > -1) {this.mask_B_Arr.push(child); child.visible = false;}
 				else if (child.name === "plane") {child.dir = 1; this.airPlaneArr.push(child);}
 				else if (child.name === "Road") { child.material = new THREE.MeshPhongMaterial({color:0x0C1723, side: 2}); }
 				hotNameArr.forEach(str => {
@@ -504,12 +505,14 @@ export default class Home extends Component {
 		const camPos = this.camera.position;
 		this.subLight.position.set(camPos.x, camPos.y, camPos.z);
 		if (this.selLandName === "media") {
-			var maskPosArr = [];
-			this.maskArr.forEach((maskMesh, idx) => {
-				maskPosArr[idx] = Get2DPos(maskMesh, this.cWidth, this.cHeight, this.camera);
-				// console.log(Get3DPos(maskMesh, this.cWidth, this.cHeight, this.camera));
+			var mask_A_PosArr = [], mask_B_PosArr = [];
+			this.mask_A_Arr.forEach((mask_A_Mesh, idx) => {
+				mask_A_PosArr[idx] = Get2DPos(mask_A_Mesh, this.cWidth, this.cHeight, this.camera);
 			});
-			this.setState({maskPosArr});
+			this.mask_B_Arr.forEach((mask_B_Mesh, idx) => {
+				mask_B_PosArr[idx] = Get2DPos(mask_B_Mesh, this.cWidth, this.cHeight, this.camera);
+			});
+			this.setState({mask_A_PosArr, mask_B_PosArr});
 		}
 		var hotPosArr = [];
 		this.hotMeshArr.forEach((hotMesh, idx) => {
@@ -522,7 +525,7 @@ export default class Home extends Component {
 	}
 	
 	render() {
-		const {maxStepNum, stepNum, selTrans, gameStatus, gameTime, crashModalId, transMesh, transChange, maskPosArr, hotPosArr, menuItem} = this.state;
+		const {maxStepNum, stepNum, selTrans, gameStatus, gameTime, crashModalId, transMesh, transChange, mask_A_PosArr, mask_B_PosArr, hotPosArr, menuItem} = this.state;
 		const rotateClassStr=(transMesh)?"":"disable", placeClassStr=(transChange)?"":"disable";
 		return (
 			<div className="home">
@@ -579,9 +582,16 @@ export default class Home extends Component {
 				)}
 				{ this.selLandName === "media" &&
 					<div>
-						{maskPosArr.map((pos, idx) =>
-							<div className="mask-item" key={idx} style={{left:pos.x, top:pos.y}} onClick={()=>this.clickMask(maskPosArr.length - idx - 1)}>
-								<div className="item-icon" data-detail={products[maskPosArr.length - idx - 1].title}>
+						{mask_A_PosArr.map((pos, idx) =>
+							<div className="mask-item" key={idx} style={{left:pos.x, top:pos.y}} onClick={()=>this.clickMask(mask_A_PosArr.length - idx - 1)}>
+								<div className="item-icon" data-detail={products[mask_A_PosArr.length - idx - 1].title}>
+									<i className="fa fa-heart"></i>
+								</div>
+							</div>
+						)}
+						{mask_B_PosArr.map((pos, idx) =>
+							<div className="mask-item" key={idx} style={{left:pos.x, top:pos.y}} onClick={()=>this.clickMask(mask_B_PosArr.length - idx - 1)}>
+								<div className="item-icon" data-detail={"title"}>
 									<i className="fa fa-heart"></i>
 								</div>
 							</div>
