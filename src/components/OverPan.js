@@ -110,6 +110,23 @@ export default class OverPan extends Component {
 		}, 1000);
 	}
 
+	gotoProduct = (product) => {
+		products.map(p => {
+			if (p.title !== product) {
+				return;
+			}
+
+			this.setState({ modalInfo: false });
+			setTimeout(() => { 
+				this.props.callLinkProduct(p);
+			}, 100);
+			setTimeout(() => {
+				this.setState({ modalInfo: "product" });
+			}, 1000);
+		})
+
+	}
+
 	render() {
 		const {modalInfo, gameRuleNum, gameLevelNum, loadPro} = this.state;
 		var totalTime, gameTime, level, gamePro, hotStr="", transError, resultImg;
@@ -334,10 +351,9 @@ export default class OverPan extends Component {
 							{this.props.modalDetailInfo.type === 'capability' && (
 								<>
 									<label>Products</label>
-									{/* <p>{this.props.modalDetailInfo.products}</p> */}
 									<p>
 									{this.props.modalDetailInfo.products.split(',').map(product => {
-										return <label onClick={()=>console.log('bbb')}>{product} </label>
+										return <span style={{fontFamily: 'calibri_light', fontSize: '18px', cursor: 'pointer'}} onClick={()=>this.gotoProduct(product)}>{product} </span>
 									})}
 									</p>
 								</>
