@@ -641,10 +641,10 @@ export default class Home extends Component {
 						</div> */}
 
 						<div className="rotate-wrapper">
-							<div className={`rotate-item ${rotateClassStr}`} onClick={()=>this.setRotate(1)}>
+							<div className={`rotate-item ${rotateClassStr}`} onClick={()=>this.setRotate(-1)}>
 								<img className="mesh-control rotate-img" src={undoImg}></img>
 							</div>
-							<div className={`rotate-item  ${rotateClassStr}`} onClick={()=>this.setRotate(-1)}>
+							<div className={`rotate-item  ${rotateClassStr}`} onClick={()=>this.setRotate(1)}>
 								<img className="mesh-control rotate-img" src={redoImg}></img>
 							</div>
 						</div>
