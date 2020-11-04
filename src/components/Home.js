@@ -69,6 +69,7 @@ export default class Home extends Component {
 			if (nextProps.game === "gameMedium") { gamePlaneTrans = true; gamePlaneCol = 0x083D8A; transRotCol="#00FF00";}
 			this.gameIslandPlane.material.color.setHex(gamePlaneCol);
 			this.gameIslandPlane.material.transparent = gamePlaneTrans;
+			this.gameIslandPlane.material.opacity = 0.7;
 			this.transform.children[0].children[1].children.forEach(child => {
 				if (child instanceof THREE.Mesh) child.material = new THREE.MeshBasicMaterial({color:transRotCol, depthTest:false});
 				else  child.material = new THREE.LineBasicMaterial({color:transRotCol, depthTest:false});
