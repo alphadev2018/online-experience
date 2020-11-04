@@ -480,6 +480,9 @@
     padding: 1rem;
     margin-bottom: 0;
 }
+.modal-wrapper.product .title img{
+    height: 40px;
+}
 .modal-wrapper.product .body{
     color: white;
     font-size: 18px;

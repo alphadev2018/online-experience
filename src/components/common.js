@@ -24,7 +24,7 @@ export const hotNameArr = ["EMEA", "AMERICA", "ACPA"];
 
 autoPlay(true);
 
-export const easeTime = 1000, gameReadyTime = 5, controlsMin = 8.5, controlsMax = 30;
+export const easeTime = 1000, gameReadyTime = 5, controlsMin = 9.3, controlsMax = 30;
 export const menuHomeArr=[
 	{label:"home0", value:"home0", label:"EMEA Island"},
 	{label:"home1", value:"home1", label:"APAC Island"},
