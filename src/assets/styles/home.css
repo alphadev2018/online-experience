@@ -243,12 +243,20 @@
 .home .mask-item, .home .hot-item{
   position: absolute;
 }
-.home .mask-item .item-icon {
+.home .mask-item .item-icon.right:hover {
   background: #0577B1;
   border-radius: 30px;
   display: flex;
   justify-content: center;
   align-items: center;
+}
+.home .mask-item .item-icon.left {
+  background: #0577B1;
+  border-radius: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transform: translateX(-100%);
 }
 .home .mask-item .item-icon i {
   border-radius: 50%;
@@ -259,13 +267,25 @@
   padding: 5px;
 }
 
-.home .mask-item .item-icon:hover::after {
+.home .mask-item .item-icon.left:hover::before {
   content: attr(data-detail);
   color: white;
   height: auto;
   overflow-wrap: break-word;
   padding: 5px 10px;
   margin: auto;
+  position: relative;
+  text-align: right;
+  width: 100%;
+}
+.home .mask-item .item-icon.right:hover::after {
+  content: attr(data-detail);
+  color: white;
+  height: auto;
+  overflow-wrap: break-word;
+  padding: 5px 10px;
+  margin: auto;
+  width: 100%;
 }
 
 .home .hot-item{

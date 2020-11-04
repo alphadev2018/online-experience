@@ -29,6 +29,7 @@ export default class Home extends Component {
 		this.state = { overModal:true, gameStatus:null, gameTime:-1, selHot:"", stepNum:-1, maxStepNum:-1, selTrans:"translate", crashModalId:false, transMesh:null, transChange:false, mask_A_PosArr:[], mask_B_PosArr:[], hotPosArr:[], menuItem:"" };
 		this.gameMeshArr = []; this.gameIslandPlane = null; this.gameIslandLine = null;
 		this.hotMeshArr = []; this.stepArr = []; this.mask_A_Arr = []; this.mask_B_Arr = []; this.hotBuildingArr = [];
+		this.hotIconicArr = [];
 		this.totalModelCount = modelArr.length + gameInfoArr.length; this.loadModelNum = 0;
 		this.transError = {clash:0, quality:0};
 	}
@@ -132,13 +133,32 @@ export default class Home extends Component {
 			else if (intersect.object.name.indexOf("hot_building") > -1) {
 				
 				SetTween(this.camera, "camPos", 3, easeTime);
-				SetTween(this.camera, "position", {x:-7.1, y: 1.7, z: 5.6}, easeTime);
+				// -5.53, 2.36, 7.08
+				if (intersect.object.name === "hot_building_0") {
+					SetTween(this.camera, "position", {x:-7.1, y: 1.7, z: 5.6}, easeTime);
+				} else {
+					SetTween(this.camera, "position", {x:-5.53, y: 2.36, z: 7.08}, easeTime);
+				}
 
-				this.setState({
+				setTimeout(this.setState({
 					maskAShow: intersect.object.name === "hot_building_0", 
 					maskBShow: intersect.object.name === "hot_building_1"
-				});
+				}), 1000);
 			}
+		}
+		this.handleIconicEvent(mouseX, mouseY);
+	}
+	handleIconicEvent = (mouseX, mouseY) => {
+		let island = "";
+		if (GetRayCastObject(this, mouseX, mouseY, this.hotIconicArr["home0"])) {
+			island = "EMEA";
+		} else if (GetRayCastObject(this, mouseX, mouseY, this.hotIconicArr["home1"])) { 
+			island = "ACPA";
+		} else if (GetRayCastObject(this, mouseX, mouseY, this.hotIconicArr["home2"])) { 
+			island = "AMERICA";
+		}
+		if (island !== "") {
+			this.props.callHotSpot(island);
 		}
 	}
 	touchEnd = (event) => { this.processClickEvent(event.changedTouches[0].pageX, event.changedTouches[0].pageY); }
@@ -167,6 +187,39 @@ export default class Home extends Component {
 					});
 				}
 				else hotBuilding.material.color.setHex(buildingCol);
+			});
+		} else if (this.selLandName === "home0") {
+			const intersect = GetRayCastObject(this, event.clientX, event.clientY, this.hotIconicArr["home0"]);
+
+			this.hotIconicArr["home0"].forEach((building, idx) => {
+				if (building.name !== "roof") return;				
+				if (intersect) {
+					building.material.color.setHex(0xFF0000);
+				} else {
+					building.material.color.setHex(0x484848);
+				}
+			});
+		} else if (this.selLandName === "home1") {
+			// home1 ACPC
+			const intersect = GetRayCastObject(this, event.clientX, event.clientY, this.hotIconicArr["home1"]);
+
+			this.hotIconicArr["home1"].forEach((building, idx) => {			
+				if (intersect) {
+					building.material[1].color.setHex(0xFF0000);
+				} else {
+					building.material[1].color.setHex(0x28D9A1);
+				}
+			});
+		} else if (this.selLandName === "home2") {
+			// home2 America
+			const intersect = GetRayCastObject(this, event.clientX, event.clientY, this.hotIconicArr["home2"]);
+
+			this.hotIconicArr["home2"].forEach((building, idx) => {			
+				if (intersect) {
+					building.material.color.setHex(0xFF0000);
+				} else {
+					building.material.color.setHex(0x545454);
+				}
 			});
 		}
 	}
@@ -351,9 +404,24 @@ export default class Home extends Component {
 		this.setState({maskAShow:false, maskBShow:false});
 	}
 
+	gatherIconic=(child, island)=>{
+		// console.log(child)
+		if (island === "home0" && child.name === "building_2") {
+			this.hotIconicArr["home0"] = child.children;
+		}
+		if (island === "home1" && child.name === "" && child.type === "Mesh") {
+			this.hotIconicArr["home1"] = [child];
+		}
+		if (island === "home2" && child.name === "Box289" && child.type === "Mesh") {
+			this.hotIconicArr["home2"] = [child];
+		}
+	}
+
 	loadIslandModel=(info)=>{
 		new FBXLoader().load(info.file, (object)=>{
 			object.children.forEach(child => {
+				this.gatherIconic(child, info.islandName);
+
 				if (child instanceof THREE.Mesh) {
 					child.landChildName = info.islandName; this.meshArr.push(child);
 					if (info.islandName === "game" && child.name.indexOf("sea_trans") > -1) {console.log(child.name); child.receiveShadow = true;}
@@ -363,7 +431,7 @@ export default class Home extends Component {
 						});
 					}
 					else child.material.side=THREE.DoubleSide;
-				}
+				}				
 				if (child.name.indexOf("__") > -1) {
 					const colVal = child.name.split("__")[1];
 					child.material = new THREE.MeshPhongMaterial({color:"#"+colVal});
@@ -393,6 +461,7 @@ export default class Home extends Component {
 				else if (child.name === "plane") {child.dir = 1; this.airPlaneArr.push(child);}
 				else if (child.name === "Road") { child.material = new THREE.MeshPhongMaterial({color:0x0C1723, side: 2}); }
 				else if (child.name.indexOf("hot_building") > -1) this.hotBuildingArr.push(child);
+				else if (child.name)
 				hotNameArr.forEach(str => {
 					if (child.name === "hot_"+str) {
 						child.visible = false;
@@ -543,13 +612,13 @@ export default class Home extends Component {
 			// const maskBShow = (controlAngle > -2.3 && controlAngle < 0.7);
 			// this.setState({maskAShow, maskBShow});
 		}
-		var hotPosArr = [];
-		this.hotMeshArr.forEach((hotMesh, idx) => {
-			hotPosArr[idx] = Get2DPos(hotMesh, this.cWidth, this.cHeight, this.camera);
-			hotPosArr[idx].islandName = hotMesh.islandName;
-			hotPosArr[idx].hotName = hotMesh.hotName;
-		});
-		this.setState({hotPosArr});
+		// var hotPosArr = [];
+		// this.hotMeshArr.forEach((hotMesh, idx) => {
+		// 	hotPosArr[idx] = Get2DPos(hotMesh, this.cWidth, this.cHeight, this.camera);
+		// 	hotPosArr[idx].islandName = hotMesh.islandName;
+		// 	hotPosArr[idx].hotName = hotMesh.hotName;
+		// });
+		// this.setState({hotPosArr});
 		this.renderer.render(this.scene, this.camera);
 	}
 	
@@ -606,21 +675,21 @@ export default class Home extends Component {
 						<div className={"mesh-control set-place "+placeClassStr} onClick={this.setPlace}>Place</div>
 					</div>
 				}
-				{hotPosArr.map((pos, idx) =>
+				{/*hotPosArr.map((pos, idx) =>
 					<div className={`hot-item ${(pos.islandName===menuItem)?"show":""}`} key={idx} style={{left:pos.x, top:pos.y}} onClick={()=>this.props.callHotSpot(pos.hotName)}></div>
-				)}
+				)*/}
 				{ this.selLandName === "media" &&
 					<div style={{width: '100vw', height: '100vh', display: maskAShow | maskBShow ? 'block' : 'none',  top: 0, left: 0, position: 'absolute'}} onClick={()=>this.setState({maskAShow:false, maskBShow:false})}>
 						{maskAShow && mask_A_PosArr.map((pos, idx) =>
 							<div className="mask-item" key={idx} style={{left:pos.x, top:pos.y}} onClick={()=>this.clickMask(capabilities[mask_A_PosArr.length - idx - 1])}>
-								<div className="item-icon" data-detail={capabilities[mask_A_PosArr.length - idx - 1].title}>									
+								<div className={`item-icon ${idx < 7 ? 'left':'right'}`} data-detail={capabilities[mask_A_PosArr.length - idx - 1].title}>									
 									<i className="fa fa-heart"></i>
 								</div>
 							</div>
 						)}
 						{maskBShow && mask_B_PosArr.map((pos, idx) =>
 							<div className="mask-item" key={idx} style={{left:pos.x, top:pos.y}} onClick={()=>this.clickMask(products[mask_B_PosArr.length - idx - 1])}>
-								<div className="item-icon" data-detail={products[mask_B_PosArr.length - idx - 1].title}>
+								<div className={`item-icon ${[0,1,2,3,8].indexOf(idx) !== -1 ? 'left':'right'}`} data-detail={products[mask_B_PosArr.length - idx - 1].title}>
 									<i className="fa fa-heart"></i>
 								</div>
 							</div>
