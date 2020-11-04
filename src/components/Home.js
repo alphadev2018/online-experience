@@ -29,7 +29,7 @@ export default class Home extends Component {
 		this.state = { overModal:true, gameStatus:null, gameTime:-1, selHot:"", stepNum:-1, maxStepNum:-1, selTrans:"translate", crashModalId:false, transMesh:null, transChange:false, mask_A_PosArr:[], mask_B_PosArr:[], hotPosArr:[], menuItem:"" };
 		this.gameMeshArr = []; this.gameIslandPlane = null;
 		this.hotMeshArr = []; this.stepArr = []; this.mask_A_Arr = []; this.mask_B_Arr = []; this.hotBuildingArr = [];
-		this.hotIconicArr = [];
+		this.hotIconicArr = {"home0": [], "home1": [], "home2":[]};
 		this.totalModelCount = modelArr.length + gameInfoArr.length; this.loadModelNum = 0;
 		this.transError = {clash:0, quality:0};
 	}
@@ -140,10 +140,11 @@ export default class Home extends Component {
 					SetTween(this.camera, "position", {x:-5.53, y: 2.36, z: 7.08}, easeTime);
 				}
 
-				setTimeout(this.setState({
+				setTimeout(() => {
+					this.setState({
 					maskAShow: intersect.object.name === "hot_building_0", 
 					maskBShow: intersect.object.name === "hot_building_1"
-				}), 1000);
+				}) }, 1000);
 			}
 		}
 		this.handleIconicEvent(mouseX, mouseY);
@@ -188,11 +189,11 @@ export default class Home extends Component {
 				}
 				else hotBuilding.material.color.setHex(buildingCol);
 			});
-		} /*else if (this.selLandName === "home0") {
+		} else if (this.selLandName === "home0") {
 			const intersect = GetRayCastObject(this, event.clientX, event.clientY, this.hotIconicArr["home0"]);
 
 			this.hotIconicArr["home0"].forEach((building, idx) => {
-				if (building.name !== "roof") return;				
+				if (building.name !== "hot_EMEA_roof2") return;				
 				if (intersect) {
 					building.material.color.setHex(0xFF0000);
 				} else {
@@ -226,7 +227,7 @@ export default class Home extends Component {
 			const intersect = GetRayCastObject(this, event.clientX, event.clientY, this.hotMeshArr);
 			this.hotMeshArr.forEach(hotMesh => {
 			});
-		}*/
+		}
 	}
 
 	mouseUp = (event) => {
@@ -411,16 +412,16 @@ export default class Home extends Component {
 
 	gatherIconic=(child, island)=>{
 		// console.log(child)
-		if (island === "home0" && child.name === "building_2") {
-			this.hotIconicArr["home0"] = child.children;
+		if (island === "home0" && child.name.indexOf("hot_EMEA") !== -1) {
+			this.hotIconicArr["home0"].push(child);
+			console.log(child)
 		}
-		if (island === "home1" && child.name === "" && child.type === "Mesh") {
-			this.hotIconicArr["home1"] = [child];
+		if (island === "home1" && child.name.indexOf("hot_APAC") !== -1) {
+			this.hotIconicArr["home1"].push(child);
 		}
-		if (island === "home2" && child.name === "Box289" && child.type === "Mesh") {
-			this.hotIconicArr["home2"] = [child];
+		if (island === "home2" && child.name.indexOf("hot_AMERICA_roof") !== -1) {
+			this.hotIconicArr["home2"].push(child);
 		}
-		console.log(this.hotIconicArr)
 	}
 
 	loadIslandModel=(info)=>{

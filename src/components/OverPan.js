@@ -112,7 +112,8 @@ export default class OverPan extends Component {
 
 	gotoProduct = (product) => {
 		products.map(p => {
-			if (p.title !== product) {
+			// console.log(`${p.title} ${product}`)
+			if (p.title != product) {
 				return;
 			}
 
@@ -352,8 +353,10 @@ export default class OverPan extends Component {
 								<>
 									<label>Products</label>
 									<p>
-									{this.props.modalDetailInfo.products.split(',').map(product => {
-										return <span style={{fontFamily: 'calibri_light', fontSize: '18px', cursor: 'pointer'}} onClick={()=>this.gotoProduct(product)}>{product} </span>
+									{this.props.modalDetailInfo.products.split(', ').map((product, idx, arr) => {
+										return <span style={{fontFamily: 'calibri_light', fontSize: '18px', cursor: 'pointer'}} onClick={()=>this.gotoProduct(product)}>
+											{` ${product}${idx != arr.length - 1 ? ',':''}`}
+										</span>
 									})}
 									</p>
 								</>
