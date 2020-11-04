@@ -111,6 +111,18 @@
 .modal-wrapper.game-menu{
     position: relative;
 }
+.modal-wrapper.game-menu .close-btn{
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 30px;
+    cursor: pointer;
+    opacity: 0.8;
+}
+.modal-wrapper.game-menu .close-btn img{
+    width: 100%;
+}
+
 .modal-wrapper .title{
     color: white;
     font-size: 38px;
