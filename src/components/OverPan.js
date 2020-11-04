@@ -334,7 +334,12 @@ export default class OverPan extends Component {
 							{this.props.modalDetailInfo.type === 'capability' && (
 								<>
 									<label>Products</label>
-									<p>{this.props.modalDetailInfo.products}</p>
+									{/* <p>{this.props.modalDetailInfo.products}</p> */}
+									<p>
+									{this.props.modalDetailInfo.products.split(',').map(product => {
+										return <label onClick={()=>console.log('bbb')}>{product} </label>
+									})}
+									</p>
 								</>
 							)}
 						</div>

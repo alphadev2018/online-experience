@@ -5,6 +5,10 @@ import ADSK_Quantify from '../assets/images/product/logos/ADSK-Quantify.png';
 import Assemble from '../assets/images/product/logos/Assemble.png';
 import BuildingConnected from '../assets/images/product/logos/BuildingConnected.png';
 
+
+
+
+
 export const products = [
 	{ 
 		title: 'Autodesk Build', 
@@ -81,6 +85,7 @@ export const capabilities = [
 	{
 		title: 'Bid Management',
 		type: 'capability',
+		icon: 'icons/ico_bid-management.png',
 		products: 'BC Pro, Bid Board Pro',
 		description: 'Discover, invite and identify the right builder for the right project to ensure the right teams are chosen to mitigate risk and costs before breaking ground.',
 		murl: 'https://construction.autodesk.com/workflows/construction-bid-management',
@@ -95,12 +100,14 @@ export const capabilities = [
 	{
 		title: 'Coordination',
 		type: 'capability',
+		icon: 'icons/ico_model-cooridination.png',
 		products: 'Autodesk Coordinate',
 		description: 'The process of coordinating the design and trade input to ensure that the project can be executed as intended',
 		murl: 'https://construction.autodesk.com/workflows/bim-coordination-collaboration',
 	},
 	{
 		title: 'Cost Management',
+		icon: 'icons/ico_cost-management.png',
 		type: 'capability',
 		products: 'Autodesk Build',
 		description: `Gain a real-time view of a project's financial health and visualize cost-related risk by managing all cost-related construction activities in the cloud. `,
@@ -116,6 +123,7 @@ export const capabilities = [
 	{
 		title: 'Document Management',
 		type: 'capability',
+		icon: 'icons/ico_document-management.png',
 		products: 'Autodesk Docs',
 		description: 'Organize, distribute, and share files across the project lifecycle with a single document management platform. Create a single source of truth, ensuring teams have access to the information they need from anywhere, anytime, on any device. ',
 		murl: 'https://construction.autodesk.com/workflows/construction-document-management',
@@ -137,6 +145,7 @@ export const capabilities = [
 	{
 		title: 'Quality Management',
 		type: 'capability',
+		icon: 'icons/ico_quality-management.png',
 		products: 'Autodesk Build',
 		description: 'Gain visibility into all project issues and resolve them earlier with a proactive construction quality control process. Reduce costly rework and keep projects on schedule.',
 		murl: 'https://construction.autodesk.com/workflows/construction-quality-management',
@@ -144,6 +153,7 @@ export const capabilities = [
 	{
 		title: 'Quantification',
 		type: 'capability',
+		icon: 'icons/ico_quantification.png',
 		products: 'BidBoard Pro, Autodesk Quantify',
 		description: 'The process of extracting materials and quantities from a set of 2D or 3D designs',
 		murl: 'https://construction.autodesk.com/workflows/construction-takeoff',
@@ -151,12 +161,14 @@ export const capabilities = [
 	{
 		title: 'Safety Management',
 		type: 'capability',
+		icon: 'icons/ico_safety-management.png',
 		products: 'Autodesk Build',
 		description: 'Develop repeatable safety programs that are easy to adopt and get all your team members involved in taking ownership of safety onsite.',
 		murl: 'https://construction.autodesk.com/workflows/construction-site-safety ',
 	},
 	{
 		title: 'Project Management',
+		icon: 'icons/ico_project-management.png',
 		type: 'capability',
 		products: 'Autodesk Build, Pype',
 		description: 'Streamline project management workflows to meet contractual obligations, ensure the project stays on track, and improve communication between the field and office.',
@@ -165,6 +177,7 @@ export const capabilities = [
 	{
 		title: 'Insights',
 		type: 'capability',
+		icon: 'icons/ico_insights.png',
 		products: 'Autodesk Build, Autodesk Docs, Autodesk Coordinate',
 		description: 'Harness the power of construction data by leveraging predictive analytics delivered through easy-to-deploy reports and dashboards that highlight and help mitigate risks. ',
 		murl: 'https://construction.autodesk.com/workflows/construction-data-analytics',
@@ -172,6 +185,7 @@ export const capabilities = [
 	{
 		title: 'Model Conditioning',
 		type: 'capability',
+		icon: 'icons/ico_model-conditioning.png',
 		products: 'Assemble',
 		description: 'Condition models to help reduce project risk by expanding on the information of a project that can facilitate design reviews, takeoffs, estimating, change management, value engineering and schedule management.',
 		murl: 'https://construction.autodesk.com/workflows/bim-data-model-conditioning',

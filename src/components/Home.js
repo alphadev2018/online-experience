@@ -187,7 +187,7 @@ export default class Home extends Component {
 				}
 				else hotBuilding.material.color.setHex(buildingCol);
 			});
-		} else if (this.selLandName === "home0") {
+		} /*else if (this.selLandName === "home0") {
 			const intersect = GetRayCastObject(this, event.clientX, event.clientY, this.hotIconicArr["home0"]);
 
 			this.hotIconicArr["home0"].forEach((building, idx) => {
@@ -225,7 +225,7 @@ export default class Home extends Component {
 			const intersect = GetRayCastObject(this, event.clientX, event.clientY, this.hotMeshArr);
 			this.hotMeshArr.forEach(hotMesh => {
 			});
-		}
+		}*/
 	}
 
 	mouseUp = (event) => {
@@ -419,6 +419,7 @@ export default class Home extends Component {
 		if (island === "home2" && child.name === "Box289" && child.type === "Mesh") {
 			this.hotIconicArr["home2"] = [child];
 		}
+		console.log(this.hotIconicArr)
 	}
 
 	loadIslandModel=(info)=>{
@@ -670,15 +671,21 @@ export default class Home extends Component {
 					<div style={{width: '100vw', height: '100vh', display: maskAShow | maskBShow ? 'block' : 'none',  top: 0, left: 0, position: 'absolute'}} onClick={()=>this.setState({maskAShow:false, maskBShow:false})}>
 						{maskAShow && mask_A_PosArr.map((pos, idx) =>
 							<div className="mask-item" key={idx} style={{left:pos.x, top:pos.y}} onClick={()=>this.clickMask(capabilities[mask_A_PosArr.length - idx - 1])}>
-								<div className={`item-icon ${idx < 7 ? 'left':'right'}`} data-detail={capabilities[mask_A_PosArr.length - idx - 1].title}>									
-									<i className="fa fa-heart"></i>
+								<div className={`item-icon ${idx < 7 ? 'left':'right'}`} data-detail={capabilities[mask_A_PosArr.length - idx - 1].title}>
+									{ capabilities[mask_A_PosArr.length - idx - 1].icon ? 
+										<img src={capabilities[mask_A_PosArr.length - idx - 1].icon} /> :
+										<i className="fa fa-heart"></i>
+									}									
 								</div>
 							</div>
 						)}
 						{maskBShow && mask_B_PosArr.map((pos, idx) =>
 							<div className="mask-item" key={idx} style={{left:pos.x, top:pos.y}} onClick={()=>this.clickMask(products[mask_B_PosArr.length - idx - 1])}>
 								<div className={`item-icon ${[0,1,2,3,8].indexOf(idx) !== -1 ? 'left':'right'}`} data-detail={products[mask_B_PosArr.length - idx - 1].title}>
-									<i className="fa fa-heart"></i>
+									{ products[mask_B_PosArr.length - idx - 1].icon ? 
+										<img src={products[mask_B_PosArr.length - idx - 1].icon} /> :
+										<i className="fa fa-heart"></i>
+									}
 								</div>
 							</div>
 						)}
