@@ -14,7 +14,7 @@ import redoImg from "../assets/images/redo.png";
 import {ReactComponent as TransMoveIcon} from "../assets/images/trans_move.svg";
 import {ReactComponent as TransRotateIcon} from "../assets/images/trans_rotate.svg";
 
-import { products } from '@db/database';
+import { products, capabilities } from '@db/database';
 
 export default class Home extends Component {
 	constructor(props) {
@@ -129,7 +129,14 @@ export default class Home extends Component {
 				this.props.callMenuItem(landName);
 			}
 			else if (intersect.object.name.indexOf("hot_building") > -1) {
-				this.setState({maskAShow:true, maskBShow:true});
+				
+				SetTween(this.camera, "camPos", 3, easeTime);
+				SetTween(this.camera, "position", {x:-7.1, y: 1.7, z: 5.6}, easeTime);
+
+				this.setState({
+					maskAShow: intersect.object.name === "hot_building_0", 
+					maskBShow: intersect.object.name === "hot_building_1"
+				});
 			}
 		}
 	}
@@ -145,8 +152,14 @@ export default class Home extends Component {
 		this.mouseStatus = "move";
 		if (this.selLandName === "media") {
 			const intersect = GetRayCastObject(this, event.clientX, event.clientY, this.hotBuildingArr);
-			const buildingCol = intersect?0xFF0000:0xFFFFFF;
+			// const buildingCol = intersect?0xFF0000:0xFFFFFF;
+			
 			this.hotBuildingArr.forEach(hotBuilding => {
+				// console.log(hotBuilding);
+				let buildingCol = 0xFFFFFF;
+				if (intersect && hotBuilding.name === intersect.object.name) {
+					buildingCol = 0xFF0000;
+				}
 				if (hotBuilding.material.length) {
 					hotBuilding.material.forEach(mat => {
 						mat.color.setHex(buildingCol);
@@ -337,8 +350,8 @@ export default class Home extends Component {
 		}
 	}
 
-	clickMask=(idx)=>{
-		this.props.callProduct( products[idx] );
+	clickMask=(item)=>{
+		this.props.callProduct( item );
 		this.setState({maskAShow:false, maskBShow:false});
 	}
 
@@ -502,6 +515,7 @@ export default class Home extends Component {
 		AnimatePlane(this.airPlaneArr);
 		this.camera.lookAt( 0, 0, 0 );
 		const camPos = this.camera.position;
+		// console.log(camPos);
 		this.subLight.position.set(camPos.x, camPos.y, camPos.z);
 		if (this.selLandName === "media") {
 			var mask_A_PosArr = [], mask_B_PosArr = [];
@@ -584,18 +598,17 @@ export default class Home extends Component {
 					<div className={`hot-item ${(pos.islandName===menuItem)?"show":""}`} key={idx} style={{left:pos.x, top:pos.y}} onClick={()=>this.props.callHotSpot(pos.hotName)}></div>
 				)}
 				{ this.selLandName === "media" &&
-					<div>
+					<div style={{width: '100vw', height: '100vh', display: maskAShow | maskBShow ? 'block' : 'none',  top: 0, left: 0, position: 'absolute'}} onClick={()=>this.setState({maskAShow:false, maskBShow:false})}>
 						{maskAShow && mask_A_PosArr.map((pos, idx) =>
-							<div className="mask-item" key={idx} style={{left:pos.x, top:pos.y}} onClick={()=>this.clickMask(mask_A_PosArr.length - idx - 1)}>
-								<div className="item-icon" data-detail={"title_A"}>
-									{/* data-detail={products[mask_A_PosArr.length - idx - 1].title} */}
+							<div className="mask-item" key={idx} style={{left:pos.x, top:pos.y}} onClick={()=>this.clickMask(capabilities[mask_A_PosArr.length - idx - 1])}>
+								<div className="item-icon" data-detail={capabilities[mask_A_PosArr.length - idx - 1].title}>									
 									<i className="fa fa-heart"></i>
 								</div>
 							</div>
 						)}
 						{maskBShow && mask_B_PosArr.map((pos, idx) =>
-							<div className="mask-item" key={idx} style={{left:pos.x, top:pos.y}} onClick={()=>this.clickMask(mask_B_PosArr.length - idx - 1)}>
-								<div className="item-icon" data-detail={"title_B"}>
+							<div className="mask-item" key={idx} style={{left:pos.x, top:pos.y}} onClick={()=>this.clickMask(products[mask_B_PosArr.length - idx - 1])}>
+								<div className="item-icon" data-detail={products[mask_B_PosArr.length - idx - 1].title}>
 									<i className="fa fa-heart"></i>
 								</div>
 							</div>

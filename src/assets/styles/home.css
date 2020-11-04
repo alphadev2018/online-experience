@@ -294,6 +294,7 @@
   left: 30px;
   bottom: 20px;
   font-size: 24px;
+  z-index: 1;
 }
 .footer-menu a {
   color: white;

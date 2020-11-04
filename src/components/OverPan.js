@@ -317,14 +317,26 @@ export default class OverPan extends Component {
 				}
 				{modalInfo === "product" &&
 					<div className="modal-wrapper product">
-						<div className="title">{this.props.modalDetailInfo.title}</div>
+						<div className="title">
+							{ this.props.modalDetailInfo.logo === undefined ? this.props.modalDetailInfo.title : <img src={this.props.modalDetailInfo.logo}></img> }
+						</div>
 						<div className="close-btn" onClick={()=>this.clickButton("", true)}>
 							<i className="fa fa-close" style={{color: 'white'}}></i>
 						</div>
 						<div className="body">
 							<p>{this.props.modalDetailInfo.description}</p>
-							<label>Capabilities</label>
-							<p>{this.props.modalDetailInfo.capabilities}</p>
+							{this.props.modalDetailInfo.type === 'product' && (
+								<>
+									<label>Capabilities</label>
+									<p>{this.props.modalDetailInfo.capabilities}</p>
+								</>
+							)}
+							{this.props.modalDetailInfo.type === 'capability' && (
+								<>
+									<label>Products</label>
+									<p>{this.props.modalDetailInfo.products}</p>
+								</>
+							)}
 						</div>
 						<div style={{padding: '1rem'}}>
 							<a href={this.props.modalDetailInfo.murl} target="_blank">
