@@ -27,7 +27,7 @@ export default class Home extends Component {
 		this.cloudArr = []; this.windBaseArr = []; this.ballonArr = []; this.tonArr = []; this.roundPlayArr = []; this.airPlaneArr = [];
 		this.device = ( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) )?"mobile":"web";
 		this.state = { overModal:true, gameStatus:null, gameTime:-1, selHot:"", stepNum:-1, maxStepNum:-1, selTrans:"translate", crashModalId:false, transMesh:null, transChange:false, mask_A_PosArr:[], mask_B_PosArr:[], hotPosArr:[], menuItem:"" };
-		this.gameMeshArr = []; this.gameIslandPlane = null; this.gameIslandLine = null;
+		this.gameMeshArr = []; this.gameIslandPlane = null;
 		this.hotMeshArr = []; this.stepArr = []; this.mask_A_Arr = []; this.mask_B_Arr = []; this.hotBuildingArr = [];
 		this.hotIconicArr = [];
 		this.totalModelCount = modelArr.length + gameInfoArr.length; this.loadModelNum = 0;
@@ -69,7 +69,6 @@ export default class Home extends Component {
 			if (nextProps.game === "gameMedium") { gamePlaneTrans = true; gamePlaneCol = 0x083D8A; transRotCol="#00FF00";}
 			this.gameIslandPlane.material.color.setHex(gamePlaneCol);
 			this.gameIslandPlane.material.transparent = gamePlaneTrans;
-			// this.gameIslandPlane.material = new THREE.MeshPhongMaterial({transparent:gamePlaneTrans, opacity:0.7, color:gamePlaneCol});
 			this.transform.children[0].children[1].children.forEach(child => {
 				if (child instanceof THREE.Mesh) child.material = new THREE.MeshBasicMaterial({color:transRotCol, depthTest:false});
 				else  child.material = new THREE.LineBasicMaterial({color:transRotCol, depthTest:false});
@@ -220,6 +219,11 @@ export default class Home extends Component {
 				} else {
 					building.material.color.setHex(0x545454);
 				}
+			});
+		}
+		else {
+			const intersect = GetRayCastObject(this, event.clientX, event.clientY, this.hotMeshArr);
+			this.hotMeshArr.forEach(hotMesh => {
 			});
 		}
 	}
@@ -424,34 +428,21 @@ export default class Home extends Component {
 
 				if (child instanceof THREE.Mesh) {
 					child.landChildName = info.islandName; this.meshArr.push(child);
-					if (info.islandName === "game" && child.name.indexOf("sea_trans") > -1) {console.log(child.name); child.receiveShadow = true;}
+					if (info.islandName === "game" && child.name.indexOf("sea_trans") > -1) {child.receiveShadow = true; this.gameIslandPlane = child;}
 					if (child.material.length) {
-						child.material.forEach(mat => {
-							// mat.side = THREE.DoubleSide;
-						});
+						child.material.forEach(mat => { mat.side = THREE.DoubleSide; });
 					}
 					else child.material.side=THREE.DoubleSide;
 				}				
 				if (child.name.indexOf("__") > -1) {
 					const colVal = child.name.split("__")[1];
-					child.material = new THREE.MeshPhongMaterial({color:"#"+colVal});
-					if (child.name === "rect__FFFFFF" || child.name === "plane__000000") {child.visible = false;}
-					if (colVal === "448888") {child.material.transparent = true; child.material.opacity = 0.7}
-					if (info.islandName === "game") {
-						if (child.name.indexOf("trans")>-1) this.gameIslandPlane = child;
-						else if (child.name.indexOf("line")>-1) this.gameIslandLine = child;
-					}
+					child.material = new THREE.MeshPhongMaterial({color:"#"+colVal, side:2});
 				}
 				if		(child.name.indexOf("wind_group") > -1) this.windBaseArr.push(child);
 				else if (child.name.indexOf("crane") > -1 || child.name.indexOf("cloud") > -1) {
 					child.curVal = Math.round(Math.random() * 100);
 					child.dir = (Math.random() > 0.5)? 1:-1;
-					if (child.name.indexOf("cloud") > -1) {
-						// if (info.islandName === 'home0') {
-							child['position']['y'] += 8;
-						// }
-						this.cloudArr.push(child);
-					}
+					if (child.name.indexOf("cloud") > -1) { child['position']['y'] += 8; this.cloudArr.push(child); }
 					else if (child.name.indexOf("crane") > -1) this.tonArr.push(child);
 				}
 				else if (child.name.indexOf("roundPlay") > -1) this.roundPlayArr.push(child);
@@ -459,14 +450,11 @@ export default class Home extends Component {
 				else if (child.name.indexOf("mask_0") > -1) {this.mask_A_Arr.push(child); child.visible = false;}
 				else if (child.name.indexOf("mask_B") > -1) {this.mask_B_Arr.push(child); child.visible = false;}
 				else if (child.name === "plane") {child.dir = 1; this.airPlaneArr.push(child);}
-				else if (child.name === "Road") { child.material = new THREE.MeshPhongMaterial({color:0x0C1723, side: 2}); }
 				else if (child.name.indexOf("hot_building") > -1) this.hotBuildingArr.push(child);
 				else if (child.name)
 				hotNameArr.forEach(str => {
-					if (child.name === "hot_"+str) {
-						child.visible = false;
-						child.hotName = str;
-						child.islandName = info.islandName;
+					if (child.name.indexOf("hot_"+str) > -1 ) {
+						child.hotName = "hot_"+str;
 						this.hotMeshArr.push(child);
 					}
 				});
