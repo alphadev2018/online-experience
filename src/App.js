@@ -36,7 +36,7 @@ export default class App extends Component {
 	}
 
 	callHotSpot=(str)=>{
-		console.log(str);
+		if (str === "") return;
 		this.setState({modalInfo:"hotSpot", modalDetailInfo:str});
 	}
 

@@ -29,7 +29,6 @@ export default class Home extends Component {
 		this.state = { overModal:true, gameStatus:null, gameTime:-1, selHot:"", stepNum:-1, maxStepNum:-1, selTrans:"translate", crashModalId:false, transMesh:null, transChange:false, mask_A_PosArr:[], mask_B_PosArr:[], hotPosArr:[], menuItem:"" };
 		this.gameMeshArr = []; this.gameIslandPlane = null;
 		this.hotMeshArr = []; this.stepArr = []; this.mask_A_Arr = []; this.mask_B_Arr = []; this.hotBuildingArr = [];
-		this.hotIconicArr = {"home0": [], "home1": [], "home2":[]};
 		this.totalModelCount = modelArr.length + gameInfoArr.length; this.loadModelNum = 0;
 		this.transError = {clash:0, quality:0};
 	}
@@ -147,21 +146,9 @@ export default class Home extends Component {
 				}) }, 1000);
 			}
 		}
-		this.handleIconicEvent(mouseX, mouseY);
+		this.props.callHotSpot(this.state.selHot);
 	}
-	handleIconicEvent = (mouseX, mouseY) => {
-		let island = "";
-		if (GetRayCastObject(this, mouseX, mouseY, this.hotIconicArr["home0"])) {
-			island = "EMEA";
-		} else if (GetRayCastObject(this, mouseX, mouseY, this.hotIconicArr["home1"])) { 
-			island = "ACPA";
-		} else if (GetRayCastObject(this, mouseX, mouseY, this.hotIconicArr["home2"])) { 
-			island = "AMERICA";
-		}
-		if (island !== "") {
-			this.props.callHotSpot(island);
-		}
-	}
+
 	touchEnd = (event) => { this.processClickEvent(event.changedTouches[0].pageX, event.changedTouches[0].pageY); }
 	mouseClick = (event) => { this.processClickEvent(event.clientX, event.clientY, event.target); }
 
@@ -174,10 +161,7 @@ export default class Home extends Component {
 		this.mouseStatus = "move";
 		if (this.selLandName === "media") {
 			const intersect = GetRayCastObject(this, event.clientX, event.clientY, this.hotBuildingArr);
-			// const buildingCol = intersect?0xFF0000:0xFFFFFF;
-			
 			this.hotBuildingArr.forEach(hotBuilding => {
-				// console.log(hotBuilding);
 				let buildingCol = 0xFFFFFF;
 				if (intersect && hotBuilding.name === intersect.object.name) {
 					buildingCol = 0xFF0000;
@@ -189,44 +173,17 @@ export default class Home extends Component {
 				}
 				else hotBuilding.material.color.setHex(buildingCol);
 			});
-		} else if (this.selLandName === "home0") {
-			const intersect = GetRayCastObject(this, event.clientX, event.clientY, this.hotIconicArr["home0"]);
-
-			this.hotIconicArr["home0"].forEach((building, idx) => {
-				if (building.name !== "hot_EMEA_roof2") return;				
-				if (intersect) {
-					building.material.color.setHex(0xFF0000);
-				} else {
-					building.material.color.setHex(0x484848);
-				}
-			});
-		} else if (this.selLandName === "home1") {
-			// home1 ACPC
-			const intersect = GetRayCastObject(this, event.clientX, event.clientY, this.hotIconicArr["home1"]);
-
-			this.hotIconicArr["home1"].forEach((building, idx) => {			
-				if (intersect) {
-					building.material[1].color.setHex(0xFF0000);
-				} else {
-					building.material[1].color.setHex(0x28D9A1);
-				}
-			});
-		} else if (this.selLandName === "home2") {
-			// home2 America
-			const intersect = GetRayCastObject(this, event.clientX, event.clientY, this.hotIconicArr["home2"]);
-
-			this.hotIconicArr["home2"].forEach((building, idx) => {			
-				if (intersect) {
-					building.material.color.setHex(0xFF0000);
-				} else {
-					building.material.color.setHex(0x545454);
-				}
-			});
 		}
 		else {
 			const intersect = GetRayCastObject(this, event.clientX, event.clientY, this.hotMeshArr);
-			this.hotMeshArr.forEach(hotMesh => {
-			});
+			const selHot = (intersect)?intersect.object.name.substring(4):"";
+			if (selHot !== this.state.selHot) {
+				this.hotMeshArr.forEach(hotMesh => {
+					const colVal = (hotMesh.name === "hot_"+selHot)?0xFFFFFF:0xFF0000;
+					hotMesh.material.color.setHex(colVal);
+				});
+				this.setState({selHot});
+			}
 		}
 	}
 
@@ -361,7 +318,7 @@ export default class Home extends Component {
 		setTimeout(() => {
 			this.setEndGame();
 			this.setState({autoBuild:false});
-			this.props.callGameResult("autoBuild", this.totalTime, 60, this.state.gamePro, this.transError);
+			this.props.callGameResult("autoBuild", this.totalTime, 0, this.state.gamePro, this.transError);
 		}, childArr.length * easeTime / 2 + 500);
 	}
 
@@ -372,7 +329,7 @@ export default class Home extends Component {
 		if (checkClashStatus) {
 			if (checkClashStatus === "clash") this.transError.clash++; else this.transError.quality++;
 			this.setState({crashModalId:checkClashStatus});
-			setTimeout(() => { this.setState({crashModalId:false}); }, 1500);
+			setTimeout(() => { this.setState({crashModalId:false}); }, 3000);
 		}
 		this.transform.detach(); this.setState({transMesh:null, transChange:false});
 	}
@@ -410,25 +367,9 @@ export default class Home extends Component {
 		this.setState({maskAShow:false, maskBShow:false});
 	}
 
-	gatherIconic=(child, island)=>{
-		// console.log(child)
-		if (island === "home0" && child.name.indexOf("hot_EMEA") !== -1) {
-			this.hotIconicArr["home0"].push(child);
-			console.log(child)
-		}
-		if (island === "home1" && child.name.indexOf("hot_APAC") !== -1) {
-			this.hotIconicArr["home1"].push(child);
-		}
-		if (island === "home2" && child.name.indexOf("hot_AMERICA_roof") !== -1) {
-			this.hotIconicArr["home2"].push(child);
-		}
-	}
-
 	loadIslandModel=(info)=>{
 		new FBXLoader().load(info.file, (object)=>{
 			object.children.forEach(child => {
-				this.gatherIconic(child, info.islandName);
-
 				if (child instanceof THREE.Mesh) {
 					child.landChildName = info.islandName; this.meshArr.push(child);
 					if (info.islandName === "game" && child.name.indexOf("sea_trans") > -1) {child.receiveShadow = true; this.gameIslandPlane = child;}
@@ -456,8 +397,7 @@ export default class Home extends Component {
 				else if (child.name.indexOf("hot_building") > -1) this.hotBuildingArr.push(child);
 				else if (child.name)
 				hotNameArr.forEach(str => {
-					if (child.name.indexOf("hot_"+str) > -1 ) {
-						child.hotName = "hot_"+str;
+					if (child.name === "hot_"+str ) {
 						this.hotMeshArr.push(child);
 					}
 				});
