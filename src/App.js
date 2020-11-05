@@ -10,6 +10,7 @@ import OverPan from "./components/OverPan";
 
 import 'style.css';
 import { easeTime } from './components/common';
+import {API_CONFIG} from "ApiConfig";
 
 export default class App extends Component {
 	constructor(props) {
@@ -44,6 +45,12 @@ export default class App extends Component {
 	}
 
 	callGameResult=(status, totalTime, gameTime, gamePro, transError)=>{
+		fetch(`${API_CONFIG}/score?name=${totalTime - gameTime}&score=${gameTime+gamePro}`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		});
 		this.setState({modalInfo:status, selGame:false, modalDetailInfo:{totalTime, gameTime, level:this.state.selGame, gamePro, transError}});
 	}
 

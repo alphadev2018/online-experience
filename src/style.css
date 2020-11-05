@@ -42,7 +42,7 @@ body {
   z-index: 99;
 }
 
-@media (max-width: 578px) {
+@media (max-width: 767px) {
   .header .logo-icon {
     background-image: url(assets/images/logo/logo_mobile.png);
     width: 220px;
@@ -52,7 +52,7 @@ body {
     display: block;
   }
 }
-@media (min-width: 578px) {  
+@media (min-width: 767px) {  
   .header .logo-icon {
     background-image: url(assets/images/logo/logo.png);
     width: 525px;

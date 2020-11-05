@@ -17,7 +17,7 @@ export default class Sidebar extends Component {
 	constructor(props) {
 		super(props);
 		this.state = {selMenu:"", showMobileMenu:false}
-		this.device = ( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) )?"mobile":"web";
+		this.device = ( /Android|webOS|iPhone|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) )?"mobile":"web";
 	}
 
 	componentDidMount() {

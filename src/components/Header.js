@@ -49,7 +49,7 @@ export default class Header extends Component {
 
 						
 						<div className="footer-menu">
-							<a href="#" onClick={this.fullScreen}>
+							<a href="#" onClick={this.fullScreen}  style={{display: ( /Android|webOS|iPhone|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) ? 'none':'block'}}>
 								<i className="fa fa-window-maximize" aria-hidden="true"></i>
 							</a>
 							<a href="#" onClick={this.mute}>

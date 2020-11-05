@@ -10,12 +10,12 @@
 	top: 50%;
 }
 
-@media (max-width: 578px) {
+@media (max-width: 767px) {
 	.side {
 		display: block;
 	}
 }
-@media (min-width: 578px) {  
+@media (min-width: 767px) {  
 	.side {
 		display: block;
 	}
@@ -100,15 +100,14 @@
     text-align: right;
 }
 
-.side-item:hover::before {
-	content: attr(data-detail);
-    color: white;
-    height: auto;
-    overflow-wrap: break-word;
-	padding: 15px;
-	font-size: 1.1rem;
-    position: absolute;
-    right: 60px;
-    width: 210px;
-    text-align: right;
+@media (max-width: 767px) {	
+	.side-item:hover::before {
+		display: none;
+	}
+}
+@media (min-width: 767px) {  
+	
+	.side-item:hover::before {
+		display: block;
+	}
 }

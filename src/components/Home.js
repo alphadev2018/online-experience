@@ -135,9 +135,9 @@ export default class Home extends Component {
 				SetTween(this.camera, "camPos", 3, easeTime);
 				// -5.53, 2.36, 7.08
 				if (intersect.object.name === "hot_building_0") {
-					SetTween(this.camera, "position", {x:-7.1, y: 1.7, z: 5.6}, easeTime);
+					SetTween(this.camera, "position", {x:-7.1, y: 1.7, z: 9.6}, easeTime);
 				} else {
-					SetTween(this.camera, "position", {x:-5.53, y: 2.36, z: 7.08}, easeTime);
+					SetTween(this.camera, "position", {x:-5.53, y: 2.36, z: 11.08}, easeTime);
 				}
 
 				setTimeout(() => {
