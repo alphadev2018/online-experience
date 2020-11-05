@@ -318,7 +318,7 @@ export default class Home extends Component {
 		setTimeout(() => {
 			this.setEndGame();
 			this.setState({autoBuild:false});
-			this.props.callGameResult("autoBuild", this.totalTime, 60, this.state.gamePro, this.transError);
+			this.props.callGameResult("autoBuild", this.totalTime, 0, this.state.gamePro, this.transError);
 		}, childArr.length * easeTime / 2 + 500);
 	}
 
@@ -329,7 +329,7 @@ export default class Home extends Component {
 		if (checkClashStatus) {
 			if (checkClashStatus === "clash") this.transError.clash++; else this.transError.quality++;
 			this.setState({crashModalId:checkClashStatus});
-			setTimeout(() => { this.setState({crashModalId:false}); }, 1500);
+			setTimeout(() => { this.setState({crashModalId:false}); }, 3000);
 		}
 		this.transform.detach(); this.setState({transMesh:null, transChange:false});
 	}

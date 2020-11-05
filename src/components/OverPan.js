@@ -25,9 +25,9 @@ export default class OverPan extends Component {
 	constructor(props) {
 		super(props);
 		this.gameMenuArr = [
+			{type:"button", label:"Rules", value:"rule", hide:false},
 			{type:"button", label:"Play", value:"play"},
-			{type:"button", label:"Leaderboard", value:"leader"},
-			{type:"button", label:"Rules", value:"rule", hide:false}
+			{type:"button", label:"Leaderboard", value:"leader"}
 		];
 		this.gameLevelArr = [
 			{type:"img-button", imgSrc:gameImgEasy, label:"Easy", classStr:"easy", value:"gameEasy", hide:true},
@@ -143,6 +143,7 @@ export default class OverPan extends Component {
 			if (transError) {
 				if (transError.quality >= 2) resultImg = resultAssembleImg;
 				if (transError.clash >= 2) resultImg = resultBimImg; 
+				console.log(transError);
 			}
 			hotStr = detailInfo;
 		}
