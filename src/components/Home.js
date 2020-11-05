@@ -420,7 +420,6 @@ export default class Home extends Component {
 		if (island === "home2" && child.name === "Box289" && child.type === "Mesh") {
 			this.hotIconicArr["home2"] = [child];
 		}
-		console.log(this.hotIconicArr)
 	}
 
 	loadIslandModel=(info)=>{
