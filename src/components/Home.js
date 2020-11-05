@@ -212,6 +212,7 @@ export default class Home extends Component {
 		if (checkGamePro === 100) {
 			const gameTime = (this.state.gameTime < 0)?0:this.state.gameTime
 			this.props.callGameResult("success", this.totalTime, gameTime, checkGamePro, this.transError);
+			this.setEndGame();
 		}
 		return checkGamePro;
 	}
@@ -247,8 +248,8 @@ export default class Home extends Component {
 			if (!this.state.gameStatus) { this.props.callGameStatus(false); return;}
 			const remainTime = this.state.gameTime;
 			if (remainTime <= 0) {
-				this.setEndGame();
 				this.props.callGameResult("timeOut", this.totalTime, this.state.gameTime, this.state.gamePro, this.transError);
+				this.setEndGame();
 			}
 			else {
 				if		(remainTime > this.totalTime) { this.setState({gameStatus:"start"}); }
@@ -310,15 +311,15 @@ export default class Home extends Component {
 		for (let i = 0; i < childArr.length; i++) {
 			setTimeout(() => {
 				const oriPos = childArr[i].oriPos, rotAxis = (childArr[i].name.indexOf("light") > -1)?"z":this.rotAxis;
-				
 				SetTween(childArr[i], "position", {x:oriPos.x, y:oriPos.y, z:oriPos.z}, easeTime);
 				SetTween(childArr[i], "rotation", {axis:rotAxis, rot:childArr[i].oriRot}, easeTime);
 			}, i * easeTime / 2);
 		}
 		setTimeout(() => {
+			console.log(this.transError)
+			this.props.callGameResult("autoBuild", this.totalTime, 0, this.state.gamePro, this.transError);
 			this.setEndGame();
 			this.setState({autoBuild:false});
-			this.props.callGameResult("autoBuild", this.totalTime, 0, this.state.gamePro, this.transError);
 		}, childArr.length * easeTime / 2 + 500);
 	}
 
@@ -328,6 +329,7 @@ export default class Home extends Component {
 		const checkClashStatus = CheckClash(this.gameMeshArr, this.transform.object, this.gameLevel, this.rotAxis);
 		if (checkClashStatus) {
 			if (checkClashStatus === "clash") this.transError.clash++; else this.transError.quality++;
+			console.log(this.transError);
 			this.setState({crashModalId:checkClashStatus});
 			setTimeout(() => { this.setState({crashModalId:false}); }, 3000);
 		}
