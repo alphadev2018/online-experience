@@ -29,7 +29,7 @@
   top: 50%;
 }
 
-@media (max-width: 578px) {
+@media (max-width: 767px) {
   .home .process-time{
     top: calc( 50% - 170px );
   }
@@ -46,7 +46,7 @@
     cursor: pointer;
   }
 }
-@media (min-width: 578px) {  
+@media (min-width: 767px) {  
   .home .rotate-wrapper{
     position: absolute;
     bottom: 30px;
@@ -184,13 +184,13 @@
 
 
 
-@media (max-width: 578px) {
+@media (max-width: 767px) {
   .game-ready {
     position: absolute;
     height: 100px;
     transform: translate(-50%, -50%);
     left: 50%;
-    top: 50%;
+    top: 40%;
   }
 
   .set-place {
@@ -201,7 +201,7 @@
     right: auto !important;
   }
 }
-@media (min-width: 578px) {  
+@media (min-width: 767px) {  
   .game-ready{
     position: absolute;
     bottom: 100px;

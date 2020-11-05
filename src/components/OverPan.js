@@ -21,6 +21,8 @@ import resultPlangridImg from "../assets/images/result_plangrid.png";
 import {hotModalInfo, GotoIsland} from "./common";
 import {products} from "@db/database";
 
+import {API_CONFIG} from "ApiConfig";
+
 export default class OverPan extends Component {
 	constructor(props) {
 		super(props);
@@ -42,11 +44,11 @@ export default class OverPan extends Component {
 		this.leaderColumns = [{ Header: 'Position', accessor: 'no'},
 							{ Header: 'Time taken', accessor: 'name' },
 							{ Header: 'Score', accessor: 'score' }] ;
-		this.leaderBoardArr = [];
-		for (let i = 0; i < 7; i++) {
-			this.leaderBoardArr[i] = {no:i+1, name:"Person_"+i, score:Math.round(Math.random() * 300)};
-		}
-		this.state = {itemArr:[], hide:"hide", modalInfo:props.modalInfo, overPanClass:"", gameRuleNum:0,gameLevelNum:0, loadPro:0};
+		// this.leaderBoardArr = [];
+		// for (let i = 0; i < 7; i++) {
+		// 	this.leaderBoardArr[i] = {no:i+1, name:"Person_"+i, score:Math.round(Math.random() * 300)};
+		// }
+		this.state = {itemArr:[], hide:"hide", modalInfo:props.modalInfo, overPanClass:"", gameRuleNum:0,gameLevelNum:0, loadPro:0, leaderBoardArr: []};
 	}
 
 	componentDidMount() {
@@ -72,6 +74,15 @@ export default class OverPan extends Component {
 		}
 		this.setState({modalInfo:str});
 		if (str === "rule") this.setState({gameRuleNum:0});
+		if (str === "leader") {
+			fetch(`${API_CONFIG}/score`, {
+				method: 'GET',
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			}).then(res => res.json() )
+			.then(json => this.setState({leaderBoardArr: json}));
+		}
 	}
 
 	setRuleStepNum=(delta)=>{
@@ -107,7 +118,7 @@ export default class OverPan extends Component {
 		}, 100);
 		setTimeout(() => {
 			this.setState({ modalInfo: "product" });
-		}, 1000);
+		}, 100);
 	}
 
 	gotoProduct = (product) => {
@@ -123,13 +134,13 @@ export default class OverPan extends Component {
 			}, 100);
 			setTimeout(() => {
 				this.setState({ modalInfo: "product" });
-			}, 1000);
+			}, 100);
 		})
 
 	}
 
 	render() {
-		const {modalInfo, gameRuleNum, gameLevelNum, loadPro} = this.state;
+		const {modalInfo, gameRuleNum, gameLevelNum, loadPro, leaderBoardArr} = this.state;
 		var totalTime, gameTime, level, gamePro, hotStr="", transError, resultImg;
 		// const loadingClassStr = (loadPro < 100)?"back-loading":"back-enter";
 		if (this.props && this.props.modalDetailInfo) {
@@ -305,10 +316,10 @@ export default class OverPan extends Component {
 								<div className="name leader-cell">Time Taken</div>
 								<div className="score leader-cell">Score</div>
 							</div>
-							{this.leaderBoardArr.map((item, idx) =>
+							{leaderBoardArr.map((item, idx) =>
 								<div className="leader-line" key={idx}>
-									<div className="no leader-cell">{item.no}</div>
-									<div className="name leader-cell">{item.name}</div>
+									<div className="no leader-cell">{idx+1}</div>
+									<div className="name leader-cell">{item.name}s</div>
 									<div className="score leader-cell">{item.score}</div>
 								</div>
 							)}

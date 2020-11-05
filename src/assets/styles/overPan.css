@@ -217,7 +217,7 @@
     right: 0px;
 }
 
-@media (max-width: 578px) {
+@media (max-width: 767px) {
     .modal-wrapper.game-level .body{
         display: none;
     }
@@ -225,7 +225,7 @@
         display: flex;
     }
 }
-@media (min-width: 578px) {  
+@media (min-width: 767px) {  
     .modal-wrapper.game-level .body{
         display: flex;
     }
@@ -398,12 +398,12 @@
     justify-content: space-between;
     align-items: center;
 }
-@media (max-width: 578px) {
+@media (max-width: 767px) {
     .modal-wrapper.game-end .game-button{
         flex-direction: column;
     }
 }
-@media (min-width: 578px) {  
+@media (min-width: 767px) {  
     .modal-wrapper.game-end .game-button{
         flex-direction: row;
     }
