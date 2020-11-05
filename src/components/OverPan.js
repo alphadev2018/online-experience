@@ -112,7 +112,8 @@ export default class OverPan extends Component {
 
 	gotoProduct = (product) => {
 		products.map(p => {
-			if (p.title !== product) {
+			// console.log(`${p.title} ${product}`)
+			if (p.title != product) {
 				return;
 			}
 
@@ -167,6 +168,9 @@ export default class OverPan extends Component {
 				{modalInfo === "game" &&
 					<div className="modal-wrapper game-menu">
 						<div className="title">Construction Clouds</div>
+						<div className="close-btn" onClick={()=>this.clickButton("", true)}>
+							<i className="fa fa-close" style={{color: 'white'}}></i>
+						</div>
 						{this.gameMenuArr.map((item, idx) =>
 							<div className="game-menu-item" key={idx} onClick={()=>this.clickButton(item.value, false)}>
 								<div className="game-menu-icon">
@@ -352,8 +356,10 @@ export default class OverPan extends Component {
 								<>
 									<label>Products</label>
 									<p>
-									{this.props.modalDetailInfo.products.split(',').map(product => {
-										return <span style={{fontFamily: 'calibri_light', fontSize: '18px', cursor: 'pointer'}} onClick={()=>this.gotoProduct(product)}>{product} </span>
+									{this.props.modalDetailInfo.products.split(', ').map((product, idx, arr) => {
+										return <span style={{fontFamily: 'calibri_light', fontSize: '18px', cursor: 'pointer'}} onClick={()=>this.gotoProduct(product)}>
+											{` ${product}${idx != arr.length - 1 ? ',':''}`}
+										</span>
 									})}
 									</p>
 								</>
