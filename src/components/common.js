@@ -9,7 +9,7 @@ import hotImgAMERICA from "../assets/images/hot_AMERICA.png";
 
 // const island0 = require("assets/models/island_0.fbx");
 const islandHome0 = require("assets/models/EMEA_custom.fbx");// _test building
-const islandHome1 = require("assets/models/APAC_custom.fbx"); // _test
+const islandHome1 = require("assets/models/APAC.fbx"); // _custom _test
 const islandHome2 = require("assets/models/AMERACAS.fbx"); //_custom_test
 const islandGame = require("assets/models/island_game.fbx");
 const islandMedia = require("assets/models/island_media.fbx");
