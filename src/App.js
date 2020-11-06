@@ -47,12 +47,14 @@ class App extends Component {
 	}
 
 	callGameResult=(status, totalTime, gameTime, gamePro, transError)=>{
-		// fetch(`${API_CONFIG}/score?name=${totalTime - gameTime}&score=${gameTime+gamePro}`, {
-		// 	method: 'POST',
-		// 	headers: {
-		// 		'Content-Type': 'application/json'
-		// 	}
-		// });
+		if (this.props.app.app.user_name) {
+			fetch(`${API_CONFIG}/score?name=${this.props.app.app.user_name}&score=${gameTime+gamePro}`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			});
+		}
 		this.setState({modalInfo:status, selGame:false, modalDetailInfo:{totalTime, gameTime, level:this.state.selGame, gamePro, transError}});
 	}
 
