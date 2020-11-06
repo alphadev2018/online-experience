@@ -297,7 +297,7 @@ class OverPan extends Component {
 					<div className="modal-wrapper game-end">
 						{ this.props.app.app.user_name === "" && (
 							<>
-								<div className="title" style={{marginBottom: "45px"}}>Enter your name</div>
+								<div className="title" style={{marginBottom: "45px"}}>Enter your player name to be go on the leaderboard.</div>
 								<div className="game-result">									
 									<input type="text" style={{width: "100%", height: "30px", fontSize: "16px"}} onChange={this.handleNameChange} value={this.state.username}/>
 
@@ -361,13 +361,13 @@ class OverPan extends Component {
 						<div className="leader-content">
 							<div className="leader-line th">
 								<div className="no leader-cell">Position</div>
-								<div className="name leader-cell">Time Taken</div>
+								<div className="name leader-cell">Name</div>
 								<div className="score leader-cell">Score</div>
 							</div>
 							{leaderBoardArr.map((item, idx) =>
 								<div className="leader-line" key={idx}>
 									<div className="no leader-cell">{idx+1}</div>
-									<div className="name leader-cell">{item.name}s</div>
+									<div className="name leader-cell">{item.name}</div>
 									<div className="score leader-cell">{item.score}</div>
 								</div>
 							)}
