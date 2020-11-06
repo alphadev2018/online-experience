@@ -146,7 +146,13 @@ export default class Home extends Component {
 				}) }, 1000);
 			}
 		}
-		this.props.callHotSpot(this.state.selHot);
+		var hotInfo;
+		if (this.device === "web") hotInfo = this.state.selHot;
+		else {
+			const hotIntersect = GetRayCastObject(this, mouseX, mouseY, this.hotMeshArr);
+			hotInfo = (hotIntersect)?hotIntersect.object.name.substring(4):"";
+		}
+		this.props.callHotSpot(hotInfo);
 	}
 
 	touchEnd = (event) => { this.processClickEvent(event.changedTouches[0].pageX, event.changedTouches[0].pageY); }
