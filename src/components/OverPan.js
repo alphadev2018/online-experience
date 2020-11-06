@@ -13,10 +13,13 @@ import gameImgEasy from "../assets/images/game_easy.png";
 import gameImgMedium from "../assets/images/game_medium.png";
 import gameImgDifficult from "../assets/images/game_difficult.png";
 import closeImg from "../assets/images/close.png";
-import resultAssembleImg from "../assets/images/result_assemble.png";
-import resultBimImg from "../assets/images/result_bim.png";
+// import resultAssembleImg from "../assets/images/result_assemble.png";
+// import resultBimImg from "../assets/images/result_bim.png";
+// import resultPlangridImg from "../assets/images/result_plangrid.png";
+import resultAssembleImg from "../assets/images/product/logos/ADSK-Build.png";
+import resultBimImg from "../assets/images/product/logos/ADSK-BIM-Collaborate.png";
+import resultPlangridImg from "../assets/images/product/logos/ADSK-Docs.png";
 import resultBuildingImg from "../assets/images/result_building.png";
-import resultPlangridImg from "../assets/images/result_plangrid.png";
 
 import {hotModalInfo, GotoIsland} from "./common";
 import {products} from "@db/database";
@@ -263,9 +266,9 @@ class OverPan extends Component {
 								</div>}
 								{idx === 2 && <div className="text" style={{whiteSpace: 'pre-wrap'}}>
 									Click one of the Lifelines if you need some help:<br/><br/>
-									<strong>Projects Team Assist</strong> will move the next piece into the correct place, and costs 20 seconds in a time penalty<br/>
-									<strong>Design Reveal</strong> will show a picture of the finished model and costs a 30 second time penalty<br/>
-									<strong>Auto Complete</strong> finishes the build and ends the game scoring zero points
+									<p><strong>Projects Team Assist</strong> will move the next piece into the correct place, and costs 20 seconds in a time penalty.</p><br/>
+									<p><strong>Design Reveal</strong> will show a picture of the finished model and costs a 30 second time penalty.</p><br/>
+									<p><strong>Auto Complete</strong> finishes the build and ends the game scoring zero points.</p>
 								</div>}
 							</div>
 						)}

@@ -7,11 +7,13 @@ import store from 'store';
 
 import {register} from './serviceWorker';
 
-ReactDOM.render(
-	<Provider store={store}>
-        <App />
-    </Provider>, 
-    document.getElementById('root')
-);
+setTimeout(function() {
+    ReactDOM.render(
+        <Provider store={store}>
+            <App />
+        </Provider>, 
+        document.getElementById('root')
+    );
 
-register();
+    register();
+}, 1000);

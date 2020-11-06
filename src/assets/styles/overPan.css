@@ -278,6 +278,10 @@
 .modal-wrapper.game-rule .game-rule-item .text{
     font-family: 'calibri_light';
 }
+.modal-wrapper.game-rule .game-rule-item .text p{
+    margin: 10px 0;
+    font-family: 'calibri_light';
+}
 .modal-wrapper.game-rule .game-rule-item.show{
     display: block;
 }
@@ -348,7 +352,7 @@
     margin-top: -40px;
 }
 .modal-wrapper.game-end .game-result .result-img img{
-    height: 30px;
+    height: 50px;
 }
 .modal-wrapper.game-end .game-result .assemble{
     margin: 23px;
