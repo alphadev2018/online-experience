@@ -31,6 +31,7 @@ export default class Home extends Component {
 		this.hotMeshArr = []; this.stepArr = []; this.mask_A_Arr = []; this.mask_B_Arr = []; this.hotBuildingArr = [];
 		this.totalModelCount = modelArr.length + gameInfoArr.length; this.loadModelNum = 0;
 		this.transError = {clash:0, quality:0};
+		this.mouseCapture = false;
 	}
 	
 	componentDidMount() {
@@ -134,9 +135,9 @@ export default class Home extends Component {
 				SetTween(this.camera, "camPos", 3, easeTime);
 				// -5.53, 2.36, 7.08
 				if (intersect.object.name === "hot_building_0") {
-					SetTween(this.camera, "position", {x:-7.1, y: 1.7, z: 9.6}, easeTime);
+					SetTween(this.camera, "position", {x:-7.1, y: 1.7, z: 5.6}, easeTime);
 				} else {
-					SetTween(this.camera, "position", {x:-5.53, y: 2.36, z: 11.08}, easeTime);
+					SetTween(this.camera, "position", {x:-5.53, y: 2.36, z: 7.08}, easeTime);
 				}
 
 				setTimeout(() => {
@@ -160,10 +161,16 @@ export default class Home extends Component {
 
 	mouseDown = (event) => {
 		this.mouseStatus = "down";
+		this.mouseCapture = true;
 		if (this.state.gameStatus !== "process") return;
 	}
 
 	mouseMove = (event) => {
+		if (this.mouseCapture) {
+			if (this.state.maskAShow || this.state.maskBShow) {
+				this.setState({maskAShow:false, maskBShow:false})
+			}
+		}
 		this.mouseStatus = "move";
 		if (this.selLandName === "media") {
 			const intersect = GetRayCastObject(this, event.clientX, event.clientY, this.hotBuildingArr);
@@ -194,6 +201,7 @@ export default class Home extends Component {
 	}
 
 	mouseUp = (event) => {
+		this.mouseCapture = false;
 		if (this.state.gameStatus !== "process") return;
 		if ((typeof event.target.className === "string") && event.target.className.indexOf("mesh-control") > -1) return;
 		if (this.mouseStatus === "down" && this.state.transChange === false) {
@@ -372,7 +380,7 @@ export default class Home extends Component {
 
 	clickMask=(item)=>{
 		this.props.callProduct( item );
-		this.setState({maskAShow:false, maskBShow:false});
+		// this.setState({maskAShow:false, maskBShow:false});
 	}
 
 	loadIslandModel=(info)=>{
@@ -618,23 +626,23 @@ export default class Home extends Component {
 					<div className={`hot-item ${(pos.islandName===menuItem)?"show":""}`} key={idx} style={{left:pos.x, top:pos.y}} onClick={()=>this.props.callHotSpot(pos.hotName)}></div>
 				)*/}
 				{ this.selLandName === "media" &&
-					<div style={{width: '100vw', height: '100vh', display: maskAShow | maskBShow ? 'block' : 'none',  top: 0, left: 0, position: 'absolute'}} onClick={()=>this.setState({maskAShow:false, maskBShow:false})}>
-						{maskAShow && mask_A_PosArr.map((pos, idx) =>
-							<div className="mask-item" key={idx} style={{left:pos.x, top:pos.y}} onClick={()=>this.clickMask(capabilities[mask_A_PosArr.length - idx - 1])}>
+					<div>
+						{mask_A_PosArr.map((pos, idx) =>
+							<div className={`mask-item ${maskAShow?'fade-in':''}`} key={idx} style={{left:pos.x, top:pos.y}} onClick={()=>this.clickMask(capabilities[mask_A_PosArr.length - idx - 1])}>
 								<div className={`item-icon ${idx < 7 ? 'left':'right'}`} data-detail={capabilities[mask_A_PosArr.length - idx - 1].title}>
 									{ capabilities[mask_A_PosArr.length - idx - 1].icon ? 
 										<img src={capabilities[mask_A_PosArr.length - idx - 1].icon} /> :
-										<i className="fa fa-heart"></i>
+										<i className="fa fa-dot-circle-o" aria-hidden="true"></i>
 									}									
 								</div>
 							</div>
 						)}
-						{maskBShow && mask_B_PosArr.map((pos, idx) =>
-							<div className="mask-item" key={idx} style={{left:pos.x, top:pos.y}} onClick={()=>this.clickMask(products[mask_B_PosArr.length - idx - 1])}>
+						{mask_B_PosArr.map((pos, idx) =>
+							<div className={`mask-item ${maskBShow?'fade-in':''}`} key={idx} style={{left:pos.x, top:pos.y}} onClick={()=>this.clickMask(products[mask_B_PosArr.length - idx - 1])}>
 								<div className={`item-icon ${[0,1,2,3,8].indexOf(idx) !== -1 ? 'left':'right'}`} data-detail={products[mask_B_PosArr.length - idx - 1].title}>
 									{ products[mask_B_PosArr.length - idx - 1].icon ? 
 										<img src={products[mask_B_PosArr.length - idx - 1].icon} /> :
-										<i className="fa fa-heart"></i>
+										<i className="fa fa-dot-circle-o" aria-hidden="true"></i>
 									}
 								</div>
 							</div>

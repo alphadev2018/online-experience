@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import {connect} from 'react-redux';
 
 // import './App.css';
 
@@ -9,10 +10,11 @@ import Sidebar   from './components/Sidebar';
 import OverPan from "./components/OverPan";
 
 import 'style.css';
+
 import { easeTime } from './components/common';
 import {API_CONFIG} from "ApiConfig";
 
-export default class App extends Component {
+class App extends Component {
 	constructor(props) {
 		super(props);
 		this.state={menuItem:"first", modalInfo:"first", first:true, selGame:false, gameResult:null, loadPro:0, gameStatus:false, showMobileMenu:false}; //, autoBuild:false
@@ -45,12 +47,12 @@ export default class App extends Component {
 	}
 
 	callGameResult=(status, totalTime, gameTime, gamePro, transError)=>{
-		fetch(`${API_CONFIG}/score?name=${totalTime - gameTime}&score=${gameTime+gamePro}`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			}
-		});
+		// fetch(`${API_CONFIG}/score?name=${totalTime - gameTime}&score=${gameTime+gamePro}`, {
+		// 	method: 'POST',
+		// 	headers: {
+		// 		'Content-Type': 'application/json'
+		// 	}
+		// });
 		this.setState({modalInfo:status, selGame:false, modalDetailInfo:{totalTime, gameTime, level:this.state.selGame, gamePro, transError}});
 	}
 
@@ -72,7 +74,9 @@ export default class App extends Component {
 
 	render() {
 		const {selGame,modalInfo, first, menuItem, modalDetailInfo, loadPro, gameStatus, showMobileMenu} = this.state;
+		
 		return (
+			
 			<div>
 				<Home
 					game={selGame}
@@ -113,3 +117,12 @@ export default class App extends Component {
 		)
 	}
 }
+
+function mapStateToProps(props)
+{
+    return {
+        app:       props.app
+    }
+}
+
+export default connect(mapStateToProps, null)(App);

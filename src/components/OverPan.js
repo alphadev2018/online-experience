@@ -13,17 +13,23 @@ import gameImgEasy from "../assets/images/game_easy.png";
 import gameImgMedium from "../assets/images/game_medium.png";
 import gameImgDifficult from "../assets/images/game_difficult.png";
 import closeImg from "../assets/images/close.png";
-import resultAssembleImg from "../assets/images/result_assemble.png";
-import resultBimImg from "../assets/images/result_bim.png";
+// import resultAssembleImg from "../assets/images/result_assemble.png";
+// import resultBimImg from "../assets/images/result_bim.png";
+// import resultPlangridImg from "../assets/images/result_plangrid.png";
+import resultAssembleImg from "../assets/images/product/logos/ADSK-Build.png";
+import resultBimImg from "../assets/images/product/logos/ADSK-BIM-Collaborate.png";
+import resultPlangridImg from "../assets/images/product/logos/ADSK-Docs.png";
 import resultBuildingImg from "../assets/images/result_building.png";
-import resultPlangridImg from "../assets/images/result_plangrid.png";
 
 import {hotModalInfo, GotoIsland} from "./common";
 import {products} from "@db/database";
 
+import {bindActionCreators} from 'redux';
+import {connect} from 'react-redux';
+import * as Actions from 'store/actions';
 import {API_CONFIG} from "ApiConfig";
 
-export default class OverPan extends Component {
+class OverPan extends Component {
 	constructor(props) {
 		super(props);
 		this.gameMenuArr = [
@@ -37,9 +43,9 @@ export default class OverPan extends Component {
 			{type:"img-button", imgSrc:gameImgDifficult, label:"Difficult", classStr:"difficult", value:"gameDifficult", hide:true}
 		];
 		this.gameRuleArr = [
-			"Select either Easy, Medium or Hard difficulty to start playing.",
-			`The idea is to build the building in the quickest time.\n\n- Select a piece and either move it in X,Y,Z axis, or click one of the orange rotate buttons to turn the piece in ninety degrees.\n- Once you have finished moving the piece, press "Place". If the piece is not in the correct position, you will receive a warning.`,
-			`Click one of the Lifelines to help the process:\n\n- Projects Team Assist moves the next piece into the correct place, and costs 20s time penalty\n- Design Reveal shows a picture of the finished model and costs 30s time penalty\n- Auto Complete finishes the build and ends the game`,
+			``,
+			`Beat the clock to build the structure in the fastest time.\n\nSelect a piece and move it along the X, Y, or Z axis, or click one of the orange buttons to rotate the piece by 90 degrees.\n\nOnce you have finished moving the piece, click ‘place’. If the piece is not in the correct position, you will receive a warning.`,
+			`Click one of the Lifelines if you need some help:\n\n<strong>Projects Team Assist</strong> will move the next piece into the correct place, and costs 20 seconds in a time penalty\n\n<strong>Design Reveal</strong> will show a picture of the finished model and costs a 30 second time penalty\n\n<strong>Auto Complete</strong> finishes the build and ends the game scoring zero points`,
 		];
 		this.leaderColumns = [{ Header: 'Position', accessor: 'no'},
 							{ Header: 'Time taken', accessor: 'name' },
@@ -137,6 +143,14 @@ export default class OverPan extends Component {
 			}, 100);
 		})
 
+	}
+
+	saveName = () => {
+
+	}
+
+	handleNameChange = (e) => {
+		this.props.setUserName(e.target.value);
 	}
 
 	render() {
@@ -242,8 +256,20 @@ export default class OverPan extends Component {
 						<div className="title">Game Rules</div>
 						{this.gameRuleArr.map((item, idx) =>
 							<div className={`game-rule-item ${gameRuleNum===idx?"show":""}`} key={idx}>
-								<div className="text" style={{whiteSpace: 'pre-wrap'}}> {item} </div>
-								<div className="rule-img"></div>
+								{idx === 0 && <div className="text" style={{whiteSpace: 'pre-wrap'}}>
+									Select either Easy, Medium or Hard difficulty to start playing.
+								</div>}
+								{idx === 1 && <div className="text" style={{whiteSpace: 'pre-wrap'}}>
+									Beat the clock to build the structure in the fastest time.<br/><br/>
+									Select a piece and move it along the X, Y, or Z axis, or click one of the orange buttons to rotate the piece by 90 degrees.<br/><br/>
+									Once you have finished moving the piece, click ‘place’. If the piece is not in the correct position, you will receive a warning.
+								</div>}
+								{idx === 2 && <div className="text" style={{whiteSpace: 'pre-wrap'}}>
+									Click one of the Lifelines if you need some help:<br/><br/>
+									<p><strong>Projects Team Assist</strong> will move the next piece into the correct place, and costs 20 seconds in a time penalty.</p><br/>
+									<p><strong>Design Reveal</strong> will show a picture of the finished model and costs a 30 second time penalty.</p><br/>
+									<p><strong>Auto Complete</strong> finishes the build and ends the game scoring zero points.</p>
+								</div>}
 							</div>
 						)}
 						<div className="rule-step">
@@ -294,6 +320,9 @@ export default class OverPan extends Component {
 								<div className="single assemble">
 									<div className="result-img"><img src={resultImg}></img></div>
 								</div>
+								{/* <div>
+									<input type="text" style={{width: "84%", height: "30px"}} onChange={this.handleNameChange}/>
+								</div> */}
 								<div className="single game-menu-item media-link" onClick={()=>this.linkProduct(this.props.modalDetailInfo)}>View more information</div>
 							</div>
 						</div>
@@ -369,7 +398,7 @@ export default class OverPan extends Component {
 									<label>Products</label>
 									<p>
 									{this.props.modalDetailInfo.products.split(', ').map((product, idx, arr) => {
-										return <span style={{fontFamily: 'calibri_light', fontSize: '18px', cursor: 'pointer'}} onClick={()=>this.gotoProduct(product)}>
+										return <span key={idx} style={{fontFamily: 'calibri_light', fontSize: '18px', cursor: 'pointer'}} onClick={()=>this.gotoProduct(product)}>
 											{` ${product}${idx != arr.length - 1 ? ',':''}`}
 										</span>
 									})}
@@ -378,9 +407,11 @@ export default class OverPan extends Component {
 							)}
 						</div>
 						<div style={{padding: '1rem'}}>
-							<a href={this.props.modalDetailInfo.murl} target="_blank">
-								More information
-							</a>
+							{this.props.modalDetailInfo.type === 'product' && (
+								<a href={this.props.modalDetailInfo.murl} target="_blank">
+									More information
+								</a>
+							)}
 						</div>
 					</div>
 				}
@@ -388,3 +419,19 @@ export default class OverPan extends Component {
 		);
 	}
 }
+
+function mapDispatchToProps(dispatch)
+{
+    return bindActionCreators({
+		setUserName: Actions.setUserName
+    }, dispatch);
+}
+
+function mapStateToProps(props)
+{
+    return {
+        app:       props.app
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(OverPan);

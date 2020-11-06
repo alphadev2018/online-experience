@@ -242,6 +242,14 @@
 }
 .home .mask-item, .home .hot-item{
   position: absolute;
+  cursor: pointer;
+  opacity: 0%;
+  visibility: hidden;
+}
+.home .mask-item.fade-in {  
+  opacity: 100%;
+  visibility: visible;  
+  transition:opacity 0.5s
 }
 .home .mask-item .item-icon.right:hover {
   background: #0577B1;
@@ -262,10 +270,10 @@
   border-radius: 50%;
   background-color: #FFFDF9;
   border: 3px solid #084E78;
-  color: #5CB6D8;
-  font-size: 20px;
+  color: #084e78;
+  font-size: 21px;
   padding: 5px;
-  width: 20px;
+  width: 18px;
   height: 20px;
 }
 
