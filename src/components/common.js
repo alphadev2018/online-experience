@@ -20,7 +20,7 @@ const gameModelBuilding = require("assets/models/building.fbx");
 const gameModelBridge = require("assets/models/bridge.fbx");
 const gameModelStadium = require("assets/models/stadium.fbx");
 
-export const hotNameArr = ["EMEA", "AMERICA", "ACPA"];
+export const hotNameArr = ["EMEA", "AMERICA", "ACPA", "AMERICA_other"];
 
 autoPlay(true);
 
@@ -240,6 +240,11 @@ export const hotModalInfo={
 	AMERICA:{
 		title:"AMERICA hot modal title",
 		content:"AMERICA hot modal content",
+		img:hotImgAMERICA
+	},
+	AMERICA_other:{
+		title:"AMERICA_other hot modal title",
+		content:"AMERICA_other hot modal content",
 		img:hotImgAMERICA
 	}
 }
