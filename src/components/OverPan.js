@@ -54,7 +54,7 @@ class OverPan extends Component {
 		// for (let i = 0; i < 7; i++) {
 		// 	this.leaderBoardArr[i] = {no:i+1, name:"Person_"+i, score:Math.round(Math.random() * 300)};
 		// }
-		this.state = {itemArr:[], hide:"hide", modalInfo:props.modalInfo, overPanClass:"", gameRuleNum:0,gameLevelNum:0, loadPro:0, leaderBoardArr: []};
+		this.state = {itemArr:[], hide:"hide", modalInfo:props.modalInfo, overPanClass:"", gameRuleNum:0,gameLevelNum:0, loadPro:0, leaderBoardArr: [], username: ""};
 	}
 
 	componentDidMount() {
@@ -146,15 +146,22 @@ class OverPan extends Component {
 	}
 
 	saveName = () => {
-
+		this.props.setUserName(this.state.username);
+		
+		fetch(`${API_CONFIG}/score?name=${this.state.username}&score=${this.props.modalDetailInfo.gameTime+this.props.modalDetailInfo.gamePro}`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		});
 	}
 
 	handleNameChange = (e) => {
-		this.props.setUserName(e.target.value);
+		this.setState({username: e.target.value})
 	}
 
 	render() {
-		const {modalInfo, gameRuleNum, gameLevelNum, loadPro, leaderBoardArr} = this.state;
+		const {modalInfo, gameRuleNum, gameLevelNum, loadPro, leaderBoardArr, username} = this.state;
 		var totalTime, gameTime, level, gamePro, hotStr="", transError, resultImg;
 		// const loadingClassStr = (loadPro < 100)?"back-loading":"back-enter";
 		if (this.props && this.props.modalDetailInfo) {
@@ -288,52 +295,64 @@ class OverPan extends Component {
 				}
 				{(modalInfo === "success" || modalInfo === "autoBuild" || modalInfo === "timeOut") &&
 					<div className="modal-wrapper game-end">
-						<div className="title">
-							{modalInfo === "success" && "Success Game"}
-							{modalInfo === "autoBuild" && "End auto build"}
-							{modalInfo === "timeOut" && "Time Up"}
-						</div>
-						<div className="game-result">
-							<div className="game-result-timeOut">
-								<div className="single sub-title">You Scored {gameTime + gamePro} points</div>
-								<div className="half-row">
-									<div className="half-part half-left">Time taken</div>
-									<div className="half-part half-right">{totalTime - gameTime} s</div>
+						{ this.props.app.app.user_name === "" && (
+							<>
+								<div className="title" style={{marginBottom: "45px"}}>Enter your player name to be go on the leaderboard.</div>
+								<div className="game-result">									
+									<input type="text" style={{width: "100%", height: "30px", fontSize: "16px"}} onChange={this.handleNameChange} value={this.state.username}/>
+
+									<div className="single game-menu-item media-link" onClick={this.saveName} disabled={!this.state.username}>Save</div>
 								</div>
-								<div className="half-row">
-									<div className="half-part half-left">Difficulty</div>
-									<div className="half-part half-right">
-										{level === "gameEasy" && "Easy"}
-										{level === "gameMedium" && "Medium"}
-										{level === "gameDifficult" && "Hard"}
+							</>
+						)}
+						{ this.props.app.app.user_name !== "" && (
+							<>
+								<div className="title">
+									{modalInfo === "success" && "Success Game"}
+									{modalInfo === "autoBuild" && "End auto build"}
+									{modalInfo === "timeOut" && "Time Up"}
+								</div>
+								<div className="game-result">
+									<div className="game-result-timeOut">
+										<div className="single sub-title">You Scored {gameTime + gamePro} points</div>
+										<div className="half-row">
+											<div className="half-part half-left">Time taken</div>
+											<div className="half-part half-right">{totalTime - gameTime} s</div>
+										</div>
+										<div className="half-row">
+											<div className="half-part half-left">Difficulty</div>
+											<div className="half-part half-right">
+												{level === "gameEasy" && "Easy"}
+												{level === "gameMedium" && "Medium"}
+												{level === "gameDifficult" && "Hard"}
+											</div>
+										</div>
+										<div className="half-row">
+											<div className="half-part half-left">Completion amount</div>
+											<div className="half-part half-right">{gamePro} %</div>
+										</div>
+										<div className="half-row">
+											<div className="half-part half-left">Wrong moves</div>
+											<div className="half-part half-right">{transError.clash + transError.quality}</div>
+										</div>
+										<div className="label">You could improve this by using</div>
+										<div className="single assemble">
+											<div className="result-img"><img src={resultImg}></img></div>
+										</div>
+										<div className="single game-menu-item media-link" onClick={()=>this.linkProduct(this.props.modalDetailInfo)}>View more information</div>
 									</div>
 								</div>
-								<div className="half-row">
-									<div className="half-part half-left">Completion amount</div>
-									<div className="half-part half-right">{gamePro} %</div>
+								<div className="game-button">
+									<div className="game-menu-item left" onClick={()=>this.clickButton("play", false)}>
+										Play Again
+									</div>
+									<div className="game-menu-item right" onClick={()=>this.clickButton("leader", false)}>
+										LeaderBoard
+									</div>
 								</div>
-								<div className="half-row">
-									<div className="half-part half-left">Wrong moves</div>
-									<div className="half-part half-right">{transError.clash + transError.quality}</div>
-								</div>
-								<div className="label">You could improve this by using</div>
-								<div className="single assemble">
-									<div className="result-img"><img src={resultImg}></img></div>
-								</div>
-								{/* <div>
-									<input type="text" style={{width: "84%", height: "30px"}} onChange={this.handleNameChange}/>
-								</div> */}
-								<div className="single game-menu-item media-link" onClick={()=>this.linkProduct(this.props.modalDetailInfo)}>View more information</div>
-							</div>
-						</div>
-						<div className="game-button">
-							<div className="game-menu-item left" onClick={()=>this.clickButton("play", false)}>
-								Play Again
-							</div>
-							<div className="game-menu-item right" onClick={()=>this.clickButton("leader", false)}>
-								LeaderBoard
-							</div>
-						</div>
+							</>
+
+						)}						
 					</div>
 				}
 				{modalInfo === "leader" &&
@@ -342,13 +361,13 @@ class OverPan extends Component {
 						<div className="leader-content">
 							<div className="leader-line th">
 								<div className="no leader-cell">Position</div>
-								<div className="name leader-cell">Time Taken</div>
+								<div className="name leader-cell">Name</div>
 								<div className="score leader-cell">Score</div>
 							</div>
 							{leaderBoardArr.map((item, idx) =>
 								<div className="leader-line" key={idx}>
 									<div className="no leader-cell">{idx+1}</div>
-									<div className="name leader-cell">{item.name}s</div>
+									<div className="name leader-cell">{item.name}</div>
 									<div className="score leader-cell">{item.score}</div>
 								</div>
 							)}
