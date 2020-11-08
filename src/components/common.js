@@ -3,9 +3,9 @@ import * as THREE from 'three';
 import {FBXLoader} from "three/examples/jsm/loaders/FBXLoader";
 import {Tween, autoPlay, Easing} from "es6-tween";
 
-import hotImgEMEA from "../assets/images/hot_EMEA.png";
-import hotImgACPA from "../assets/images/hot_ACPA.png";
-import hotImgAMERICA from "../assets/images/hot_AMERICA.png";
+// import hotImgEMEA from "../assets/images/hot_EMEA.png";
+// import hotImgACPA from "../assets/images/hot_ACPA.png";
+// import hotImgAMERICA from "../assets/images/hot_AMERICA.png";
 
 // const island0 = require("assets/models/island_0.fbx");
 const islandHome0 = require("assets/models/EMEA_custom.fbx");//  _test building
@@ -21,7 +21,7 @@ const gameModelBuilding = require("assets/models/building.fbx");
 const gameModelBridge = require("assets/models/bridge.fbx");
 const gameModelStadium = require("assets/models/stadium.fbx");
 
-export const hotNameArr = ["EMEA", "AMERICA", "ACPA", "AMERICA_other"];
+// export const hotNameArr = ["EMEA", "AMERICA", "ACPA", "AMERICA_other"];
 
 autoPlay(true);
 
@@ -226,29 +226,6 @@ export function CheckGameModel(children, level) {
 		});
 	}
 	return 100 - Math.round(remainCount / children.length * 100);
-}
-
-export const hotModalInfo={
-	ACPA:{
-		title:"ACPA hot modal title",
-		content:"ACPA hot modal title",
-		img:hotImgACPA
-	},
-	EMEA:{
-		title:"EMEA hot modal title",
-		content:"EMEA hot modal content",
-		img:hotImgEMEA
-	},
-	AMERICA:{
-		title:"AMERICA hot modal title",
-		content:"AMERICA hot modal content",
-		img:hotImgAMERICA
-	},
-	AMERICA_other:{
-		title:"AMERICA_other hot modal title",
-		content:"AMERICA_other hot modal content",
-		img:hotImgAMERICA
-	}
 }
 
 export function GetStepInfo(newArr, oldArr) {

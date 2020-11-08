@@ -5,9 +5,25 @@ import ADSK_Quantify from '../assets/images/product/logos/ADSK-Quantify.png';
 import Assemble from '../assets/images/product/logos/Assemble.png';
 import BuildingConnected from '../assets/images/product/logos/BuildingConnected.png';
 
-
-
-
+// export const iconicHotNameArr = ["hot_EMEA", "hot2_EMEA", "hot_AMERICA", "hot_APAC"];
+export const iconicBuildingInfo = {
+	"hot_EMEA": {
+		index: '55ks5vhfck',
+		padding: '44.17%'
+	},
+	"hot2_EMEA": {
+		index: 'rpbxyy3m64',
+		padding: '56.25%'
+	},
+	"hot_AMERICA": {
+		index: 'rpbxyy3m64',
+		padding: '56.25%'
+	},
+	"hot_APAC": {
+		index: 'rpbxyy3m64',
+		padding: '56.25%'
+	}
+}
 
 export const products = [
 	{ 

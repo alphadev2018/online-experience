@@ -5,7 +5,7 @@ import {FBXLoader} from "three/examples/jsm/loaders/FBXLoader";
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
 import {TransformControls} from 'three/examples/jsm/controls/TransformControls';
 
-import {modelArr, gameInfoArr, easeTime, gameReadyTime, SetTween, AnimateReturn, AnimateRotate, AnimatePlane, GotoIsland, GetRayCastObject, CheckGameModel, hotNameArr, GetStepInfo, CheckClash, modalInfo, CheckRoundVal, Get2DPos, controlsMin, controlsMax} from "./common";
+import {modelArr, gameInfoArr, easeTime, gameReadyTime, SetTween, AnimateReturn, AnimateRotate, AnimatePlane, GotoIsland, GetRayCastObject, CheckGameModel, GetStepInfo, CheckClash, modalInfo, CheckRoundVal, Get2DPos, controlsMin, controlsMax} from "./common";
 import '../assets/styles/home.css';
 import '../assets/styles/overPan.css';
 
@@ -14,7 +14,7 @@ import redoImg from "../assets/images/redo.png";
 import {ReactComponent as TransMoveIcon} from "../assets/images/trans_move.svg";
 import {ReactComponent as TransRotateIcon} from "../assets/images/trans_rotate.svg";
 
-import { products, capabilities } from '@db/database';
+import { products, capabilities, iconicBuildingInfo } from '@db/database';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import * as Actions from 'store/actions';
@@ -161,13 +161,17 @@ class Home extends Component {
 				}) }, 1000);
 			}
 		}
-		var hotInfo;
-		if (this.device === "web") hotInfo = this.state.selHot;
-		else {
-			const hotIntersect = GetRayCastObject(this, mouseX, mouseY, this.hotMeshArr);
-			hotInfo = (hotIntersect)?hotIntersect.object.name.substring(4):"";
+		// var hotInfo;
+		// if (this.device === "web") hotInfo = this.state.selHot;
+		// else {
+		// 	const hotIntersect = GetRayCastObject(this, mouseX, mouseY, this.hotMeshArr);
+		// 	hotInfo = (hotIntersect)?hotIntersect.object.name.substring(4):"";
+		// }
+		// this.props.callHotSpot(hotInfo, this.selLandName);
+		const hotIntersect = GetRayCastObject(this, mouseX, mouseY, this.hotMeshArr);
+		if (hotIntersect) {
+			this.props.callHotSpot(hotIntersect.object.name, this.selLandName);
 		}
-		this.props.callHotSpot(hotInfo, this.selLandName);
 	}
 
 	touchEnd = (event) => { this.processClickEvent(event.changedTouches[0].pageX, event.changedTouches[0].pageY); }
@@ -204,14 +208,22 @@ class Home extends Component {
 		}
 		else {
 			const intersect = GetRayCastObject(this, event.clientX, event.clientY, this.hotMeshArr);
-			const selHot = (intersect)?intersect.object.name.substring(4):"";
-			if (selHot !== this.state.selHot) {
-				this.hotMeshArr.forEach(hotMesh => {
-					const colVal = (hotMesh.name === "hot_"+selHot)?0xFFFFFF:0xFF0000;
-					hotMesh.material.color.setHex(colVal);
-				});
-				this.setState({selHot});
-			}
+			this.hotMeshArr.forEach(hotMesh => {
+				let colVal = 0xFF0000;
+				if (intersect && hotMesh.name === intersect.object.name){
+					colVal = 0xFFFFFF;
+				}
+				hotMesh.material.color.setHex(colVal);
+			});
+			// const selHot = (intersect)?intersect.object.name.substring(4):"";
+			// console.log(selHot)
+			// if (selHot !== this.state.selHot) {
+			// 	this.hotMeshArr.forEach(hotMesh => {
+			// 		const colVal = (hotMesh.name === "hot_"+selHot)?0xFFFFFF:0xFF0000;
+			// 		hotMesh.material.color.setHex(colVal);
+			// 	});
+			// 	this.setState({selHot});
+			// }
 		}
 	}
 
@@ -436,14 +448,8 @@ class Home extends Component {
 				else if (child.name === "plane") {child.dir = 1; this.airPlaneArr.push(child);}
 				else if (child.name.indexOf("hot_building") > -1 || child.name.indexOf("Eco_City_Lighting_1_Balance_Arch_polySurface025") > -1) {
 					this.hotBuildingArr.push(child);
-					console.log(this.hotBuildingArr);
 				}
-				else if (child.name)
-				hotNameArr.forEach(str => {
-					if (child.name === "hot_"+str ) {
-						this.hotMeshArr.push(child);
-					}
-				});
+				else if ( Object.keys(iconicBuildingInfo).indexOf(child.name) !== -1 ) this.hotMeshArr.push(child);
 			});
 			var vSize = new THREE.Box3().setFromObject(object).getSize();
 			var scl = info.size/vSize.x;
