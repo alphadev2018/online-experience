@@ -39,10 +39,10 @@ export const menuArr = [
 ];
 export const modelArr = [
 	{id: "home0", file:islandHome0, size:10, pos:{x: 20, y:0, z: 20}, islandName:menuHomeArr[0].value}, //, subFile:islandHome0Sub
-	{id: "home1", file:islandHome1, size:20, pos:{x:-20, y:0, z: 20}, islandName:menuHomeArr[1].value},
-	{id: "home2", file:islandHome2, size:20, pos:{x:  0, y:0, z:-30}, islandName:menuHomeArr[2].value},
-	{id: "game", file:islandGame,  size:15, pos:{x: 25, y:0, z:-25}, islandName:menuArr[1].value},
-	{id: "media", file:islandMedia, size:10, pos:{x:-25, y:0, z:-25}, islandName:menuArr[0].value},
+	{id: "home1", file:islandHome1, size:13, pos:{x:-20, y:0, z: 20}, islandName:menuHomeArr[1].value},
+	{id: "home2", file:islandHome2, size:13, pos:{x:  0, y:0, z:-30}, islandName:menuHomeArr[2].value},
+	{id: "game", file:islandGame,  size:11, pos:{x: 25, y:0, z:-25}, islandName:menuArr[1].value},
+	{id: "media", file:islandMedia, size:13, pos:{x:-25, y:0, z:-25}, islandName:menuArr[0].value},
 	// {file:island3,     size:15, pos:{x:  0, y:0, z: 35}, islandName:menuArr[1].value},
 ];
 export const gameInfoArr = [
@@ -80,8 +80,9 @@ export function AnimateRotate(arr, axis, value, type) {
 
 export function AnimateReturn(arr, type, axis, value) {
 	arr.forEach(modelItem => {
+		var moveDis = modelItem.moveDis?modelItem.moveDis:value;
 		modelItem.curVal += modelItem.dir;
-		modelItem[type][axis] += modelItem.dir * value;
+		modelItem[type][axis] += modelItem.dir * moveDis;
 		// if (modelItem.parent.islandName === 'home0' && !modelItem.name.indexOf('cloud')) {
 		// 	modelItem[type]['z'] += modelItem.dir * value * 3;
 		// }
@@ -92,9 +93,9 @@ export function AnimateReturn(arr, type, axis, value) {
 
 export function AnimatePlane(arr) {
 	arr.forEach(item => {
-		item.position.x += 0.05 * item.dir;
-		if (item.position.x >= 30) {item.dir = -1; item.rotation.y = Math.PI/-2;}
-		if (item.position.x <= -30) {item.dir = 1;item.rotation.y = Math.PI/2;}
+		item.position.x += 0.5 * item.dir;
+		if (item.position.x >= 300) {item.dir = -1; item.rotation.y = Math.PI/-2;}
+		if (item.position.x <= -300) {item.dir = 1;item.rotation.y = Math.PI/2;}
 		item.children[0].rotation.y += 0.18;
 	});
 }

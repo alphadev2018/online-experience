@@ -419,7 +419,13 @@ class Home extends Component {
 				else if (child.name.indexOf("crane") > -1 || child.name.indexOf("cloud") > -1) {
 					child.curVal = Math.round(Math.random() * 100);
 					child.dir = (Math.random() > 0.5)? 1:-1;
-					if (child.name.indexOf("cloud") > -1) { this.cloudArr.push(child); } //child['position']['y'] += 8; 
+					if (child.name.indexOf("cloud") > -1) {
+						if 		(info.islandName === "home0") child.moveDis = 0.008;
+						else if (info.islandName === "home1") child.moveDis = 0.7;
+						else if (info.islandName === "home2") child.moveDis = 0.4;
+						else if (info.islandName === "game") child.moveDis = 0.005;
+						this.cloudArr.push(child);
+					} //child['position']['y'] += 8; 
 					else if (child.name.indexOf("crane") > -1) this.tonArr.push(child);
 				}
 				else if (child.name.indexOf("roundPlay") > -1) this.roundPlayArr.push(child);
@@ -588,7 +594,6 @@ class Home extends Component {
 		AnimatePlane(this.airPlaneArr);
 		this.camera.lookAt( 0, 0, 0 );
 		const camPos = this.camera.position;
-		console.log(camPos);
 		this.subLight.position.set(camPos.x, camPos.y, camPos.z);
 		if (this.selLandName === "media") {
 			var mask_A_PosArr = [], mask_B_PosArr = [];
