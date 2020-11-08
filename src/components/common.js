@@ -42,7 +42,7 @@ export const modelArr = [
 	{id: "home1", file:islandHome1, size:13, pos:{x:-20, y:0, z: 20}, islandName:menuHomeArr[1].value},
 	{id: "home2", file:islandHome2, size:13, pos:{x:  0, y:0, z:-30}, islandName:menuHomeArr[2].value},
 	{id: "game", file:islandGame,  size:11, pos:{x: 25, y:0, z:-25}, islandName:menuArr[1].value},
-	{id: "media", file:islandMedia, size:13, pos:{x:-25, y:0, z:-25}, islandName:menuArr[0].value},
+	{id: "media", file:islandMedia, size:13, pos:{x:-45, y:0, z:-25}, islandName:menuArr[0].value},
 	// {file:island3,     size:15, pos:{x:  0, y:0, z: 35}, islandName:menuArr[1].value},
 ];
 export const gameInfoArr = [

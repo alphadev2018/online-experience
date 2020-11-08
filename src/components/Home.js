@@ -150,7 +150,7 @@ class Home extends Component {
 				SetTween(this.camera, "camPos", 3, easeTime);
 				// -5.53, 2.36, 7.08
 				if (intersect.object.name === "hot_building_1") {
-					SetTween(this.camera, "position", {x:-5.53, y: 2.36, z: 7.08}, easeTime);
+					SetTween(this.camera, "position", {x:-4.23, y: 1.1, z: 11.8}, easeTime);
 				} else {
 					SetTween(this.camera, "position", {x:-7.1, y: 1.7, z: 5.6}, easeTime);
 				}
@@ -611,6 +611,7 @@ class Home extends Component {
 		AnimatePlane(this.airPlaneArr);
 		this.camera.lookAt( 0, 0, 0 );
 		const camPos = this.camera.position;
+		
 		this.subLight.position.set(camPos.x, camPos.y, camPos.z);
 		if (this.selLandName === "media") {
 			var mask_A_PosArr = [], mask_B_PosArr = [];
