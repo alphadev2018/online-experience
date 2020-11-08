@@ -6,8 +6,6 @@ class Hotspot extends Component {
 	render() {
         const { details } = this.props;
         const info = iconicBuildingInfo[details.hotspot];
-
-        // EMEA rpbxyy3m64, 55ks5vhfck
         
 		return (
             <>

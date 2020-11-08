@@ -35,6 +35,7 @@ class Home extends Component {
 		this.totalModelCount = modelArr.length + gameInfoArr.length; this.loadModelNum = 0;
 		this.transError = {clash:0, quality:0};
 		this.mouseCapture = false;
+		this.timer = null;
 	}
 	
 	componentDidMount() {
@@ -208,22 +209,19 @@ class Home extends Component {
 		}
 		else {
 			const intersect = GetRayCastObject(this, event.clientX, event.clientY, this.hotMeshArr);
+			if (!intersect) {
+				clearInterval(this.timer);
+			}
 			this.hotMeshArr.forEach(hotMesh => {
-				let colVal = 0xFF0000;
 				if (intersect && hotMesh.name === intersect.object.name){
-					colVal = 0xFFFFFF;
+					clearInterval(this.timer);
+					this.timer = setInterval( () => {
+						this.startHotspotTween(hotMesh);
+					}, 50);
+				} else {
+					hotMesh.material.color.setHex(0xFF0000);
 				}
-				hotMesh.material.color.setHex(colVal);
 			});
-			// const selHot = (intersect)?intersect.object.name.substring(4):"";
-			// console.log(selHot)
-			// if (selHot !== this.state.selHot) {
-			// 	this.hotMeshArr.forEach(hotMesh => {
-			// 		const colVal = (hotMesh.name === "hot_"+selHot)?0xFFFFFF:0xFF0000;
-			// 		hotMesh.material.color.setHex(colVal);
-			// 	});
-			// 	this.setState({selHot});
-			// }
 		}
 	}
 
@@ -256,6 +254,15 @@ class Home extends Component {
 			this.setEndGame();
 		}
 		return checkGamePro;
+	}
+
+	startHotspotTween = (hotspot) => {
+		let color = hotspot.material.color;
+		if (color.getHex() >= 16777215) {
+			clearInterval(this.timer);
+			return;
+		}
+		hotspot.material.color.setRGB( color.r, color.g + 0.2, color.b + 0.2);
 	}
 
 	// setStep=(delta)=>{

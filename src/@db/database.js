@@ -5,7 +5,6 @@ import ADSK_Quantify from '../assets/images/product/logos/ADSK-Quantify.png';
 import Assemble from '../assets/images/product/logos/Assemble.png';
 import BuildingConnected from '../assets/images/product/logos/BuildingConnected.png';
 
-// export const iconicHotNameArr = ["hot_EMEA", "hot2_EMEA", "hot_AMERICA", "hot_APAC"];
 export const iconicBuildingInfo = {
 	"hot_EMEA": {
 		index: '55ks5vhfck',
