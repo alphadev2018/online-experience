@@ -270,6 +270,17 @@
     position: relative;
     padding: 40px;
 }
+.modal-wrapper.game-rule .close-btn{
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 30px;
+    cursor: pointer;
+    opacity: 0.8;
+}
+.modal-wrapper.game-rule .close-btn img{
+    width: 100%;
+}
 .modal-wrapper.game-rule .game-rule-item{
     display: none;
     color: white;

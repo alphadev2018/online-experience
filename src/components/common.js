@@ -37,15 +37,15 @@ export const menuArr = [
 	{label:"Conductive",value:"conductive", label:"Back to AU Construction"}
 ];
 export const modelArr = [
-	{file:islandHome0, size:12, pos:{x: 20, y:0, z: 20}, islandName:menuHomeArr[0].value},
-	{file:islandHome1, size:20, pos:{x:-20, y:0, z: 20}, islandName:menuHomeArr[1].value},
-	{file:islandHome2, size:20, pos:{x:  0, y:0, z:-30}, islandName:menuHomeArr[2].value},
-	{file:islandGame,  size:15, pos:{x: 25, y:0, z:-25}, islandName:menuArr[1].value},
-	{file:islandMedia, size:10, pos:{x:-25, y:0, z:-25}, islandName:menuArr[0].value},
+	{id: "home0", file:islandHome0, size:10, pos:{x: 20, y:0, z: 20}, islandName:menuHomeArr[0].value},
+	{id: "home1", file:islandHome1, size:20, pos:{x:-20, y:0, z: 20}, islandName:menuHomeArr[1].value},
+	{id: "home2", file:islandHome2, size:20, pos:{x:  0, y:0, z:-30}, islandName:menuHomeArr[2].value},
+	{id: "game", file:islandGame,  size:15, pos:{x: 25, y:0, z:-25}, islandName:menuArr[1].value},
+	{id: "media", file:islandMedia, size:10, pos:{x:-25, y:0, z:-25}, islandName:menuArr[0].value},
 	// {file:island3,     size:15, pos:{x:  0, y:0, z: 35}, islandName:menuArr[1].value},
 ];
 export const gameInfoArr = [
-	{id:"building", file:gameModelBuilding, size:5, time:100, basicName:"Basic", snapDis:4.6},
+	{id:"building", file:gameModelBuilding, size:5, time:500, basicName:"Basic", snapDis:4.6},
 	{id:"bridge", file:gameModelBridge, size:2, time:500, basicName:"Support_000", snapDis:3},
 	{id:"stadium", file:gameModelStadium, size:1.6, time:500, basicName:"ground", snapDis:1}
 ];
@@ -364,8 +364,8 @@ export function CheckClash(meshArr, selMesh, level, rotAxis) {
 }
 
 export const modalInfo = {
-	clash:{title:"CLASH WARNING!", description : "Your design is poorly coordinated, this has coursed a clash on site, you have been penalized 15s for rework costs."},
-	wrong:{title:"QUALITY WARNING!", description : "You have incorrectly laid out the design, an issue has been raised, you have been penalized 10s for rework costs."}
+	clash:{title:"CLASH WARNING!", description : "Your design is poorly coordinated, this has coursed a clash on site, you have been penalized 15 seconds for rework costs."},
+	wrong:{title:"QUALITY WARNING!", description : "You have incorrectly laid out the design, an issue has been raised, you have been penalized 10 seconds for rework costs."}
 }
 
 function GetMeshArea(mesh) {

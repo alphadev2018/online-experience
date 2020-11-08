@@ -1,7 +1,8 @@
 import * as Actions from 'store/actions/app/index';
 
 const initialState = {
-    user_name: ''
+    user_name: '',
+    models: []
 };
 
 const routes = function (state = initialState, action) {
@@ -13,6 +14,11 @@ const routes = function (state = initialState, action) {
                 ... state,
                 user_name: action.data
             }
+        }
+        case Actions.LOAD_MODEL:
+        {
+            state.models.push(action.model);
+            return state;
         }
         default:
         {

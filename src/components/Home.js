@@ -15,8 +15,11 @@ import {ReactComponent as TransMoveIcon} from "../assets/images/trans_move.svg";
 import {ReactComponent as TransRotateIcon} from "../assets/images/trans_rotate.svg";
 
 import { products, capabilities } from '@db/database';
+import {bindActionCreators} from 'redux';
+import {connect} from 'react-redux';
+import * as Actions from 'store/actions';
 
-export default class Home extends Component {
+class Home extends Component {
 	constructor(props) {
 		super(props);
 		this.cWidth = jQuery(window).width();  this.mouseX = 0;
@@ -50,6 +53,13 @@ export default class Home extends Component {
 		if (nextProps.menuItem !== "first" && this.selLandName !== nextProps.menuItem) {
 			// if (this.totalModelCount > this.loadModelNum) return;
 			if (this.selLandName === "") SetTween(this.scene.fog, "far", 50, easeTime);
+			
+			if (this.props.app.app.models.indexOf(nextProps.menuItem) === -1) {
+				modelArr.map(model => {
+					if (model.id !== nextProps.menuItem) return;
+					this.loadIslandModel(model);
+				})
+			}
 			GotoIsland(this, nextProps.menuItem);
 			this.setState({menuItem:nextProps.menuItem});
 		}
@@ -131,6 +141,10 @@ export default class Home extends Component {
 				this.props.callMenuItem(landName);
 			}
 			else if (intersect.object.name.indexOf("hot_building") > -1) {
+				this.setState({
+					maskAShow: false,
+					maskBShow: false
+				})
 				
 				SetTween(this.camera, "camPos", 3, easeTime);
 				// -5.53, 2.36, 7.08
@@ -421,12 +435,16 @@ export default class Home extends Component {
 			var vSize = new THREE.Box3().setFromObject(object).getSize();
 			var scl = info.size/vSize.x;
 			
-			if (info.islandName.indexOf("home") > -1) scl = 0.09;
+			if (info.islandName.indexOf("home") > -1) scl = 0.009;
+			// if (info.islandName == "home0") scl = 0.009;
+
 			object.scale.set(scl, scl, scl);
 			object.position.set(info.pos.x, info.pos.y, info.pos.z);
 			object.islandName = info.islandName;
 			this.totalGroup.add(object);
-			this.addLoadModelNum();
+			this.addLoadModelNum();			
+			this.props.loadModel(info.id);
+			
 		}, undefined, ( error )=> { console.error( error ); this.addLoadModelNum(); } );
 	}
 	addLoadModelNum=()=>{
@@ -524,18 +542,22 @@ export default class Home extends Component {
         this.transform.setSize(0.8);
 		this.transform.addEventListener( 'dragging-changed', function ( event ) { self.controls.enabled = ! event.value; } );
 
-		const ambientLight = new THREE.AmbientLight( 0xFFFFFF, 0.1 ); this.scene.add( ambientLight );
-		this.mainLight = new THREE.DirectionalLight( 0x9E9E9E, 1.0 ); this.scene.add( this.mainLight );
+		const ambientLight = new THREE.AmbientLight( 0xFFFFFF, 0.4 ); this.scene.add( ambientLight );
+		// this.mainLight = new THREE.DirectionalLight( 0x9E9E9E, 1.0 ); this.scene.add( this.mainLight );
+		this.mainLight = new THREE.DirectionalLight( 0xFFFFFF, 1.0 ); this.scene.add( this.mainLight );
 		this.mainLight.position.set(-50, 50, 50); this.mainLight.castShadow = true;
 
 		this.subLight = new THREE.DirectionalLight( 0xFFFFFF, 0.5 ); this.scene.add( this.subLight );
+		// this.loadIslandModel(modelArr[0])
 		modelArr.forEach(modelInfo => { this.loadIslandModel(modelInfo); });
 		gameInfoArr.forEach(gameInfo => { this.loadGameModel(gameInfo); });
 	}
 
 	animate () {
 		if (!this.camera || !this.scene) return;
+		
 		requestAnimationFrame(this.animate);
+
 		AnimateRotate(this.windBaseArr, "y", 0.005, "wind");
 		AnimateRotate(this.roundPlayArr, "x", 0.005);
 		AnimateReturn(this.cloudArr, "position", "x", 0.05);
@@ -654,3 +676,19 @@ export default class Home extends Component {
 		)
 	}
 }
+
+function mapDispatchToProps(dispatch)
+{
+    return bindActionCreators({
+		loadModel: Actions.loadModel
+    }, dispatch);
+}
+
+function mapStateToProps(props)
+{
+    return {
+        app:       props.app
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Home);

@@ -162,6 +162,7 @@ class OverPan extends Component {
 
 	render() {
 		const {modalInfo, gameRuleNum, gameLevelNum, loadPro, leaderBoardArr, username} = this.state;
+		const {models} = this.props.app.app;
 		var totalTime, gameTime, level, gamePro, hotStr="", transError, resultImg;
 		// const loadingClassStr = (loadPro < 100)?"back-loading":"back-enter";
 		if (this.props && this.props.modalDetailInfo) {
@@ -193,7 +194,7 @@ class OverPan extends Component {
 							<div>
 								<div className="back-loading" style={{top:(100-loadPro)+"%"}}></div>
 								<div className="label loading-label">Loading</div>
-								<div className="label pro-label">{loadPro} %</div>
+								<div className="label pro-label">{this.props.app.app.models.length} %</div>
 							</div>
 						}
 					</div>
@@ -201,7 +202,7 @@ class OverPan extends Component {
 				{modalInfo === "game" &&
 					<div className="modal-wrapper game-menu">
 						<div className="title">Construction Clouds</div>
-						<div className="close-btn" onClick={()=>this.clickButton("", true)}>
+						<div className="close-btn" onClick={()=>this.clickButton("first", true)}>
 							<i className="fa fa-close" style={{color: 'white'}}></i>
 						</div>
 						{this.gameMenuArr.map((item, idx) =>
@@ -261,6 +262,9 @@ class OverPan extends Component {
 				{modalInfo === "rule" &&
 					<div className="modal-wrapper game-rule">
 						<div className="title">Game Rules</div>
+						<div className="close-btn" onClick={()=>this.clickButton("game", false)}>
+							<i className="fa fa-close" style={{color: 'white'}}></i>
+						</div>
 						{this.gameRuleArr.map((item, idx) =>
 							<div className={`game-rule-item ${gameRuleNum===idx?"show":""}`} key={idx}>
 								{idx === 0 && <div className="text" style={{whiteSpace: 'pre-wrap'}}>
@@ -268,13 +272,14 @@ class OverPan extends Component {
 								</div>}
 								{idx === 1 && <div className="text" style={{whiteSpace: 'pre-wrap'}}>
 									Beat the clock to build the structure in the fastest time.<br/><br/>
-									Select a piece and move it along the X, Y, or Z axis, or click one of the orange buttons to rotate the piece by 90 degrees.<br/><br/>
-									Once you have finished moving the piece, click ‘place’. If the piece is not in the correct position, you will receive a warning.
+									Select a piece.<br/><br/>
+									Then click an arrow and drag the piece along the X, Y, or Z axis. Or click one of the orange buttons to rotate the piece by 90 degrees.<br/><br/>
+									Once you have finished moving the piece, click ‘place’. If the piece is not in the correct position, you will receive a warning. If you have selected and moved one piece, you will need to click ‘place’ before you can select the next piece.
 								</div>}
 								{idx === 2 && <div className="text" style={{whiteSpace: 'pre-wrap'}}>
 									Click one of the Lifelines if you need some help:<br/><br/>
-									<p><strong>Projects Team Assist</strong> will move the next piece into the correct place, and costs 20 seconds in a time penalty.</p><br/>
-									<p><strong>Design Reveal</strong> will show a picture of the finished model and costs a 30 second time penalty.</p><br/>
+									<p><strong>Projects Team Assist</strong> will move the next piece into the correct place, and costs 20 seconds in a time penalty.</p>
+									<p><strong>Design Reveal</strong> will show a picture of the finished model and costs a 30 second time penalty.</p>
 									<p><strong>Auto Complete</strong> finishes the build and ends the game scoring zero points.</p>
 								</div>}
 							</div>
@@ -297,7 +302,7 @@ class OverPan extends Component {
 					<div className="modal-wrapper game-end">
 						{ this.props.app.app.user_name === "" && (
 							<>
-								<div className="title" style={{marginBottom: "45px"}}>Enter your player name to be go on the leaderboard.</div>
+								<div className="title" style={{marginBottom: "45px", fontSize: '30px'}}>Enter your player name to be added to the leaderboard</div>
 								<div className="game-result">									
 									<input type="text" style={{width: "100%", height: "30px", fontSize: "16px"}} onChange={this.handleNameChange} value={this.state.username}/>
 
