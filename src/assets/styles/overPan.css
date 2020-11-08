@@ -105,6 +105,7 @@
     transform: translateY(-50%);
     top: 50%;
     max-width: 600px;
+    z-index: 10;
     /* max-height: 70vh; */
 /* 37A7DB */
 }
@@ -270,6 +271,10 @@
     position: relative;
     padding: 40px;
 }
+.modal-wrapper.game-rule .title {
+    font-size: 38px;
+    margin-bottom: 60px;
+}
 .modal-wrapper.game-rule .close-btn{
     position: absolute;
     top: 20px;
@@ -288,6 +293,18 @@
 }
 .modal-wrapper.game-rule .game-rule-item .text{
     font-family: 'calibri_light';
+}
+@media (max-width: 767px) {
+    .modal-wrapper.game-rule{
+        padding: 20px;
+    }
+    .modal-wrapper.game-rule .title {
+        font-size: 30px;
+        margin-bottom: 30px;
+    }
+    .modal-wrapper.game-rule .game-rule-item .text{
+        font-size: 14px;
+    }
 }
 .modal-wrapper.game-rule .game-rule-item .text p{
     margin: 10px 0;
@@ -512,6 +529,8 @@
 }
 .modal-wrapper.product .title img{
     height: 40px;
+    max-width: 80%;
+    max-height: 80%;
 }
 .modal-wrapper.product .body{
     color: white;

@@ -37,9 +37,9 @@ class App extends Component {
 		});
 	}
 
-	callHotSpot=(str)=>{
+	callHotSpot=(str, land)=>{
 		if (str === "") return;
-		this.setState({modalInfo:"hotSpot", modalDetailInfo:str});
+		this.setState({modalInfo:"hotSpot", modalDetailInfo:{ hotspot: str, land: land }});
 	}
 
 	callProduct=(product)=>{

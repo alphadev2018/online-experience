@@ -28,6 +28,7 @@ import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import * as Actions from 'store/actions';
 import {API_CONFIG} from "ApiConfig";
+import Hotspot from './Hotspot';
 
 class OverPan extends Component {
 	constructor(props) {
@@ -194,7 +195,7 @@ class OverPan extends Component {
 							<div>
 								<div className="back-loading" style={{top:(100-loadPro)+"%"}}></div>
 								<div className="label loading-label">Loading</div>
-								<div className="label pro-label">{this.props.app.app.models.length} %</div>
+								<div className="label pro-label">{loadPro} %</div>
 							</div>
 						}
 					</div>
@@ -302,11 +303,10 @@ class OverPan extends Component {
 					<div className="modal-wrapper game-end">
 						{ this.props.app.app.user_name === "" && (
 							<>
-								<div className="title" style={{marginBottom: "45px", fontSize: '30px'}}>Enter your player name to be added to the leaderboard</div>
-								<div className="game-result">									
+								<div className="title" style={{marginBottom: "45px", fontSize: '30px', lineHeight: "1.2"}}>Enter your player name to be added to the leaderboard</div>
+								<div className="game-result" style={{display: "flex", flexDirection: "column", alignItems: "center"}}>
 									<input type="text" style={{width: "100%", height: "30px", fontSize: "16px"}} onChange={this.handleNameChange} value={this.state.username}/>
-
-									<div className="single game-menu-item media-link" onClick={this.saveName} disabled={!this.state.username}>Save</div>
+									<div className="single game-menu-item" style={{padding: "10px 5px", width: "230px", height: "23px", margin: "10px 0"}} onClick={this.saveName} disabled={!this.state.username}>Save</div>
 								</div>
 							</>
 						)}
@@ -385,21 +385,7 @@ class OverPan extends Component {
 					</div>
 				}
 				{modalInfo === "hotSpot" &&
-					<div className="modal-wrapper hotspot">
-						<div className="title">{hotModalInfo[hotStr].title}</div>
-						<div className="sub-content">
-							<div className="description">{hotModalInfo[hotStr].content}</div>
-							<div className="image">
-								<img src={hotModalInfo[hotStr].img}></img>
-								<div className="game-menu-item">
-									<div className="text">Learn more</div>
-								</div>
-							</div>
-						</div>
-						<div className="close-hot" onClick={()=>this.clickButton("", true)}>
-							<i className="fa fa-close" style={{color: 'white'}}></i>
-						</div>
-					</div>
+					<Hotspot details={hotStr} onClose={()=>this.clickButton("", true)}/>
 				}
 				{modalInfo === "product" &&
 					<div className="modal-wrapper product">

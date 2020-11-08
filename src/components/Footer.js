@@ -33,7 +33,7 @@ export default class Footer extends Component {
 		if (this.state.selButton || !this.state.gameStatus) return;
 		this.setState({selButton:str});
 		var delayTime = 2000;
-		if 		(str === "assist") delayTime = 1000;
+		if 		(str === "assist") delayTime = 3000;
 		else if (str === "design") delayTime = 3000;
 		setTimeout(() => { this.setState({selButton:null}); }, delayTime);
 	}

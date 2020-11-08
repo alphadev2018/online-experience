@@ -39,7 +39,7 @@ body {
 .header .menu-toggle {
   color: white;
   margin-right: 60px;
-  z-index: 99;
+  z-index: 9;
 }
 
 @media (max-width: 767px) {
