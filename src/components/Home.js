@@ -412,11 +412,14 @@ class Home extends Component {
 					const colVal = child.name.split("__")[1];
 					child.material = new THREE.MeshPhongMaterial({color:"#"+colVal, side:2});
 				}
-				if		(child.name.indexOf("wind_group") > -1) this.windBaseArr.push(child);
+				["Tube", "Tubea", "Array_1", "Array_2"].forEach(str => {
+					if (child.name === str) child.visible = false;
+				});
+				if (child.name.indexOf("wind_group") > -1) this.windBaseArr.push(child);
 				else if (child.name.indexOf("crane") > -1 || child.name.indexOf("cloud") > -1) {
 					child.curVal = Math.round(Math.random() * 100);
 					child.dir = (Math.random() > 0.5)? 1:-1;
-					if (child.name.indexOf("cloud") > -1) { child['position']['y'] += 8; this.cloudArr.push(child); }
+					if (child.name.indexOf("cloud") > -1) { this.cloudArr.push(child); } //child['position']['y'] += 8; 
 					else if (child.name.indexOf("crane") > -1) this.tonArr.push(child);
 				}
 				else if (child.name.indexOf("roundPlay") > -1) this.roundPlayArr.push(child);
@@ -435,8 +438,7 @@ class Home extends Component {
 			var vSize = new THREE.Box3().setFromObject(object).getSize();
 			var scl = info.size/vSize.x;
 			
-			if (info.islandName.indexOf("home") > -1) scl = 0.009;
-			// if (info.islandName == "home0") scl = 0.009;
+			// if (info.islandName.indexOf("home") > -1) scl = 0.009;
 
 			object.scale.set(scl, scl, scl);
 			object.position.set(info.pos.x, info.pos.y, info.pos.z);
@@ -444,13 +446,34 @@ class Home extends Component {
 			this.totalGroup.add(object);
 			this.addLoadModelNum();			
 			this.props.loadModel(info.id);
-			
 		}, undefined, ( error )=> { console.error( error ); this.addLoadModelNum(); } );
 	}
 	addLoadModelNum=()=>{
 		this.loadModelNum++;
 		this.props.callAddLoadNum(this.totalModelCount, this.loadModelNum);
 	};
+
+	// addSubModels=(parent, subFile)=>{
+	// 	new FBXLoader().load(subFile, (object)=>{
+	// 		console.log(object);
+	// 		var vSize = new THREE.Box3().setFromObject(object).getSize();
+	// 		console.log(vSize);
+	// 		// const scl = 15/vSize.x;
+	// 		// object.scale.set(scl, scl, scl);
+	// 		// parent.add(object);
+	// 		object.children.forEach(child => {
+	// 			var scl, pos;
+	// 			if 		(child.name === "roundPlay_1") {scl = 4; pos={x:-240, y:120, z:-35}}
+	// 			else if (child.name === "wind_group001"){scl = 0.7; pos={x:300, y:45, z:-15}}
+	// 			else if (child.name === "wind_group002"){scl = 0.7; pos={x:-50, y:45, z:350}}
+	// 			child.scale.set(scl, scl, scl);
+	// 			child.position.set(pos.x, pos.y, pos.z);
+	// 			// child.material = new THREE.MeshPhongMaterial({color:0xFF0000, side:2});
+	// 			parent.add(child);
+	// 		});
+	// 		console.log(parent);
+	// 	});
+	// }
 
 	loadGameModel(info) {
 		new FBXLoader().load(info.file, (object)=>{
@@ -560,7 +583,7 @@ class Home extends Component {
 
 		AnimateRotate(this.windBaseArr, "y", 0.005, "wind");
 		AnimateRotate(this.roundPlayArr, "x", 0.005);
-		AnimateReturn(this.cloudArr, "position", "x", 0.05);
+		AnimateReturn(this.cloudArr, "position", "x", 0.01);
 		AnimateReturn(this.tonArr, "rotation", "y", 0.01);
 		AnimatePlane(this.airPlaneArr);
 		this.camera.lookAt( 0, 0, 0 );

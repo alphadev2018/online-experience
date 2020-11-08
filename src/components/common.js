@@ -8,11 +8,12 @@ import hotImgACPA from "../assets/images/hot_ACPA.png";
 import hotImgAMERICA from "../assets/images/hot_AMERICA.png";
 
 // const island0 = require("assets/models/island_0.fbx");
-const islandHome0 = require("assets/models/EMEA_custom.fbx");// _test building
+const islandHome0 = require("assets/models/EMEA_custom.fbx");//  _test building
 const islandHome1 = require("assets/models/APAC.fbx"); // _custom _test
 const islandHome2 = require("assets/models/AMERACAS.fbx"); //_custom_test
 const islandGame = require("assets/models/island_game.fbx");
 const islandMedia = require("assets/models/island_media.fbx");
+const islandHome0Sub = require("assets/models/EMEA_sub.fbx");
 // const island3 = require("assets/models/island_3.fbx");
 
 const gameModelCrane = require("assets/models/crane.fbx");
@@ -37,7 +38,7 @@ export const menuArr = [
 	{label:"Conductive",value:"conductive", label:"Back to AU Construction"}
 ];
 export const modelArr = [
-	{id: "home0", file:islandHome0, size:10, pos:{x: 20, y:0, z: 20}, islandName:menuHomeArr[0].value},
+	{id: "home0", file:islandHome0, size:10, pos:{x: 20, y:0, z: 20}, islandName:menuHomeArr[0].value, subFile:islandHome0Sub},
 	{id: "home1", file:islandHome1, size:20, pos:{x:-20, y:0, z: 20}, islandName:menuHomeArr[1].value},
 	{id: "home2", file:islandHome2, size:20, pos:{x:  0, y:0, z:-30}, islandName:menuHomeArr[2].value},
 	{id: "game", file:islandGame,  size:15, pos:{x: 25, y:0, z:-25}, islandName:menuArr[1].value},
