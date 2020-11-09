@@ -70,7 +70,12 @@ class Home extends Component {
 		if (!this.state.gameStatus && nextProps.game) {
 			this.setState({gameStatus:"start"});
 			this.totalGroup.children.forEach(island => {
-				island.visible = (island.islandName === "game");
+				if (island.islandName !== "game") {
+					island.children.forEach(child => {
+						if (child instanceof THREE.Mesh) child.visible = false;
+					});
+				}
+				// island.visible = (island.islandName === "game");
 			});
 			this.controls.minDistance = 0.1;
 			SetTween(this.camera, "position", {x:-10, y:this.camera.position.y, z:0}, easeTime);
@@ -295,7 +300,11 @@ class Home extends Component {
 	setEndGame=()=>{
 		this.setState({gameStatus:null, transMesh:null, transChange:false});
 		this.gameGroup.visible = false;
-		this.totalGroup.children.forEach(island => { island.visible = true; });
+		this.totalGroup.children.forEach(island => { 
+			island.children.forEach(child => {
+				child.visible = true;
+			});
+		});
 		this.transform.detach(); this.autoBuild = false; this.transError = {clash:0, quality:0};
 	}
 
@@ -486,28 +495,6 @@ class Home extends Component {
 		this.props.callAddLoadNum(this.totalModelCount, this.loadModelNum);
 	};
 
-	// addSubModels=(parent, subFile)=>{
-	// 	new FBXLoader().load(subFile, (object)=>{
-	// 		console.log(object);
-	// 		var vSize = new THREE.Box3().setFromObject(object).getSize();
-	// 		console.log(vSize);
-	// 		// const scl = 15/vSize.x;
-	// 		// object.scale.set(scl, scl, scl);
-	// 		// parent.add(object);
-	// 		object.children.forEach(child => {
-	// 			var scl, pos;
-	// 			if 		(child.name === "roundPlay_1") {scl = 4; pos={x:-240, y:120, z:-35}}
-	// 			else if (child.name === "wind_group001"){scl = 0.7; pos={x:300, y:45, z:-15}}
-	// 			else if (child.name === "wind_group002"){scl = 0.7; pos={x:-50, y:45, z:350}}
-	// 			child.scale.set(scl, scl, scl);
-	// 			child.position.set(pos.x, pos.y, pos.z);
-	// 			// child.material = new THREE.MeshPhongMaterial({color:0xFF0000, side:2});
-	// 			parent.add(child);
-	// 		});
-	// 		console.log(parent);
-	// 	});
-	// }
-
 	loadGameModel(info) {
 		new FBXLoader().load(info.file, (object)=>{
 			const roundDelta = (info.id === "building")?10:1;
@@ -548,7 +535,7 @@ class Home extends Component {
 				child.oriRot = childRot;
 				// child.geometry = new THREE.Geometry().fromBufferGeometry( child.geometry );
 				child.castShadow = true;
-				child.receiveShadow = true;
+				// child.receiveShadow = true;
 				
 				if (child.material.length) {
 					child.material.forEach(mat => { mat.side = THREE.DoubleSide; });
