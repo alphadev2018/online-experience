@@ -378,7 +378,7 @@
     .modal-wrapper.game-end {
         position: relative;
         top: 0 !important;
-        transform: translateX(0);
+        transform: translateY(0);
     }
 }
 @media (min-height: 601px) {
@@ -388,7 +388,7 @@
     .modal-wrapper.game-end {
         position: relative;
         top: calc( 50% - 45px ) !important;
-        transform: translateX(-50%);
+        transform: translateY(-50%);
     }
 }
 .modal-wrapper.game-end .game-result{
