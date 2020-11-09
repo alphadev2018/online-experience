@@ -25,6 +25,7 @@ body {
   margin: 0px;
   width: 100%;
   overflow: hidden;
+  position: fixed;
 }
 .first{
   width: 100vw;
@@ -39,7 +40,7 @@ body {
 .header .menu-toggle {
   color: white;
   margin-right: 60px;
-  z-index: 99;
+  z-index: 9;
 }
 
 @media (max-width: 767px) {

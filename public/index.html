@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no">
     <meta name="theme-color" content="#000000" />
     <meta name="description" content="Web site created using create-react-app"/>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
@@ -78,7 +78,20 @@
             requestFullScreen(el);
         }
         return false;
-    }
+    }    
+    var lastTouchEnd = 0;
+    document.addEventListener('touchend', function (event) {
+        var now = (new Date()).getTime();
+        if (now - lastTouchEnd <= 300) {
+          event.preventDefault();
+        }
+        lastTouchEnd = now;
+    }, false);
+    document.addEventListener('touchmove', function (event) {
+      if (event.scale !== 1) { event.preventDefault(); }
+    }, false);
     </script>
+    <script src="https://fast.wistia.com/embed/medias/rpbxyy3m64.jsonp" async></script><script src="https://fast.wistia.com/assets/external/E-v1.js" async></script>
+    <script src="https://fast.wistia.com/embed/medias/55ks5vhfck.jsonp" async></script><script src="https://fast.wistia.com/assets/external/E-v1.js" async></script>
   </body>
 </html>

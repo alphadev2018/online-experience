@@ -5,7 +5,7 @@ import {FBXLoader} from "three/examples/jsm/loaders/FBXLoader";
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
 import {TransformControls} from 'three/examples/jsm/controls/TransformControls';
 
-import {modelArr, gameInfoArr, easeTime, gameReadyTime, SetTween, AnimateReturn, AnimateRotate, AnimatePlane, GotoIsland, GetRayCastObject, CheckGameModel, hotNameArr, GetStepInfo, CheckClash, modalInfo, CheckRoundVal, Get2DPos, controlsMin, controlsMax} from "./common";
+import {modelArr, gameInfoArr, easeTime, gameReadyTime, SetTween, AnimateReturn, AnimateRotate, AnimatePlane, GotoIsland, GetRayCastObject, CheckGameModel, GetStepInfo, CheckClash, modalInfo, CheckRoundVal, Get2DPos, controlsMin, controlsMax} from "./common";
 import '../assets/styles/home.css';
 import '../assets/styles/overPan.css';
 
@@ -14,7 +14,7 @@ import redoImg from "../assets/images/redo.png";
 import {ReactComponent as TransMoveIcon} from "../assets/images/trans_move.svg";
 import {ReactComponent as TransRotateIcon} from "../assets/images/trans_rotate.svg";
 
-import { products, capabilities } from '@db/database';
+import { products, capabilities, iconicBuildingInfo } from '@db/database';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import * as Actions from 'store/actions';
@@ -35,6 +35,7 @@ class Home extends Component {
 		this.totalModelCount = modelArr.length + gameInfoArr.length; this.loadModelNum = 0;
 		this.transError = {clash:0, quality:0};
 		this.mouseCapture = false;
+		this.timer = null;
 	}
 	
 	componentDidMount() {
@@ -140,7 +141,7 @@ class Home extends Component {
 				GotoIsland(this, landName);
 				this.props.callMenuItem(landName);
 			}
-			else if (intersect.object.name.indexOf("hot_building") > -1) {
+			else if (intersect.object.name.indexOf("hot_building") > -1 || intersect.object.name.indexOf("Eco_City_Lighting_1_Balance_Arch_polySurface025") > -1) {
 				this.setState({
 					maskAShow: false,
 					maskBShow: false
@@ -148,26 +149,30 @@ class Home extends Component {
 				
 				SetTween(this.camera, "camPos", 3, easeTime);
 				// -5.53, 2.36, 7.08
-				if (intersect.object.name === "hot_building_0") {
-					SetTween(this.camera, "position", {x:-7.1, y: 1.7, z: 5.6}, easeTime);
+				if (intersect.object.name === "hot_building_1") {
+					SetTween(this.camera, "position", {x:-4.23, y: 1.1, z: 11.8}, easeTime);
 				} else {
-					SetTween(this.camera, "position", {x:-5.53, y: 2.36, z: 7.08}, easeTime);
+					SetTween(this.camera, "position", {x:-7.1, y: 1.7, z: 5.6}, easeTime);
 				}
 
 				setTimeout(() => {
 					this.setState({
-					maskAShow: intersect.object.name === "hot_building_0", 
+					maskAShow: intersect.object.name !== "hot_building_1", 
 					maskBShow: intersect.object.name === "hot_building_1"
 				}) }, 1000);
 			}
 		}
-		var hotInfo;
-		if (this.device === "web") hotInfo = this.state.selHot;
-		else {
-			const hotIntersect = GetRayCastObject(this, mouseX, mouseY, this.hotMeshArr);
-			hotInfo = (hotIntersect)?hotIntersect.object.name.substring(4):"";
+		// var hotInfo;
+		// if (this.device === "web") hotInfo = this.state.selHot;
+		// else {
+		// 	const hotIntersect = GetRayCastObject(this, mouseX, mouseY, this.hotMeshArr);
+		// 	hotInfo = (hotIntersect)?hotIntersect.object.name.substring(4):"";
+		// }
+		// this.props.callHotSpot(hotInfo, this.selLandName);
+		const hotIntersect = GetRayCastObject(this, mouseX, mouseY, this.hotMeshArr);
+		if (hotIntersect) {
+			this.props.callHotSpot(hotIntersect.object.name, this.selLandName);
 		}
-		this.props.callHotSpot(hotInfo);
 	}
 
 	touchEnd = (event) => { this.processClickEvent(event.changedTouches[0].pageX, event.changedTouches[0].pageY); }
@@ -188,6 +193,7 @@ class Home extends Component {
 		this.mouseStatus = "move";
 		if (this.selLandName === "media") {
 			const intersect = GetRayCastObject(this, event.clientX, event.clientY, this.hotBuildingArr);
+			
 			this.hotBuildingArr.forEach(hotBuilding => {
 				let buildingCol = 0xFFFFFF;
 				if (intersect && hotBuilding.name === intersect.object.name) {
@@ -203,14 +209,19 @@ class Home extends Component {
 		}
 		else {
 			const intersect = GetRayCastObject(this, event.clientX, event.clientY, this.hotMeshArr);
-			const selHot = (intersect)?intersect.object.name.substring(4):"";
-			if (selHot !== this.state.selHot) {
-				this.hotMeshArr.forEach(hotMesh => {
-					const colVal = (hotMesh.name === "hot_"+selHot)?0xFFFFFF:0xFF0000;
-					hotMesh.material.color.setHex(colVal);
-				});
-				this.setState({selHot});
+			if (!intersect) {
+				clearInterval(this.timer);
 			}
+			this.hotMeshArr.forEach(hotMesh => {
+				if (intersect && hotMesh.name === intersect.object.name){
+					clearInterval(this.timer);
+					this.timer = setInterval( () => {
+						this.startHotspotTween(hotMesh);
+					}, 50);
+				} else {
+					hotMesh.material.color.setHex(0xFF0000);
+				}
+			});
 		}
 	}
 
@@ -243,6 +254,15 @@ class Home extends Component {
 			this.setEndGame();
 		}
 		return checkGamePro;
+	}
+
+	startHotspotTween = (hotspot) => {
+		let color = hotspot.material.color;
+		if (color.getHex() >= 16777215) {
+			clearInterval(this.timer);
+			return;
+		}
+		hotspot.material.color.setRGB( color.r, color.g + 0.2, color.b + 0.2);
 	}
 
 	// setStep=(delta)=>{
@@ -433,13 +453,10 @@ class Home extends Component {
 				else if (child.name.indexOf("mask_0") > -1) {this.mask_A_Arr.push(child); child.visible = false;}
 				else if (child.name.indexOf("mask_B") > -1) {this.mask_B_Arr.push(child); child.visible = false;}
 				else if (child.name === "plane") {child.dir = 1; this.airPlaneArr.push(child);}
-				else if (child.name.indexOf("hot_building") > -1) this.hotBuildingArr.push(child);
-				else if (child.name)
-				hotNameArr.forEach(str => {
-					if (child.name === "hot_"+str ) {
-						this.hotMeshArr.push(child);
-					}
-				});
+				else if (child.name.indexOf("hot_building") > -1 || child.name.indexOf("Eco_City_Lighting_1_Balance_Arch_polySurface025") > -1) {
+					this.hotBuildingArr.push(child);
+				}
+				else if ( Object.keys(iconicBuildingInfo).indexOf(child.name) !== -1 ) this.hotMeshArr.push(child);
 			});
 			var vSize = new THREE.Box3().setFromObject(object).getSize();
 			var scl = info.size/vSize.x;
@@ -572,8 +589,8 @@ class Home extends Component {
 		this.transform.addEventListener( 'dragging-changed', function ( event ) { self.controls.enabled = ! event.value; } );
 
 		const ambientLight = new THREE.AmbientLight( 0xFFFFFF, 0.4 ); this.scene.add( ambientLight );
-		// this.mainLight = new THREE.DirectionalLight( 0x9E9E9E, 1.0 ); this.scene.add( this.mainLight );
-		this.mainLight = new THREE.DirectionalLight( 0xFFFFFF, 1.0 ); this.scene.add( this.mainLight );
+		this.mainLight = new THREE.DirectionalLight( 0x9E9E9E, 1.0 ); this.scene.add( this.mainLight );
+		// this.mainLight = new THREE.DirectionalLight( 0xFFFFFF, 1.0 ); this.scene.add( this.mainLight );
 		this.mainLight.position.set(-50, 50, 50); this.mainLight.castShadow = true;
 
 		this.subLight = new THREE.DirectionalLight( 0xFFFFFF, 0.5 ); this.scene.add( this.subLight );
@@ -594,6 +611,7 @@ class Home extends Component {
 		AnimatePlane(this.airPlaneArr);
 		this.camera.lookAt( 0, 0, 0 );
 		const camPos = this.camera.position;
+		
 		this.subLight.position.set(camPos.x, camPos.y, camPos.z);
 		if (this.selLandName === "media") {
 			var mask_A_PosArr = [], mask_B_PosArr = [];

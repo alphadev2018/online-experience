@@ -95,9 +95,9 @@
 	right: 0px	;
 }
 
-.side.mobile .side-bar:first-child {
+/* .side.mobile .side-bar:first-child {
 	margin-top: calc(50% - 50px);
-}
+} */
 .side.mobile .side-bar {
 	margin-left: calc(100vw - 100px);
 }

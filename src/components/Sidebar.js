@@ -52,27 +52,28 @@ export default class Sidebar extends Component {
 		}
 		return (
 			<div className={`side ${(menuActive === true)?"active":""} ${this.device}`}>
-				<div className="side-bar side-bar-top">
-					{menuHomeArr.map(menuItem =>
-						<div className={`side-item ${(this.state.selMenu === menuItem.value)?"active":""}`} onClick={()=>this.clickItem(menuItem.value)} key={menuItem.value} data-detail={menuItem.label}>
-							{menuItem.value === "home0" && <MenuHomeIcon0 className="home0"></MenuHomeIcon0>}
-							{menuItem.value === "home1" && <MenuHomeIcon1 className="home1"></MenuHomeIcon1>}
-							{menuItem.value === "home2" && <MenuHomeIcon2 className="home2"></MenuHomeIcon2>}
-							{this.device === "mobile" && <div className="menu-label">{menuItem.label}</div> }
-						</div>
-					)}
-				</div>
-				<div className="side-bar side-bar-bottom">
-					{menuArr.map(menuItem =>
-						<div className={`side-item ${(this.state.selMenu === menuItem.value)?"active":""}`} onClick={()=>this.clickItem(menuItem.value)} key={menuItem.value} data-detail={menuItem.label}>
-							{menuItem.value === "media" && <MenuMediaIcon></MenuMediaIcon>}
-							{menuItem.value === "game" && <MenuGameIcon></MenuGameIcon>}
-							{menuItem.value === "map" && <MenuMapIcon></MenuMapIcon>}
-							{menuItem.value === "conductive" && <MenuConductiveIcon></MenuConductiveIcon>}
-							{this.device === "mobile" && <div className="menu-label">{menuItem.label}</div> }
-						</div>
-					)}
-
+				<div style={{ transform: "translateY(-50%)", top: "50%", position: "absolute"}}>
+					<div className="side-bar side-bar-top">
+						{menuHomeArr.map(menuItem =>
+							<div className={`side-item ${(this.state.selMenu === menuItem.value)?"active":""}`} onClick={()=>this.clickItem(menuItem.value)} key={menuItem.value} data-detail={menuItem.label}>
+								{menuItem.value === "home0" && <MenuHomeIcon0 className="home0"></MenuHomeIcon0>}
+								{menuItem.value === "home1" && <MenuHomeIcon1 className="home1"></MenuHomeIcon1>}
+								{menuItem.value === "home2" && <MenuHomeIcon2 className="home2"></MenuHomeIcon2>}
+								{this.device === "mobile" && <div className="menu-label">{menuItem.label}</div> }
+							</div>
+						)}
+					</div>
+					<div className="side-bar side-bar-bottom">
+						{menuArr.map(menuItem =>
+							<div className={`side-item ${(this.state.selMenu === menuItem.value)?"active":""}`} onClick={()=>this.clickItem(menuItem.value)} key={menuItem.value} data-detail={menuItem.label}>
+								{menuItem.value === "media" && <MenuMediaIcon></MenuMediaIcon>}
+								{menuItem.value === "game" && <MenuGameIcon></MenuGameIcon>}
+								{menuItem.value === "map" && <MenuMapIcon></MenuMapIcon>}
+								{menuItem.value === "conductive" && <MenuConductiveIcon></MenuConductiveIcon>}
+								{this.device === "mobile" && <div className="menu-label">{menuItem.label}</div> }
+							</div>
+						)}
+					</div>
 				</div>
 			</div>
 		);

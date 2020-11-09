@@ -3,9 +3,9 @@ import * as THREE from 'three';
 import {FBXLoader} from "three/examples/jsm/loaders/FBXLoader";
 import {Tween, autoPlay, Easing} from "es6-tween";
 
-import hotImgEMEA from "../assets/images/hot_EMEA.png";
-import hotImgACPA from "../assets/images/hot_ACPA.png";
-import hotImgAMERICA from "../assets/images/hot_AMERICA.png";
+// import hotImgEMEA from "../assets/images/hot_EMEA.png";
+// import hotImgACPA from "../assets/images/hot_ACPA.png";
+// import hotImgAMERICA from "../assets/images/hot_AMERICA.png";
 
 // const island0 = require("assets/models/island_0.fbx");
 const islandHome0 = require("assets/models/EMEA_custom.fbx");//  _test building
@@ -21,7 +21,7 @@ const gameModelBuilding = require("assets/models/building.fbx");
 const gameModelBridge = require("assets/models/bridge.fbx");
 const gameModelStadium = require("assets/models/stadium.fbx");
 
-export const hotNameArr = ["EMEA", "EMEA_other", "AMERICA", "ACPA", "AMERICA_other"];
+// export const hotNameArr = ["EMEA", "EMEA_other", "AMERICA", "ACPA", "AMERICA_other"];
 
 autoPlay(true);
 
@@ -42,7 +42,7 @@ export const modelArr = [
 	{id: "home1", file:islandHome1, size:13, pos:{x:-20, y:0, z: 20}, islandName:menuHomeArr[1].value},
 	{id: "home2", file:islandHome2, size:13, pos:{x:  0, y:0, z:-30}, islandName:menuHomeArr[2].value},
 	{id: "game", file:islandGame,  size:11, pos:{x: 25, y:0, z:-25}, islandName:menuArr[1].value},
-	{id: "media", file:islandMedia, size:13, pos:{x:-25, y:0, z:-25}, islandName:menuArr[0].value},
+	{id: "media", file:islandMedia, size:13, pos:{x:-45, y:0, z:-25}, islandName:menuArr[0].value},
 	// {file:island3,     size:15, pos:{x:  0, y:0, z: 35}, islandName:menuArr[1].value},
 ];
 export const gameInfoArr = [
@@ -230,33 +230,33 @@ export function CheckGameModel(children, level) {
 	return 100 - Math.round(remainCount / children.length * 100);
 }
 
-export const hotModalInfo={
-	ACPA:{
-		title:"ACPA hot modal title",
-		content:"ACPA hot modal title",
-		img:hotImgACPA
-	},
-	EMEA:{
-		title:"EMEA hot modal title",
-		content:"EMEA hot modal content",
-		img:hotImgEMEA
-	},
-	EMEA_other:{
-		title:"EMEA hot modal title",
-		content:"EMEA hot modal content",
-		img:hotImgEMEA
-	},
-	AMERICA:{
-		title:"AMERICA hot modal title",
-		content:"AMERICA hot modal content",
-		img:hotImgAMERICA
-	},
-	AMERICA_other:{
-		title:"AMERICA_other hot modal title",
-		content:"AMERICA_other hot modal content",
-		img:hotImgAMERICA
-	}
-}
+// export const hotModalInfo={
+// 	ACPA:{
+// 		title:"ACPA hot modal title",
+// 		content:"ACPA hot modal title",
+// 		img:hotImgACPA
+// 	},
+// 	EMEA:{
+// 		title:"EMEA hot modal title",
+// 		content:"EMEA hot modal content",
+// 		img:hotImgEMEA
+// 	},
+// 	EMEA_other:{
+// 		title:"EMEA hot modal title",
+// 		content:"EMEA hot modal content",
+// 		img:hotImgEMEA
+// 	},
+// 	AMERICA:{
+// 		title:"AMERICA hot modal title",
+// 		content:"AMERICA hot modal content",
+// 		img:hotImgAMERICA
+// 	},
+// 	AMERICA_other:{
+// 		title:"AMERICA_other hot modal title",
+// 		content:"AMERICA_other hot modal content",
+// 		img:hotImgAMERICA
+// 	}
+// }
 
 export function GetStepInfo(newArr, oldArr) {
 	var stepInfo = [], checkDiff = false;
