@@ -396,6 +396,9 @@
         overflow-x: hidden;
         overflow-y: scroll;
     }
+    .modal-wrapper.game-end .game-button:first-child{
+        margin-top: 0px;
+    }
 }
 @media (min-height: 601px) {
     .over-pan{

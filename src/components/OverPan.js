@@ -21,7 +21,7 @@ import resultBimImg from "../assets/images/product/logos/ADSK-BIM-Collaborate.pn
 import resultPlangridImg from "../assets/images/product/logos/ADSK-Docs.png";
 import resultBuildingImg from "../assets/images/result_building.png";
 
-import {hotModalInfo, GotoIsland} from "./common";
+import {hotModalInfo, GotoIsland, isIOS} from "./common";
 import {products} from "@db/database";
 
 import {bindActionCreators} from 'redux';
@@ -75,7 +75,7 @@ class OverPan extends Component {
 			this.setState({hide:"hide"});
 			setTimeout(() => { this.props.callClickButton(str); }, 500);
 		}
-		if (str === "first" && !(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))) {
+		if (str === "first" && !isIOS()) {
 			document.getElementById('background_music').volume = 0.1;
 			document.getElementById('background_music').play();
 		}

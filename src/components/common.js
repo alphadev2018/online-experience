@@ -135,6 +135,10 @@ export function LoadIslandModel(info, self) {
 	}, undefined, function ( error ) { console.error( error ); });
 }
 
+export function isIOS() {
+	return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || /iPad|iPhone|iPod/.test(navigator.platform) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
+}
+
 export function GotoIsland(self, str) {
 	window.analytics(str);
 	
