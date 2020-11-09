@@ -12,6 +12,19 @@
     background-color: rgba(0, 0, 0, 0);
 }
 
+
+@media (max-height: 650px) {
+    .over-pan{
+        overflow-x: hidden;
+        overflow-y: scroll;
+    }
+}
+@media (min-height: 650px) {
+    .over-pan{
+        overflow: hidden;
+    }
+}
+
 .over-wrapper{
     width: 100%;
 }
