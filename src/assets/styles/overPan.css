@@ -396,7 +396,7 @@
         overflow-x: hidden;
         overflow-y: scroll;
     }
-    .modal-wrapper.game-end .game-button:first-child{
+    .modal-wrapper.game-end .game-button{
         margin-top: 0px;
     }
 }
