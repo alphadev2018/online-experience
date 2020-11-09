@@ -378,7 +378,7 @@
     .modal-wrapper.game-end {
         overflow-x: hidden;
         overflow-y: scroll;
-        top: 0 !important;
+        top: 0;
         transform: translateY(0);
     }
     .modal-wrapper.game-end .game-button{
@@ -471,7 +471,7 @@
         flex-direction: column;
     }
 }
-@media (min-width: 767px) {  
+@media (min-width: 768px) {  
     .modal-wrapper.game-end .game-button{
         flex-direction: row;
     }
