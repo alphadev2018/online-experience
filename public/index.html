@@ -22,9 +22,33 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
     <title>Online Experience</title>
+    <style>
+    .logo-icon{
+      top: 30px;
+      left: 30px;
+      position: fixed;
+      z-index: 1;
+      background-repeat: round;
+    }
+    @media (max-width: 767px) {
+      .logo-icon {
+        background-image: url(assets/images/logo/logo_mobile.png);
+        width: 220px;
+        height: 60px;
+      }
+    }
+    @media (min-width: 767px) {  
+      .logo-icon {
+        background-image: url(assets/images/logo/logo.png);
+        width: 525px;
+        height: 49px;
+      }
+    }
+    </style>
   </head>
   <body style="background: #3d94ca;">
     <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div class="logo-icon"></div>
     <div id="root"></div>
     <!--
       This HTML file is a template.
