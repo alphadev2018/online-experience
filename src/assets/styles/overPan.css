@@ -370,18 +370,21 @@
 }
 
 .modal-wrapper.game-end {
-    overflow: hidden;
     position: relative;
     top: calc( 50% - 45px );
     transform: translateY(-50%);
 }
+.over-pan.mobile .modal-wrapper.game-end {
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
 @media (max-width: 767px) and (max-height: 649px) {
-    .modal-wrapper.game-end {
+    .over-pan.mobile .modal-wrapper.game-end {
         top: 0;
         transform: translateY(0);
         overflow-y: scroll;
     }
-    .modal-wrapper.game-end .game-button{
+    .over-pan.mobile .modal-wrapper.game-end .game-button{
         margin-top: 0px !important;
     }
 }
