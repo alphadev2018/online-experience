@@ -218,17 +218,12 @@ class Home extends Component {
 		}
 		else {
 			const intersect = GetRayCastObject(this, event.clientX, event.clientY, this.hotMeshArr);
-			if (!intersect) {
-				clearInterval(this.timer);
-			}
+			
 			this.hotMeshArr.forEach(hotMesh => {
 				if (intersect && hotMesh.name === intersect.object.name){
-					clearInterval(this.timer);
-					this.timer = setInterval( () => {
-						this.startHotspotTween(hotMesh);
-					}, 50);
+					hotMesh.hover = true;
 				} else {
-					hotMesh.material.color.setHex(0xFF0000);
+					hotMesh.hover = false;
 				}
 			});
 		}
@@ -265,13 +260,26 @@ class Home extends Component {
 		return checkGamePro;
 	}
 
-	startHotspotTween = (hotspot) => {
-		let color = hotspot.material.color;
-		if (color.getHex() >= 16777215) {
-			clearInterval(this.timer);
-			return;
-		}
-		hotspot.material.color.setRGB( color.r, color.g + 0.2, color.b + 0.2);
+	hotspotTween = () => {
+		if (!this.hotMeshArr.length) return;
+		
+		let index = this.hotMeshArr.map( mesh => {
+			let color = mesh.material.color;
+			if ( mesh.hover ) {
+				if (color.getHex() >= 16777215) {
+					return -1;
+				} else {
+					mesh.material.color.setRGB( color.r, color.g + 0.2, color.b + 0.2);
+				}
+			} else {
+				if (color.getHex() <= 16711680) {
+					return -1;
+				} else {
+					mesh.material.color.setRGB( color.r, color.g - 0.2, color.b - 0.2);
+				}
+			}
+			return 1;
+		})
 	}
 
 	// setStep=(delta)=>{
@@ -466,7 +474,7 @@ class Home extends Component {
 					this.hotBuildingArr.push(child);
 					console.log(this.hotBuildingArr)
 				}
-				else if ( Object.keys(iconicBuildingInfo).indexOf(child.name) !== -1 ) this.hotMeshArr.push(child);
+				else if ( Object.keys(iconicBuildingInfo).indexOf(child.name) !== -1 ) { child.hover = false; this.hotMeshArr.push(child); }
 			});
 			var vSize = new THREE.Box3().setFromObject(object).getSize();
 			var scl = info.size/vSize.x;
@@ -607,6 +615,8 @@ class Home extends Component {
 		// this.loadIslandModel(modelArr[0])
 		modelArr.forEach(modelInfo => { this.loadIslandModel(modelInfo); });
 		gameInfoArr.forEach(gameInfo => { this.loadGameModel(gameInfo); });
+
+		this.timer = setInterval(this.hotspotTween, 50);
 	}
 
 	animate () {
