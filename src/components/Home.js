@@ -139,7 +139,6 @@ class Home extends Component {
 		}
 		const intersect = GetRayCastObject(this, mouseX, mouseY, this.meshArr);
 		if (intersect) {
-			console.log(intersect.object.name)
 			const landName = intersect.object.landChildName;
 			if (landName !== this.selLandName) {
 				GotoIsland(this, landName);
@@ -488,7 +487,7 @@ class Home extends Component {
 				}
 				else if (child.name.indexOf("roundPlay") > -1) this.roundPlayArr.push(child);
 				else if (child.name.indexOf("ballon") > -1) this.ballonArr.push(child);
-				else if (child.name.indexOf("mask_0") > -1) {this.mask_A_Arr.push(child); child.visible = false;}
+				else if (child.name.indexOf("mask_0") > -1) { this.mask_A_Arr.push(child); child.visible = false;}
 				else if (child.name.indexOf("mask_B") > -1) {this.mask_B_Arr.push(child); child.visible = false;}
 				else if (child.name === "plane") {child.dir = 1; this.airPlaneArr.push(child);}
 				else if (child.name.indexOf("Eco_City_Lighting_1_Balance_Arch_polySurface025") > -1) {
@@ -648,9 +647,11 @@ class Home extends Component {
 		if (this.selLandName === "media") {
 			var mask_A_PosArr = [], mask_B_PosArr = [];
 			this.mask_A_Arr.forEach((mask_A_Mesh, idx) => {
+				mask_A_Mesh.visible = false;
 				mask_A_PosArr[idx] = Get2DPos(mask_A_Mesh, this.cWidth, this.cHeight, this.camera);
 			});
 			this.mask_B_Arr.forEach((mask_B_Mesh, idx) => {
+				mask_B_Mesh.visible = false;
 				mask_B_PosArr[idx] = Get2DPos(mask_B_Mesh, this.cWidth, this.cHeight, this.camera);
 			});
 			this.setState({mask_A_PosArr, mask_B_PosArr});

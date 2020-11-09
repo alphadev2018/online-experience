@@ -263,7 +263,7 @@ class OverPan extends Component {
 						</div>
 					</div>
 				}
-				{modalInfo.indexOf("rule") !== -1 &&
+				{(modalInfo === "rule" || modalInfo === "rule_game") &&
 					<div className="modal-wrapper game-rule">
 						<div className="title">Game Rules</div>
 						<div className="close-btn" onClick={()=>this.clickButton( modalInfo === "rule" ? "game":"", modalInfo !== "rule")}>
