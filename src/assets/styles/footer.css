@@ -7,7 +7,7 @@
     .life-lines {
         transform: translate(-50%, -100%);
         left: 50%;
-        bottom: auto;
+        bottom: 0;
     }
 }
 @media (min-width: 767px) {
