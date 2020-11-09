@@ -58,6 +58,10 @@ class App extends Component {
 		this.setState({modalInfo:status, selGame:false, modalDetailInfo:{totalTime, gameTime, level:this.state.selGame, gamePro, transError}});
 	}
 
+	callModal=(str)=>{
+		this.setState({modalInfo: str});
+	}
+
 	callModalButton=(str)=>{
 		if (str === "first") {
 			this.setState({menuItem:"home0"});
@@ -90,6 +94,7 @@ class App extends Component {
 					callGameResult={this.callGameResult}
 					callHotSpot={this.callHotSpot}
 					callProduct={this.callProduct}
+					callModal={this.callModal}
 					callAddLoadNum={this.callAddLoadNum}
 				></Home>
 				<Header

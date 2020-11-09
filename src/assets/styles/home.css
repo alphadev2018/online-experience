@@ -84,7 +84,7 @@
 }
 
 
-.home .set-place{
+.home .set-place, .home .btn-rules{
   position: absolute;
   padding: 10px 20px;
   border-radius: 5px;
@@ -214,6 +214,13 @@
     bottom: auto !important;
     right: auto !important;
   }
+  .btn-rules {
+    left: 40px;
+    top: calc( 50% - 110px );
+    transform: translateY(-50%);
+    bottom: auto !important;
+    right: auto !important;
+  }
 }
 @media (min-width: 767px) {  
   .game-ready{
@@ -227,6 +234,12 @@
   .set-place {
     bottom: 72px;
     right: calc(50% - 290px);
+    left: auto;
+    top: auto;
+  }
+  .btn-rules {
+    bottom: 72px;
+    right: 50px;
     left: auto;
     top: auto;
   }

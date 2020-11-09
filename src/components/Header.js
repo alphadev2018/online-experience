@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 import 'assets/styles/home.css';
+import {isIOS} from './common';
 import {ReactComponent as MainLogoIcon} from "../assets/images/main-logo.svg";
 
 export default class Header extends Component {
@@ -34,6 +35,8 @@ export default class Header extends Component {
 		window.toggleFullScreen();
 	}
 
+	
+
 	render() {
 		const { menuItem } = this.state;
 		return (
@@ -48,7 +51,7 @@ export default class Header extends Component {
 						</a>
 
 						
-						<div className="footer-menu" style={{display: ( /Android|webOS|iPhone|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) ? 'none':'flex'}}>
+						<div className="footer-menu" style={{display: isIOS() ? 'none':'flex'}}>
 							<a href="#" onClick={this.fullScreen} >
 								<i className="fa fa-window-maximize" aria-hidden="true"></i>
 							</a>

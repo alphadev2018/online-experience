@@ -35,7 +35,7 @@ class Home extends Component {
 		this.totalModelCount = modelArr.length + gameInfoArr.length; this.loadModelNum = 0;
 		this.transError = {clash:0, quality:0};
 		this.mouseCapture = false;
-		this.timer = null;
+		this.timer = null; this.hoverDirection = 1;
 	}
 	
 	componentDidMount() {
@@ -223,17 +223,12 @@ class Home extends Component {
 		}
 		else {
 			const intersect = GetRayCastObject(this, event.clientX, event.clientY, this.hotMeshArr);
-			if (!intersect) {
-				clearInterval(this.timer);
-			}
+			
 			this.hotMeshArr.forEach(hotMesh => {
 				if (intersect && hotMesh.name === intersect.object.name){
-					clearInterval(this.timer);
-					this.timer = setInterval( () => {
-						this.startHotspotTween(hotMesh);
-					}, 50);
+					hotMesh.hover = true;
 				} else {
-					hotMesh.material.color.setHex(0xFF0000);
+					hotMesh.hover = false;
 				}
 			});
 		}
@@ -270,13 +265,24 @@ class Home extends Component {
 		return checkGamePro;
 	}
 
-	startHotspotTween = (hotspot) => {
-		let color = hotspot.material.color;
-		if (color.getHex() >= 16777215) {
-			clearInterval(this.timer);
-			return;
-		}
-		hotspot.material.color.setRGB( color.r, color.g + 0.2, color.b + 0.2);
+	hotspotTween = () => {
+		if (!this.hotMeshArr.length) return;
+		
+		let index = this.hotMeshArr.map( mesh => {
+			let color = mesh.material.color;
+			if (mesh.hover) {
+				// document.getElementsByTagName('body')[0].style.cursor = 'pointer';
+				mesh.material.color.setRGB( color.r, 0, 0);			
+			} else {
+				// document.getElementsByTagName('body')[0].style.cursor = 'default';
+				mesh.material.color.setRGB( color.r, color.g + mesh.direction * 0.2, color.b + mesh.direction * 0.2);			
+				if (color.g >= 1){
+					mesh.direction = -1;
+				} else if(color.g < 0) {
+					mesh.direction = 1;
+				}
+			}
+		})
 	}
 
 	// setStep=(delta)=>{
@@ -475,7 +481,7 @@ class Home extends Component {
 					this.hotBuildingArr.push(child);
 					console.log(this.hotBuildingArr)
 				}
-				else if ( Object.keys(iconicBuildingInfo).indexOf(child.name) !== -1 ) this.hotMeshArr.push(child);
+				else if ( Object.keys(iconicBuildingInfo).indexOf(child.name) !== -1 ) { child.direction = -1; this.hotMeshArr.push(child); }
 			});
 			var vSize = new THREE.Box3().setFromObject(object).getSize();
 			var scl = info.size/vSize.x;
@@ -494,6 +500,9 @@ class Home extends Component {
 		this.loadModelNum++;
 		this.props.callAddLoadNum(this.totalModelCount, this.loadModelNum);
 	};
+	showRules=()=> {
+		this.props.callModal('rule_game');
+	}
 
 	loadGameModel(info) {
 		new FBXLoader().load(info.file, (object)=>{
@@ -594,6 +603,8 @@ class Home extends Component {
 		// this.loadIslandModel(modelArr[0])
 		modelArr.forEach(modelInfo => { this.loadIslandModel(modelInfo); });
 		gameInfoArr.forEach(gameInfo => { this.loadGameModel(gameInfo); });
+
+		this.timer = setInterval(this.hotspotTween, 100);
 	}
 
 	animate () {
@@ -685,6 +696,7 @@ class Home extends Component {
 							</div>
 						}
 						<div className={"mesh-control set-place "+placeClassStr} onClick={this.setPlace}>Place</div>
+						<div className={"mesh-control btn-rules"} onClick={this.showRules}>Rules</div>
 					</div>
 				}
 				{/*hotPosArr.map((pos, idx) =>

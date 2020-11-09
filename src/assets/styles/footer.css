@@ -16,16 +16,6 @@
         bottom: 70px;
     }
 }
-@media (max-height: 600px) {
-    .life-lines {
-        bottom: 120px !important;
-    }
-}
-@media (min-height: 601px) {
-    .life-lines {
-        bottom: 70px;
-    }
-}
 .life-lines .title{
     font-size: 30px;
     font-weight: 700;

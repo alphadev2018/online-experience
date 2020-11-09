@@ -21,7 +21,7 @@ import resultBimImg from "../assets/images/product/logos/ADSK-BIM-Collaborate.pn
 import resultPlangridImg from "../assets/images/product/logos/ADSK-Docs.png";
 import resultBuildingImg from "../assets/images/result_building.png";
 
-import {hotModalInfo, GotoIsland} from "./common";
+import {hotModalInfo, GotoIsland, isIOS} from "./common";
 import {products} from "@db/database";
 
 import {bindActionCreators} from 'redux';
@@ -75,7 +75,7 @@ class OverPan extends Component {
 			this.setState({hide:"hide"});
 			setTimeout(() => { this.props.callClickButton(str); }, 500);
 		}
-		if (str === "first" && !(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))) {
+		if (str === "first" && !isIOS()) {
 			document.getElementById('background_music').volume = 0.1;
 			document.getElementById('background_music').play();
 		}
@@ -183,8 +183,8 @@ class OverPan extends Component {
 		}
 		return (
 			<div className={`over-pan ${this.state.hide}`}>
-				{modalInfo === "first" &&
-					<div className={"first-button"}>
+				{(modalInfo === "first" ) &&
+					<div className={"first-button"} style={{display: `${loadPro ? 'block' : 'none'}`}}>
 						{loadPro >= 100 &&
 							<div onClick={()=>this.clickButton("first", true)}>
 								<div className="back-yellow"></div>
@@ -221,6 +221,9 @@ class OverPan extends Component {
 				{modalInfo === "play" &&
 					<div className="modal-wrapper game-level">
 						<div className="title game-level-title">Choose Difficulty</div>
+						<div className="close-btn" onClick={()=>this.clickButton( "game", false)}>
+							<i className="fa fa-close" style={{color: 'white'}}></i>
+						</div>
 						<div className="body">
 							{this.gameLevelArr.map((item, idx) =>
 								<div className="game-level-item" key={idx} onClick={()=>this.clickButton(item.value, true)}>
@@ -260,10 +263,10 @@ class OverPan extends Component {
 						</div>
 					</div>
 				}
-				{modalInfo === "rule" &&
+				{modalInfo.indexOf("rule") !== -1 &&
 					<div className="modal-wrapper game-rule">
 						<div className="title">Game Rules</div>
-						<div className="close-btn" onClick={()=>this.clickButton("game", false)}>
+						<div className="close-btn" onClick={()=>this.clickButton( modalInfo === "rule" ? "game":"", modalInfo !== "rule")}>
 							<i className="fa fa-close" style={{color: 'white'}}></i>
 						</div>
 						{this.gameRuleArr.map((item, idx) =>

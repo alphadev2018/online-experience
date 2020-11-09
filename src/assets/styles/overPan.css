@@ -122,6 +122,17 @@
     /* max-height: 70vh; */
 /* 37A7DB */
 }
+.modal-wrapper .close-btn{
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 30px;
+    cursor: pointer;
+    opacity: 0.8;
+}
+.modal-wrapper .close-btn img{
+    width: 100%;
+}
 .modal-wrapper.game-menu{
     position: relative;
 }
@@ -372,23 +383,35 @@
 
 .modal-wrapper.game-end {
     position: relative;
-    top: calc( 50% - 45px ) !important;
+    top: calc( 50% - 45px );
 }
 @media (max-height: 600px) {
-    .modal-wrapper.game-end {
+    .modal-wrapper {
         position: relative;
         top: 0 !important;
         transform: translateY(0);
+    }
+    
+    .modal-wrapper.game-end {
+        overflow-x: hidden;
+        overflow-y: scroll;
+    }
+    .modal-wrapper.game-end .game-button:first-child{
+        margin-top: 0px;
     }
 }
 @media (min-height: 601px) {
     .over-pan{
         overflow: hidden;
     }
-    .modal-wrapper.game-end {
+    .modal-wrapper {
         position: relative;
-        top: calc( 50% - 45px ) !important;
+        top: 50% !important;
         transform: translateY(-50%);
+    }
+    
+    .modal-wrapper.game-end {
+        top: calc( 50% - 45px ) !important;
     }
 }
 .modal-wrapper.game-end .game-result{

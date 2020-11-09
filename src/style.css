@@ -25,7 +25,17 @@ body {
   margin: 0px;
   width: 100%;
   overflow: hidden;
-  position: fixed;
+}
+
+@media (max-height: 550px) {
+  body {
+    position: inherit;
+  }
+}
+@media (min-height: 551px) {
+  body {
+    position: fixed;
+  }
 }
 .first{
   width: 100vw;

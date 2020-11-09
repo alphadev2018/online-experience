@@ -135,14 +135,24 @@ export function LoadIslandModel(info, self) {
 	}, undefined, function ( error ) { console.error( error ); });
 }
 
+export function isIOS() {
+	return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || /iPad|iPhone|iPod/.test(navigator.platform) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
+}
+
 export function GotoIsland(self, str) {
+	window.analytics(str);
+	
 	self.controls.enabled = false;
 	modelArr.forEach(islandItem => {
 		if (islandItem.islandName === str) {
 			const landPos = islandItem.pos;
 			SetTween(self.totalGroup, "position", {x:landPos.x * -1, z:landPos.z * -1}, easeTime);
 			SetTween(self.totalGroup, "camPos", 0, easeTime);
-			SetTween(self.camera, "camPos", 3, easeTime);
+			if (str === "media") {
+				SetTween(self.camera, "position", {x:-7.1, y: 1.7, z: 12.6}, easeTime);
+			} else {
+				SetTween(self.camera, "camPos", 3, easeTime);
+			}
 		}
 	});
 	if (str === "map") {
