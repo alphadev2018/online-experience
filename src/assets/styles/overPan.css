@@ -374,7 +374,7 @@
     top: calc( 50% - 45px );
     transform: translateY(-50%);
 }
-@media (max-height: 749px) {
+@media (max-height: 649px) {
     .modal-wrapper.game-end {
         overflow-x: hidden;
         overflow-y: scroll;
@@ -385,7 +385,7 @@
         margin-top: 0px !important;
     }
 }
-@media (min-height: 750px) {
+@media (min-height: 650px) {
     .over-pan{
         overflow: hidden;
     }
