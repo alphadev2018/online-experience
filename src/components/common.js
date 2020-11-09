@@ -21,7 +21,7 @@ const gameModelBuilding = require("assets/models/building.fbx");
 const gameModelBridge = require("assets/models/bridge.fbx");
 const gameModelStadium = require("assets/models/stadium.fbx");
 
-// export const hotNameArr = ["EMEA", "AMERICA", "ACPA", "AMERICA_other"];
+// export const hotNameArr = ["EMEA", "EMEA_other", "AMERICA", "ACPA", "AMERICA_other"];
 
 autoPlay(true);
 
@@ -93,9 +93,11 @@ export function AnimateReturn(arr, type, axis, value) {
 
 export function AnimatePlane(arr) {
 	arr.forEach(item => {
-		item.position.x += 0.5 * item.dir;
-		if (item.position.x >= 300) {item.dir = -1; item.rotation.y = Math.PI/-2;}
-		if (item.position.x <= -300) {item.dir = 1;item.rotation.y = Math.PI/2;}
+		var posDelta = 0.05, maxDis = 30;
+		// if (item.landChildName === "media") {posDelta = 0.05; maxDis = 30;}
+		item.position.x += posDelta * item.dir;
+		if (item.position.x >= maxDis) {item.dir = -1; item.rotation.y = Math.PI/-2;}
+		if (item.position.x <= -maxDis) {item.dir = 1;item.rotation.y = Math.PI/2;}
 		item.children[0].rotation.y += 0.18;
 	});
 }
@@ -227,6 +229,34 @@ export function CheckGameModel(children, level) {
 	}
 	return 100 - Math.round(remainCount / children.length * 100);
 }
+
+// export const hotModalInfo={
+// 	ACPA:{
+// 		title:"ACPA hot modal title",
+// 		content:"ACPA hot modal title",
+// 		img:hotImgACPA
+// 	},
+// 	EMEA:{
+// 		title:"EMEA hot modal title",
+// 		content:"EMEA hot modal content",
+// 		img:hotImgEMEA
+// 	},
+// 	EMEA_other:{
+// 		title:"EMEA hot modal title",
+// 		content:"EMEA hot modal content",
+// 		img:hotImgEMEA
+// 	},
+// 	AMERICA:{
+// 		title:"AMERICA hot modal title",
+// 		content:"AMERICA hot modal content",
+// 		img:hotImgAMERICA
+// 	},
+// 	AMERICA_other:{
+// 		title:"AMERICA_other hot modal title",
+// 		content:"AMERICA_other hot modal content",
+// 		img:hotImgAMERICA
+// 	}
+// }
 
 export function GetStepInfo(newArr, oldArr) {
 	var stepInfo = [], checkDiff = false;

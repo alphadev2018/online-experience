@@ -440,12 +440,12 @@ class Home extends Component {
 					child.curVal = Math.round(Math.random() * 100);
 					child.dir = (Math.random() > 0.5)? 1:-1;
 					if (child.name.indexOf("cloud") > -1) {
-						if 		(info.islandName === "home0") child.moveDis = 0.008;
-						else if (info.islandName === "home1") child.moveDis = 0.7;
-						else if (info.islandName === "home2") child.moveDis = 0.4;
+						if 		(info.islandName === "home0") child.moveDis = 0.005;
+						else if (info.islandName === "home1") child.moveDis = 0.07;
+						else if (info.islandName === "home2") child.moveDis = 0.1;
 						else if (info.islandName === "game") child.moveDis = 0.005;
 						this.cloudArr.push(child);
-					} //child['position']['y'] += 8; 
+					}
 					else if (child.name.indexOf("crane") > -1) this.tonArr.push(child);
 				}
 				else if (child.name.indexOf("roundPlay") > -1) this.roundPlayArr.push(child);
