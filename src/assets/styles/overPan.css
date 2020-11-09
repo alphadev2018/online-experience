@@ -12,19 +12,6 @@
     background-color: rgba(0, 0, 0, 0);
 }
 
-
-@media (max-height: 749px) {
-    .over-pan{
-        overflow-x: hidden;
-        overflow-y: scroll;
-    }
-}
-@media (min-height: 750px) {
-    .over-pan{
-        overflow: hidden;
-    }
-}
-
 .over-wrapper{
     width: 100%;
 }
@@ -413,6 +400,7 @@
     
     .modal-wrapper.game-end {
         top: calc( 50% - 45px ) !important;
+        overflow: hidden;
     }
 }
 .modal-wrapper.game-end .game-result{
