@@ -146,11 +146,22 @@ class Home extends Component {
 				})
 				
 				SetTween(this.camera, "camPos", 3, easeTime);
+
+				let offset = {
+					"web": [
+						{x:-4.23, y: 1.1, z: 11.8},
+						{x:-7.1, y: 1.7, z: 5.6}
+					],
+					"mobile": [
+						{x:1.62, y: 3.62,  z: 16.65},
+						{x:-12.48, y: 2.98, z: 9.84}
+					]
+				}
 				// -5.53, 2.36, 7.08
 				if (intersect.object.name === "hot_building_1") {
-					SetTween(this.camera, "position", {x:-4.23, y: 1.1, z: 11.8}, easeTime);
+					SetTween(this.camera, "position", offset[this.device][0], easeTime);
 				} else {
-					SetTween(this.camera, "position", {x:-7.1, y: 1.7, z: 5.6}, easeTime);
+					SetTween(this.camera, "position", offset[this.device][1], easeTime);
 				}
 
 				setTimeout(() => {
@@ -451,8 +462,9 @@ class Home extends Component {
 				else if (child.name.indexOf("mask_0") > -1) {this.mask_A_Arr.push(child); child.visible = false;}
 				else if (child.name.indexOf("mask_B") > -1) {this.mask_B_Arr.push(child); child.visible = false;}
 				else if (child.name === "plane") {child.dir = 1; this.airPlaneArr.push(child);}
-				else if (child.name.indexOf("hot_building") > -1 || child.name.indexOf("Eco_City_Lighting_1_Balance_Arch_polySurface025") > -1) {
+				else if (child.name.indexOf("hot_building") > -1 /*|| child.name.indexOf("Eco_City_Lighting_1_Balance_Arch_polySurface025") > -1*/) {
 					this.hotBuildingArr.push(child);
+					console.log(this.hotBuildingArr)
 				}
 				else if ( Object.keys(iconicBuildingInfo).indexOf(child.name) !== -1 ) this.hotMeshArr.push(child);
 			});
@@ -586,7 +598,7 @@ class Home extends Component {
         this.transform.setSize(0.8);
 		this.transform.addEventListener( 'dragging-changed', function ( event ) { self.controls.enabled = ! event.value; } );
 
-		const ambientLight = new THREE.AmbientLight( 0xFFFFFF, 0.4 ); this.scene.add( ambientLight );
+		const ambientLight = new THREE.AmbientLight( 0xFFFFFF, 0.1 ); this.scene.add( ambientLight );
 		this.mainLight = new THREE.DirectionalLight( 0x9E9E9E, 1.0 ); this.scene.add( this.mainLight );
 		// this.mainLight = new THREE.DirectionalLight( 0xFFFFFF, 1.0 ); this.scene.add( this.mainLight );
 		this.mainLight.position.set(-50, 50, 50); this.mainLight.castShadow = true;

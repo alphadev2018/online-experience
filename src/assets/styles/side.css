@@ -87,7 +87,7 @@
 
 .side.mobile {
 	width: 100vw;
-	height: 100vh;
+	height: 100%;
 	right: -100vw;
 	background-color: rgba(4, 102, 146, 0.8);
 }

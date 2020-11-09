@@ -29,6 +29,20 @@
   top: 50%;
 }
 
+.home .rotate-wrapper{
+  z-index: 1;
+}
+@media (max-height: 600px) {
+  .home .rotate-wrapper{
+    bottom: 220px !important;
+  }
+}
+@media (min-height: 601px) {
+  .home .rotate-wrapper{
+    bottom: 170px;
+  }
+}
+
 @media (max-width: 767px) {
   .home .process-time{
     top: calc( 50% - 170px );

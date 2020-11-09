@@ -75,7 +75,7 @@ class OverPan extends Component {
 			this.setState({hide:"hide"});
 			setTimeout(() => { this.props.callClickButton(str); }, 500);
 		}
-		if (str === "first") {
+		if (str === "first" && !(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))) {
 			document.getElementById('background_music').volume = 0.1;
 			document.getElementById('background_music').play();
 		}

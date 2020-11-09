@@ -7,18 +7,18 @@ import BuildingConnected from '../assets/images/product/logos/BuildingConnected.
 
 export const iconicBuildingInfo = {
 	"hot_EMEA": {
-		index: '55ks5vhfck',
-		padding: '44.17%'
-	},
-	"hot2_EMEA": {
 		index: 'rpbxyy3m64',
 		padding: '56.25%'
+	},
+	"hot_EMEA_other": {
+		index: '55ks5vhfck',
+		padding: '44.17%'
 	},
 	"hot_AMERICA": {
 		index: 'rpbxyy3m64',
 		padding: '56.25%'
 	},
-	"hot_APAC": {
+	"hot_ACPA": {
 		index: 'rpbxyy3m64',
 		padding: '56.25%'
 	}

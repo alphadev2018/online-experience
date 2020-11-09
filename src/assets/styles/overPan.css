@@ -12,6 +12,19 @@
     background-color: rgba(0, 0, 0, 0);
 }
 
+
+@media (max-height: 650px) {
+    .over-pan{
+        overflow-x: hidden;
+        overflow-y: scroll;
+    }
+}
+@media (min-height: 650px) {
+    .over-pan{
+        overflow: hidden;
+    }
+}
+
 .over-wrapper{
     width: 100%;
 }
@@ -360,6 +373,23 @@
 .modal-wrapper.game-end {
     position: relative;
     top: calc( 50% - 45px ) !important;
+}
+@media (max-height: 600px) {
+    .modal-wrapper.game-end {
+        position: relative;
+        top: 0 !important;
+        transform: translateY(0);
+    }
+}
+@media (min-height: 601px) {
+    .over-pan{
+        overflow: hidden;
+    }
+    .modal-wrapper.game-end {
+        position: relative;
+        top: calc( 50% - 45px ) !important;
+        transform: translateY(-50%);
+    }
 }
 .modal-wrapper.game-end .game-result{
     color: white;
