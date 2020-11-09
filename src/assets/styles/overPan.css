@@ -13,13 +13,13 @@
 }
 
 
-@media (max-height: 650px) {
+@media (max-height: 749px) {
     .over-pan{
         overflow-x: hidden;
         overflow-y: scroll;
     }
 }
-@media (min-height: 650px) {
+@media (min-height: 750px) {
     .over-pan{
         overflow: hidden;
     }
