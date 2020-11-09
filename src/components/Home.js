@@ -150,7 +150,7 @@ class Home extends Component {
 				let offset = {
 					"web": [
 						{x:-4.23, y: 1.1, z: 11.8},
-						{x:-7.1, y: 1.7, z: 5.6}
+						{x:-7.1, y: 1.7, z: 7.6}
 					],
 					"mobile": [
 						{x:1.62, y: 3.62,  z: 16.65},

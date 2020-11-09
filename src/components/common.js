@@ -144,7 +144,11 @@ export function GotoIsland(self, str) {
 			const landPos = islandItem.pos;
 			SetTween(self.totalGroup, "position", {x:landPos.x * -1, z:landPos.z * -1}, easeTime);
 			SetTween(self.totalGroup, "camPos", 0, easeTime);
-			SetTween(self.camera, "camPos", 3, easeTime);
+			if (str === "media") {
+				SetTween(self.camera, "position", {x:-7.1, y: 1.7, z: 12.6}, easeTime);
+			} else {
+				SetTween(self.camera, "camPos", 3, easeTime);
+			}
 		}
 	});
 	if (str === "map") {
