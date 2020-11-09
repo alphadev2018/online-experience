@@ -32,18 +32,6 @@
 .home .rotate-wrapper{
   z-index: 1;
 }
-@media (max-height: 600px) {
-  .home .rotate-wrapper{
-    /* bottom: 220px !important; */
-    transform: translateY(-100%);
-    bottom: 170px;
-  }
-}
-@media (min-height: 601px) {
-  .home .rotate-wrapper{
-    bottom: 170px;
-  }
-}
 
 @media (max-width: 767px) {
   .home .process-time{
@@ -52,6 +40,7 @@
   .home .rotate-wrapper{
     position: absolute;
     bottom: 170px;
+    transform: translateY(-100%);
     width: 100%;
     display: flex;
     justify-content: space-between;
