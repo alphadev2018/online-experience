@@ -22,11 +22,6 @@ body {
   height: 100vh;
   background-color: white;
 }
-.logo-icon{
-  float: left;
-  margin-right: 30px;
-  background-repeat: round;
-}
 .header .menu-toggle {
   color: white;
   position: fixed;
@@ -36,21 +31,11 @@ body {
 }
 
 @media (max-width: 767px) {
-  .logo-icon {
-    background-image: url(assets/images/logo/logo_mobile.png);
-    width: 220px;
-    height: 60px;
-  }
   .menu-toggle {
     display: block;
   }
 }
-@media (min-width: 767px) {  
-  .logo-icon {
-    background-image: url(assets/images/logo/logo.png);
-    width: 525px;
-    height: 49px;
-  }
+@media (min-width: 768px) {  
   .menu-toggle {
     display: none;
   }

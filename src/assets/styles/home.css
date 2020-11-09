@@ -34,7 +34,9 @@
 }
 @media (max-height: 600px) {
   .home .rotate-wrapper{
-    bottom: 220px !important;
+    /* bottom: 220px !important; */
+    transform: translateY(-100%);
+    bottom: 170px;
   }
 }
 @media (min-height: 601px) {
