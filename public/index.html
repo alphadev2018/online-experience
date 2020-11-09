@@ -56,45 +56,16 @@
       }
     }
 
-    #first-button{
-        position: relative;
-        margin-left: calc(50% - 65px);
-        width: 130px;
-        height: 130px;
-        border-radius: 50%;
-        overflow: hidden;
-        border: 4px solid white;
-        box-shadow: 0 1px 1px rgba(0,0,0,0.25), 0 2px 2px rgba(0,0,0,0.2), 0 3px 3px rgba(0,0,0,0.15), 0 6px 6px rgba(0,0,0,0.1), 0 10px 10px rgba(0,0,0,0.05);
-        cursor: pointer;
-        margin-top: 60vh;
-	      transition: all 0.5s;
+    #warning {
+      color: white;
     }
-    #first-button .back-yellow, #first-button .back-loading{
-        position: absolute;
-        top: 130px;
-        left: 0;
-        background-color: #FAA728;
-        width: 130px;
-        height: 130px;
-        transition: top 0.5s;
-    }
-    #first-button:hover .back-yellow{
-        top: 0px;
-    }
-    #first-button .label{
-        position: absolute;
-        width: 100%;    
-        color: white;
-        font-family: calibri_bold;
-        text-align: center;
-    }
-    #first-button .loading-label{
-        margin-top: 38px;
-        font-size: 24px;
-    }
-    #first-button .pro-label{
-        margin-top: 70px;
-        font-size: 22px;
+    #warning h1{
+      transform: translate(-50%, -50%);
+      top: 50%;
+      left: 50%;
+      position: absolute;
+      width: 100%;
+      text-align: center;
     }
     </style>
   </head>
@@ -102,13 +73,9 @@
     <noscript>You need to enable JavaScript to run this app.</noscript>
     <div class="logo-icon"></div>
     <div id="root">
-      <!-- <div id="first-button">
-        <div>
-          <div class="back-loading" style="top:100%"}}></div>
-          <div class="label loading-label">Loading</div>
-          <div class="label pro-label">0 %</div>
-        </div>
-      </div> -->
+    </div>
+    <div id="warning">
+      <h1>Can't play game on landscape, use portraite!</h1>
     </div>
     <!--
       This HTML file is a template.
@@ -122,6 +89,16 @@
     -->
     <audio id="background_music" src="music/constructionclouds_01.mp3" loop></audio>
     <script>
+    window.onresize = function() {
+      if (window.matchMedia("(orientation: landscape)").matches) {
+        document.getElementById("root").style.display = "none";
+        document.getElementById("warning").style.display = "block";
+      } else {
+        document.getElementById("root").style.display = "block";
+        document.getElementById("warning").style.display = "none";
+      }
+    };
+    window.onresize();
     function analytics(island) {
       console.log('analytics '+island);
     }
