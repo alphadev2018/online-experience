@@ -93,7 +93,8 @@ export function AnimateReturn(arr, type, axis, value) {
 
 export function AnimatePlane(arr) {
 	arr.forEach(item => {
-		var posDelta = 0.05, maxDis = 30;
+		// var posDelta = 0.05, maxDis = 30;
+		var posDelta = 0.5, maxDis = 150;
 		// if (item.landChildName === "media") {posDelta = 0.05; maxDis = 30;}
 		item.position.x += posDelta * item.dir;
 		if (item.position.x >= maxDis) {item.dir = -1; item.rotation.y = Math.PI/-2;}
@@ -324,18 +325,18 @@ export function CheckClash(meshArr, selMesh, level, rotAxis) {
 		if (selMesh.name.indexOf("light") > -1) {
 			const curPos = selMesh.position, curRot = selMesh.rotation.y;
 			var lightCheck = false;
-			console.log(selMesh);
+			// console.log(selMesh);
 			lightArr.forEach(lightItem => {
 				if (curPos.x === lightItem.posX && curPos.z === lightItem.posZ) {
-					console.log(lightItem.rot );
-					console.log(selMesh.rotation.z);
-					console.log(CheckRoundVal(lightItem.rot, selMesh.rotation.z));
+					// console.log(lightItem.rot );
+					// console.log(selMesh.rotation.z);
+					// console.log(CheckRoundVal(lightItem.rot, selMesh.rotation.z));
 				}
 					
 				if (curPos.x === lightItem.posX && curPos.z === lightItem.posZ && CheckRoundVal(lightItem.rot, selMesh.rotation.z) === true)
 					lightCheck = true;
 			});
-			if (lightCheck === true) {console.log(lightCheck); return false;}
+			if (lightCheck === true) {/*console.log(lightCheck);*/ return false;}
 		}
 	}
 

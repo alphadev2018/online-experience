@@ -132,13 +132,14 @@ class Home extends Component {
 					else if (this.footerId === "footer_design") { panaltyTime = 30;  delayTime = 3000;}
 					this.setState({gameTime:gameTime - panaltyTime});
 					setTimeout(() => { this.footerId = undefined; }, delayTime);
-					console.log(this.footerId);
+					// console.log(this.footerId);
 				}
 			}
 			return;
 		}
 		const intersect = GetRayCastObject(this, mouseX, mouseY, this.meshArr);
 		if (intersect) {
+			console.log(intersect.object.name)
 			const landName = intersect.object.landChildName;
 			if (landName !== this.selLandName) {
 				GotoIsland(this, landName);
@@ -207,10 +208,17 @@ class Home extends Component {
 		this.mouseStatus = "move";
 		if (this.selLandName === "media") {
 			const intersect = GetRayCastObject(this, event.clientX, event.clientY, this.hotBuildingArr);
+
+			// if (intersect) {
+			// 	console.log(intersect.object.name)
+			// }
 			
 			this.hotBuildingArr.forEach(hotBuilding => {
 				let buildingCol = 0xFFFFFF;
-				if (intersect && hotBuilding.name === intersect.object.name) {
+				if (intersect && (hotBuilding.name === intersect.object.name || 
+					(intersect.object.name.indexOf("Eco_City_Lighting_1_Balance_Arch_polySurface025") > -1 &&
+					hotBuilding.name.indexOf("Eco_City_Lighting_1_Balance_Arch_polySurface025") > -1)
+					)) {
 					buildingCol = 0xFF0000;
 				}
 				if (hotBuilding.material.length) {
@@ -388,7 +396,7 @@ class Home extends Component {
 			}, i * easeTime / 2);
 		}
 		setTimeout(() => {
-			console.log(this.transError)
+			// console.log(this.transError)
 			this.props.callGameResult("autoBuild", this.totalTime, 0, this.state.gamePro, this.transError);
 			this.setEndGame();
 			this.setState({autoBuild:false});
@@ -401,7 +409,7 @@ class Home extends Component {
 		const checkClashStatus = CheckClash(this.gameMeshArr, this.transform.object, this.gameLevel, this.rotAxis);
 		if (checkClashStatus) {
 			if (checkClashStatus === "clash") this.transError.clash++; else this.transError.quality++;
-			console.log(this.transError);
+			// console.log(this.transError);
 			this.setState({crashModalId:checkClashStatus});
 			setTimeout(() => { this.setState({crashModalId:false}); }, 3000);
 		}
@@ -442,8 +450,10 @@ class Home extends Component {
 	}
 
 	loadIslandModel=(info)=>{
+		// console.log(info.file);
 		new FBXLoader().load(info.file, (object)=>{
 			object.children.forEach(child => {
+				// console.log(child);
 				if (child instanceof THREE.Mesh) {
 					child.landChildName = info.islandName; this.meshArr.push(child);
 					if (info.islandName === "game" && child.name.indexOf("sea_trans") > -1) {child.receiveShadow = true; this.gameIslandPlane = child;}
@@ -464,9 +474,13 @@ class Home extends Component {
 					child.curVal = Math.round(Math.random() * 100);
 					child.dir = (Math.random() > 0.5)? 1:-1;
 					if (child.name.indexOf("cloud") > -1) {
-						if 		(info.islandName === "home0") child.moveDis = 0.005;
-						else if (info.islandName === "home1") child.moveDis = 0.07;
-						else if (info.islandName === "home2") child.moveDis = 0.1;
+						
+						// if 		(info.islandName === "home0") child.moveDis = 0.005;
+						// else if (info.islandName === "home1") child.moveDis = 0.07;
+						// else if (info.islandName === "home2") child.moveDis = 0.1;
+						if 		(info.islandName === "home0") child.moveDis = 0.5;
+						else if (info.islandName === "home1") child.moveDis = 0.7;
+						else if (info.islandName === "home2") child.moveDis = 0.3;
 						else if (info.islandName === "game") child.moveDis = 0.005;
 						this.cloudArr.push(child);
 					}
@@ -477,9 +491,19 @@ class Home extends Component {
 				else if (child.name.indexOf("mask_0") > -1) {this.mask_A_Arr.push(child); child.visible = false;}
 				else if (child.name.indexOf("mask_B") > -1) {this.mask_B_Arr.push(child); child.visible = false;}
 				else if (child.name === "plane") {child.dir = 1; this.airPlaneArr.push(child);}
+				else if (child.name.indexOf("Eco_City_Lighting_1_Balance_Arch_polySurface025") > -1) {
+					// console.log(child.children);
+					child.children.map((item) => {
+						if (item.type === "Mesh") {
+							this.hotBuildingArr.push(item);	
+							item.landChildName = info.islandName;
+							this.meshArr.push(item);
+						}
+					})
+				}
 				else if (child.name.indexOf("hot_building") > -1 /*|| child.name.indexOf("Eco_City_Lighting_1_Balance_Arch_polySurface025") > -1*/) {
 					this.hotBuildingArr.push(child);
-					console.log(this.hotBuildingArr)
+					// console.log(this.hotBuildingArr)
 				}
 				else if ( Object.keys(iconicBuildingInfo).indexOf(child.name) !== -1 ) { child.direction = -1; this.hotMeshArr.push(child); }
 			});
@@ -594,9 +618,9 @@ class Home extends Component {
         this.transform.setSize(0.8);
 		this.transform.addEventListener( 'dragging-changed', function ( event ) { self.controls.enabled = ! event.value; } );
 
-		const ambientLight = new THREE.AmbientLight( 0xFFFFFF, 0.1 ); this.scene.add( ambientLight );
-		this.mainLight = new THREE.DirectionalLight( 0x9E9E9E, 1.0 ); this.scene.add( this.mainLight );
-		// this.mainLight = new THREE.DirectionalLight( 0xFFFFFF, 1.0 ); this.scene.add( this.mainLight );
+		const ambientLight = new THREE.AmbientLight( 0xFFFFFF, 0.4 ); this.scene.add( ambientLight );
+		// this.mainLight = new THREE.DirectionalLight( 0x9E9E9E, 1.0 ); this.scene.add( this.mainLight );
+		this.mainLight = new THREE.DirectionalLight( 0xFFFFFF, 1.0 ); this.scene.add( this.mainLight );
 		this.mainLight.position.set(-50, 50, 50); this.mainLight.castShadow = true;
 
 		this.subLight = new THREE.DirectionalLight( 0xFFFFFF, 0.5 ); this.scene.add( this.subLight );

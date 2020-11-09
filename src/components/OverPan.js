@@ -177,7 +177,7 @@ class OverPan extends Component {
 			if (transError) {
 				if (transError.quality >= 2) resultImg = resultAssembleImg;
 				if (transError.clash >= 2) resultImg = resultBimImg; 
-				console.log(transError);
+				// console.log(transError);
 			}
 			hotStr = detailInfo;
 		}

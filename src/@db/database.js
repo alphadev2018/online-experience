@@ -10,7 +10,8 @@ export const iconicBuildingInfo = {
 		index: 'rpbxyy3m64',
 		padding: '56.25%'
 	},
-	"hot_EMEA_other": {
+	// "hot_EMEA_other": {
+	"hot2_EMEA": {
 		index: '55ks5vhfck',
 		padding: '44.17%'
 	},
@@ -18,7 +19,8 @@ export const iconicBuildingInfo = {
 		index: 'rpbxyy3m64',
 		padding: '56.25%'
 	},
-	"hot_ACPA": {
+	// "hot_ACPA": {
+	"hot_APAC": {
 		index: 'rpbxyy3m64',
 		padding: '56.25%'
 	}

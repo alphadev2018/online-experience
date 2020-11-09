@@ -28,7 +28,7 @@ class App extends Component {
 	}
 
 	callMenuItem=(str)=>{
-		console.log(str);
+		// console.log(str);
 		this.setState({menuItem:str, selGame:false}, ()=>{
 			if (str === "game") 
 				setTimeout(() => { this.setState({modalInfo:"game"}); }, easeTime);
