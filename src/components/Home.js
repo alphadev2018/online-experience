@@ -35,7 +35,7 @@ class Home extends Component {
 		this.totalModelCount = modelArr.length + gameInfoArr.length; this.loadModelNum = 0;
 		this.transError = {clash:0, quality:0};
 		this.mouseCapture = false;
-		this.timer = null;
+		this.timer = null; this.hoverDirection = 1;
 	}
 	
 	componentDidMount() {
@@ -219,11 +219,17 @@ class Home extends Component {
 		else {
 			const intersect = GetRayCastObject(this, event.clientX, event.clientY, this.hotMeshArr);
 			
+			if (!intersect) {
+				clearInterval(this.timer);
+			}
 			this.hotMeshArr.forEach(hotMesh => {
 				if (intersect && hotMesh.name === intersect.object.name){
-					hotMesh.hover = true;
+					clearInterval(this.timer);
+					this.timer = setInterval( () => {
+						this.startHotspotTween(hotMesh);
+					}, 50);
 				} else {
-					hotMesh.hover = false;
+					hotMesh.material.color.setHex(0xFF0000);
 				}
 			});
 		}
@@ -260,26 +266,15 @@ class Home extends Component {
 		return checkGamePro;
 	}
 
-	hotspotTween = () => {
-		if (!this.hotMeshArr.length) return;
+	startHotspotTween = (hotspot) => {
+		let color = hotspot.material.color;
 		
-		let index = this.hotMeshArr.map( mesh => {
-			let color = mesh.material.color;
-			if ( mesh.hover ) {
-				if (color.getHex() >= 16777215) {
-					return -1;
-				} else {
-					mesh.material.color.setRGB( color.r, color.g + 0.2, color.b + 0.2);
-				}
-			} else {
-				if (color.getHex() <= 16711680) {
-					return -1;
-				} else {
-					mesh.material.color.setRGB( color.r, color.g - 0.2, color.b - 0.2);
-				}
-			}
-			return 1;
-		})
+		if (color.getHex() >= 16777215) {
+			this.hoverDirection = -1;
+		} else if (color.getHex() < 16711680) {
+			this.hoverDirection = 1;
+		}
+		hotspot.material.color.setRGB( color.r, color.g + this.hoverDirection * 0.2, color.b + this.hoverDirection * 0.2);
 	}
 
 	// setStep=(delta)=>{
@@ -618,8 +613,6 @@ class Home extends Component {
 		// this.loadIslandModel(modelArr[0])
 		modelArr.forEach(modelInfo => { this.loadIslandModel(modelInfo); });
 		gameInfoArr.forEach(gameInfo => { this.loadGameModel(gameInfo); });
-
-		this.timer = setInterval(this.hotspotTween, 50);
 	}
 
 	animate () {
