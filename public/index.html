@@ -38,6 +38,9 @@
     -->
     <audio id="background_music" src="music/constructionclouds_01.mp3" loop></audio>
     <script>
+    function analytics(island) {
+      console.log('analytics '+island);
+    }
     function cancelFullScreen() {
         var el = document;
         var requestMethod = el.cancelFullScreen||el.webkitCancelFullScreen||el.mozCancelFullScreen||el.exitFullscreen||el.webkitExitFullscreen;

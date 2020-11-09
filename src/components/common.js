@@ -136,6 +136,8 @@ export function LoadIslandModel(info, self) {
 }
 
 export function GotoIsland(self, str) {
+	window.analytics(str);
+	
 	self.controls.enabled = false;
 	modelArr.forEach(islandItem => {
 		if (islandItem.islandName === str) {

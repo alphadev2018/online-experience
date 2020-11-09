@@ -183,8 +183,8 @@ class OverPan extends Component {
 		}
 		return (
 			<div className={`over-pan ${this.state.hide}`}>
-				{modalInfo === "first" &&
-					<div className={"first-button"}>
+				{(modalInfo === "first" ) &&
+					<div className={"first-button"} style={{display: `${loadPro ? 'block' : 'none'}`}}>
 						{loadPro >= 100 &&
 							<div onClick={()=>this.clickButton("first", true)}>
 								<div className="back-yellow"></div>
