@@ -386,7 +386,7 @@
     position: relative;
     top: calc( 50% - 45px );
 }
-@media (max-height: 600px) {
+@media (max-height: 749px) {
     .modal-wrapper {
         position: relative;
         top: 0 !important;
@@ -401,7 +401,7 @@
         margin-top: 0px !important;
     }
 }
-@media (min-height: 601px) {
+@media (min-height: 750px) {
     .over-pan{
         overflow: hidden;
     }
