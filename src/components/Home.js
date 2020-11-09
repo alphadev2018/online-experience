@@ -76,11 +76,9 @@ class Home extends Component {
 			SetTween(this.camera, "position", {x:-10, y:this.camera.position.y, z:0}, easeTime);
 			setTimeout(() => { this.controls.minDistance = controlsMin; }, easeTime);
 			this.gameGroup.visible = true;
-			var gamePlaneTrans = false, gamePlaneCol = 0x2ECE3A, transRotCol = "#0000FF";
-			if (nextProps.game === "gameMedium") { gamePlaneTrans = true; gamePlaneCol = 0x083D8A; transRotCol="#00FF00";}
+			var gamePlaneCol = 0x268000, transRotCol = "#0000FF";
+			if (nextProps.game === "gameMedium") { gamePlaneCol = 0x1B66E6; transRotCol="#00FF00";}
 			this.gameIslandPlane.material.color.setHex(gamePlaneCol);
-			this.gameIslandPlane.material.transparent = gamePlaneTrans;
-			this.gameIslandPlane.material.opacity = 0.7;
 			this.transform.children[0].children[1].children.forEach(child => {
 				if (child instanceof THREE.Mesh) child.material = new THREE.MeshBasicMaterial({color:transRotCol, depthTest:false});
 				else  child.material = new THREE.LineBasicMaterial({color:transRotCol, depthTest:false});
@@ -443,10 +441,10 @@ class Home extends Component {
 					const colVal = child.name.split("__")[1];
 					child.material = new THREE.MeshPhongMaterial({color:"#"+colVal, side:2});
 				}
-				["Tube", "Tubea", "Array_1", "Array_2"].forEach(str => {
-					if (child.name === str) child.visible = false;
-				});
-				if (child.name.indexOf("wind_group") > -1) this.windBaseArr.push(child);
+				if (child.name.indexOf("wind_group") > -1) {
+					if (info.islandName === "home0" && child.name === "wind_group001") child.visible = false;
+					else this.windBaseArr.push(child);
+				}
 				else if (child.name.indexOf("crane") > -1 || child.name.indexOf("cloud") > -1) {
 					child.curVal = Math.round(Math.random() * 100);
 					child.dir = (Math.random() > 0.5)? 1:-1;
