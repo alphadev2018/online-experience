@@ -370,22 +370,22 @@
 }
 
 .modal-wrapper.game-end {
-    overflow-x: hidden;
-    overflow-y: scroll;
+    overflow: hidden;
     position: relative;
     top: calc( 50% - 45px );
     transform: translateY(-50%);
 }
-@media (max-height: 649px) {
+@media (max-width: 767px) and (max-height: 649px) {
     .modal-wrapper.game-end {
         top: 0;
         transform: translateY(0);
+        overflow-y: scroll;
     }
     .modal-wrapper.game-end .game-button{
         margin-top: 0px !important;
     }
 }
-@media (min-height: 650px) {    
+@media (max-width: 767px) and (min-height: 650px) {    
     .modal-wrapper.game-end {
         transform: auto;
     }
