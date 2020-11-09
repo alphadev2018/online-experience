@@ -182,7 +182,7 @@ class OverPan extends Component {
 			hotStr = detailInfo;
 		}
 		return (
-			<div className={`over-pan ${this.state.hide} ${isIOS ? "mobile" : "web"}`}>
+			<div className={`over-pan ${this.state.hide} ${isIOS() ? "mobile" : "web"}`}>
 				{(modalInfo === "first" ) &&
 					<div className={"first-button"} style={{display: `${loadPro ? 'block' : 'none'}`}}>
 						{loadPro >= 100 &&
