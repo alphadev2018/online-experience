@@ -90,6 +90,7 @@
 	height: 100%;
 	right: -100vw;
 	background-color: rgba(4, 102, 146, 0.8);
+	z-index: 11;
 }
 .side.mobile.active {
 	right: 0px	;

@@ -50,7 +50,7 @@ body {
 .header .menu-toggle {
   color: white;
   margin-right: 60px;
-  z-index: 9;
+  z-index: 12;
 }
 
 @media (max-width: 767px) {

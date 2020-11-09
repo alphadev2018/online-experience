@@ -730,7 +730,7 @@ class Home extends Component {
 					<div className={`hot-item ${(pos.islandName===menuItem)?"show":""}`} key={idx} style={{left:pos.x, top:pos.y}} onClick={()=>this.props.callHotSpot(pos.hotName)}></div>
 				)*/}
 				{ this.selLandName === "media" &&
-					<div>
+					<div style={{zIndex: 1}}>
 						{mask_A_PosArr.map((pos, idx) =>
 							<div className={`mask-item ${maskAShow?'fade-in':''}`} key={idx} style={{left:pos.x, top:pos.y}} onClick={()=>this.clickMask(capabilities[mask_A_PosArr.length - idx - 1])}>
 								<div className={`item-icon ${idx < 7 ? 'left':'right'}`} data-detail={capabilities[mask_A_PosArr.length - idx - 1].title}>
