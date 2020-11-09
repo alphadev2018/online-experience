@@ -391,6 +391,11 @@
         top: 0 !important;
         transform: translateY(0);
     }
+    
+    .modal-wrapper.game-end {
+        overflow-x: hidden;
+        overflow-y: scroll;
+    }
 }
 @media (min-height: 601px) {
     .over-pan{
