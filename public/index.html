@@ -90,7 +90,7 @@
     <audio id="background_music" src="music/constructionclouds_01.mp3" loop></audio>
     <script>
     window.onresize = function() {
-      if (window.matchMedia("(orientation: landscape)").matches) {
+      if ((/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || /iPad|iPhone|iPod/.test(navigator.platform) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)) && window.matchMedia("(orientation: landscape)").matches) {
         document.getElementById("root").style.display = "none";
         document.getElementById("warning").style.display = "block";
       } else {
