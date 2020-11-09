@@ -397,7 +397,7 @@
         overflow-y: scroll;
     }
     .modal-wrapper.game-end .game-button{
-        margin-top: 0px;
+        margin-top: 0px !important;
     }
 }
 @media (min-height: 601px) {
