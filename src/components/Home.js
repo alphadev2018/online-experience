@@ -453,8 +453,9 @@ class Home extends Component {
 				else if (child.name.indexOf("mask_0") > -1) {this.mask_A_Arr.push(child); child.visible = false;}
 				else if (child.name.indexOf("mask_B") > -1) {this.mask_B_Arr.push(child); child.visible = false;}
 				else if (child.name === "plane") {child.dir = 1; this.airPlaneArr.push(child);}
-				else if (child.name.indexOf("hot_building") > -1 || child.name.indexOf("Eco_City_Lighting_1_Balance_Arch_polySurface025") > -1) {
+				else if (child.name.indexOf("hot_building") > -1 /*|| child.name.indexOf("Eco_City_Lighting_1_Balance_Arch_polySurface025") > -1*/) {
 					this.hotBuildingArr.push(child);
+					console.log(this.hotBuildingArr)
 				}
 				else if ( Object.keys(iconicBuildingInfo).indexOf(child.name) !== -1 ) this.hotMeshArr.push(child);
 			});
