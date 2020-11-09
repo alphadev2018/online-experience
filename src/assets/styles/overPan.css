@@ -372,6 +372,7 @@
 .modal-wrapper.game-end {
     position: relative;
     top: calc( 50% - 45px );
+    transform: translateY(-50%);
 }
 @media (max-height: 749px) {
     .modal-wrapper.game-end {
@@ -390,9 +391,7 @@
     }
     
     .modal-wrapper.game-end {
-        top: calc( 50% - 45px ) !important;
         overflow: hidden;
-        transform: translateY(-50%);
     }
 }
 .modal-wrapper.game-end .game-result{
