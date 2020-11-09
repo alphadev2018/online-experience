@@ -150,7 +150,7 @@ class Home extends Component {
 				let offset = {
 					"web": [
 						{x:-4.23, y: 1.1, z: 11.8},
-						{x:-7.1, y: 1.7, z: 7.6}
+						{x:-7.1, y: 1.7, z: 5.6}
 					],
 					"mobile": [
 						{x:1.62, y: 3.62,  z: 16.65},
@@ -219,17 +219,11 @@ class Home extends Component {
 		else {
 			const intersect = GetRayCastObject(this, event.clientX, event.clientY, this.hotMeshArr);
 			
-			if (!intersect) {
-				clearInterval(this.timer);
-			}
 			this.hotMeshArr.forEach(hotMesh => {
 				if (intersect && hotMesh.name === intersect.object.name){
-					clearInterval(this.timer);
-					this.timer = setInterval( () => {
-						this.startHotspotTween(hotMesh);
-					}, 50);
+					hotMesh.hover = true;
 				} else {
-					hotMesh.material.color.setHex(0xFF0000);
+					hotMesh.hover = false;
 				}
 			});
 		}
@@ -266,15 +260,24 @@ class Home extends Component {
 		return checkGamePro;
 	}
 
-	startHotspotTween = (hotspot) => {
-		let color = hotspot.material.color;
+	hotspotTween = () => {
+		if (!this.hotMeshArr.length) return;
 		
-		if (color.getHex() >= 16777215) {
-			this.hoverDirection = -1;
-		} else if (color.getHex() < 16711680) {
-			this.hoverDirection = 1;
-		}
-		hotspot.material.color.setRGB( color.r, color.g + this.hoverDirection * 0.2, color.b + this.hoverDirection * 0.2);
+		let index = this.hotMeshArr.map( mesh => {
+			let color = mesh.material.color;
+			if (mesh.hover) {
+				// document.getElementsByTagName('body')[0].style.cursor = 'pointer';
+				mesh.material.color.setRGB( color.r, 0, 0);			
+			} else {
+				// document.getElementsByTagName('body')[0].style.cursor = 'default';
+				mesh.material.color.setRGB( color.r, color.g + mesh.direction * 0.2, color.b + mesh.direction * 0.2);			
+				if (color.g >= 1){
+					mesh.direction = -1;
+				} else if(color.g < 0) {
+					mesh.direction = 1;
+				}
+			}
+		})
 	}
 
 	// setStep=(delta)=>{
@@ -469,7 +472,7 @@ class Home extends Component {
 					this.hotBuildingArr.push(child);
 					console.log(this.hotBuildingArr)
 				}
-				else if ( Object.keys(iconicBuildingInfo).indexOf(child.name) !== -1 ) { child.hover = false; this.hotMeshArr.push(child); }
+				else if ( Object.keys(iconicBuildingInfo).indexOf(child.name) !== -1 ) { child.direction = -1; this.hotMeshArr.push(child); }
 			});
 			var vSize = new THREE.Box3().setFromObject(object).getSize();
 			var scl = info.size/vSize.x;
@@ -613,6 +616,8 @@ class Home extends Component {
 		// this.loadIslandModel(modelArr[0])
 		modelArr.forEach(modelInfo => { this.loadIslandModel(modelInfo); });
 		gameInfoArr.forEach(gameInfo => { this.loadGameModel(gameInfo); });
+
+		this.timer = setInterval(this.hotspotTween, 100);
 	}
 
 	animate () {
