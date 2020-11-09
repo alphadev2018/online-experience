@@ -34,6 +34,10 @@ export default class Header extends Component {
 		window.toggleFullScreen();
 	}
 
+	isIOS = () => {
+		return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) || /iPad|iPhone|iPod/.test(navigator.platform) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1)
+	}
+
 	render() {
 		const { menuItem } = this.state;
 		return (
@@ -48,7 +52,7 @@ export default class Header extends Component {
 						</a>
 
 						
-						<div className="footer-menu" style={{display: ( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) ? 'none':'flex'}}>
+						<div className="footer-menu" style={{display: this.isIOS() ? 'none':'flex'}}>
 							<a href="#" onClick={this.fullScreen} >
 								<i className="fa fa-window-maximize" aria-hidden="true"></i>
 							</a>
