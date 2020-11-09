@@ -493,6 +493,9 @@ class Home extends Component {
 		this.loadModelNum++;
 		this.props.callAddLoadNum(this.totalModelCount, this.loadModelNum);
 	};
+	showRules=()=> {
+		this.props.callModal('rule_game');
+	}
 
 	// addSubModels=(parent, subFile)=>{
 	// 	new FBXLoader().load(subFile, (object)=>{
@@ -708,6 +711,7 @@ class Home extends Component {
 							</div>
 						}
 						<div className={"mesh-control set-place "+placeClassStr} onClick={this.setPlace}>Place</div>
+						<div className={"mesh-control btn-rules"} onClick={this.showRules}>Rules</div>
 					</div>
 				}
 				{/*hotPosArr.map((pos, idx) =>

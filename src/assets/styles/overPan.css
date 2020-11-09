@@ -122,6 +122,17 @@
     /* max-height: 70vh; */
 /* 37A7DB */
 }
+.modal-wrapper .close-btn{
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 30px;
+    cursor: pointer;
+    opacity: 0.8;
+}
+.modal-wrapper .close-btn img{
+    width: 100%;
+}
 .modal-wrapper.game-menu{
     position: relative;
 }

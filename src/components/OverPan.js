@@ -221,6 +221,9 @@ class OverPan extends Component {
 				{modalInfo === "play" &&
 					<div className="modal-wrapper game-level">
 						<div className="title game-level-title">Choose Difficulty</div>
+						<div className="close-btn" onClick={()=>this.clickButton( "game", false)}>
+							<i className="fa fa-close" style={{color: 'white'}}></i>
+						</div>
 						<div className="body">
 							{this.gameLevelArr.map((item, idx) =>
 								<div className="game-level-item" key={idx} onClick={()=>this.clickButton(item.value, true)}>
@@ -260,10 +263,10 @@ class OverPan extends Component {
 						</div>
 					</div>
 				}
-				{modalInfo === "rule" &&
+				{modalInfo.indexOf("rule") !== -1 &&
 					<div className="modal-wrapper game-rule">
 						<div className="title">Game Rules</div>
-						<div className="close-btn" onClick={()=>this.clickButton("game", false)}>
+						<div className="close-btn" onClick={()=>this.clickButton( modalInfo === "rule" ? "game":"", modalInfo !== "rule")}>
 							<i className="fa fa-close" style={{color: 'white'}}></i>
 						</div>
 						{this.gameRuleArr.map((item, idx) =>
