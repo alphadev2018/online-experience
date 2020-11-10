@@ -276,7 +276,7 @@ class OverPan extends Component {
 								</div>}
 								{idx === 1 && <div className="text" style={{whiteSpace: 'pre-wrap'}}>
 									Beat the clock to build the structure in the fastest time.<br/><br/>
-									Select a piece.<br/><br/>
+									Double click on a piece to select.<br/><br/>
 									Then click an arrow and drag the piece along the X, Y, or Z axis. Or click one of the orange buttons to rotate the piece by 90 degrees.<br/><br/>
 									Once you have finished moving the piece, click ‘place’. If the piece is not in the correct position, you will receive a warning. If you have selected and moved one piece, you will need to click ‘place’ before you can select the next piece.
 								</div>}

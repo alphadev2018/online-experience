@@ -10,6 +10,7 @@ class Hotspot extends Component {
 		return (
             <>
                 <div className="modal-wrapper hotspot">
+                    <div className="title" style={{marginBottom: '0', fontSize: '28px'}}>{info.title}</div>
                     <div className="sub-content" style={{marginTop: '30px'}}>
                         <div className="wistia_responsive_padding" style={{padding:`${info.padding} 0 0 0`, position:"relative"}}>
                             <div className="wistia_responsive_wrapper" style={{height:"100%", left:"0", position:"absolute", top:0, width:"100%"}}>
