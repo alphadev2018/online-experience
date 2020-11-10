@@ -145,37 +145,41 @@ class Home extends Component {
 				this.props.callMenuItem(landName);
 			}
 			else if (intersect.object.name.indexOf("hot_building") > -1 || intersect.object.name.indexOf("Eco_City_Lighting_1_Balance_Arch_polySurface025") > -1) {
-				this.setState({
-					maskAShow: false,
-					maskBShow: false
-				})
-				
-				SetTween(this.camera, "camPos", 3, easeTime);
-
-				let offset = {
-					"web": [
-						{x:2.04, y: 0.26, z: 10.04},
-						{x:-8.18, y: 1.38, z: -5.86}
-					],
-					"mobile": [
-						{x:2.04, y: 0.26, z: 10.04},
-						{x:-8.18, y: 1.38, z: -5.86}
-						// {x:1.62, y: 3.62,  z: 16.65},
-						// {x:-12.48, y: 2.98, z: 9.84}
-					]
-				}
-				// -5.53, 2.36, 7.08
-				if (intersect.object.name === "hot_building_1") {
-					SetTween(this.camera, "position", offset[this.device][0], easeTime);
+				if (this.state.maskAShow || this.state.maskBShow) {
+					
 				} else {
-					SetTween(this.camera, "position", offset[this.device][1], easeTime);
-				}
-
-				setTimeout(() => {
 					this.setState({
-					maskAShow: intersect.object.name !== "hot_building_1", 
-					maskBShow: intersect.object.name === "hot_building_1"
-				}) }, 500);
+						maskAShow: false,
+						maskBShow: false
+					})
+					
+					SetTween(this.camera, "camPos", 3, easeTime);
+
+					let offset = {
+						"web": [
+							{x:2.04, y: 0.26, z: 10.04},
+							{x:-8.18, y: 1.38, z: -5.86}
+						],
+						"mobile": [
+							{x:2.04, y: 0.26, z: 10.04},
+							{x:-8.18, y: 1.38, z: -5.86}
+							// {x:1.62, y: 3.62,  z: 16.65},
+							// {x:-12.48, y: 2.98, z: 9.84}
+						]
+					}
+					// -5.53, 2.36, 7.08
+					if (intersect.object.name === "hot_building_1") {
+						SetTween(this.camera, "position", offset[this.device][0], easeTime);
+					} else {
+						SetTween(this.camera, "position", offset[this.device][1], easeTime);
+					}
+
+					setTimeout(() => {
+						this.setState({
+						maskAShow: intersect.object.name !== "hot_building_1", 
+						maskBShow: intersect.object.name === "hot_building_1"
+					}) }, 500);
+				}
 			}
 		}
 		// var hotInfo;
@@ -220,7 +224,13 @@ class Home extends Component {
 					(intersect.object.name.indexOf("Eco_City_Lighting_1_Balance_Arch_polySurface025") > -1 &&
 					hotBuilding.name.indexOf("Eco_City_Lighting_1_Balance_Arch_polySurface025") > -1)
 					)) {
-					buildingCol = 0xFF0000;
+					if (
+						(this.state.maskAShow && hotBuilding.name.indexOf("Eco_City_Lighting_1_Balance_Arch_polySurface025")>-1)  ||					
+						(this.state.maskBShow && hotBuilding.name.indexOf("hot_building")>-1)  ||
+						(!this.state.maskAShow && !this.state.maskBShow)
+					) {
+						buildingCol = 0xFF0000;
+					}
 				}
 				if (hotBuilding.material.length) {
 					hotBuilding.material.forEach(mat => {
@@ -734,6 +744,7 @@ class Home extends Component {
 						{mask_A_PosArr.map((pos, idx) =>
 							<div className={`mask-item ${maskAShow?'fade-in':''}`} key={idx} style={{left:pos.x, top:pos.y}} 
 								onMouseDown={()=>this.mouseCapture?this.mouseCapture=false:''} 
+								onTouchStart={()=>this.mouseCapture?this.mouseCapture=false:''} 
 								onClick={()=>this.clickMask(capabilities[mask_A_PosArr.length - idx - 1])}>
 								<div className={`item-icon ${idx < 7 ? 'left':'right'}`} data-detail={capabilities[mask_A_PosArr.length - idx - 1].title}>
 									{ capabilities[mask_A_PosArr.length - idx - 1].icon ? 
@@ -746,6 +757,7 @@ class Home extends Component {
 						{mask_B_PosArr.map((pos, idx) =>
 							<div className={`mask-item ${maskBShow?'fade-in':''}`} key={idx} style={{left:pos.x, top:pos.y}}
 								onMouseDown={()=>this.mouseCapture?this.mouseCapture=false:''}  
+								onTouchStart={()=>this.mouseCapture?this.mouseCapture=false:''} 
 								onClick={()=>this.clickMask(products[mask_B_PosArr.length - idx - 1])}>
 								<div className={`item-icon ${[0,1,2,3,8].indexOf(idx) !== -1 ? 'left':'right'}`} data-detail={products[mask_B_PosArr.length - idx - 1].title}>
 									{ products[mask_B_PosArr.length - idx - 1].icon ? 
