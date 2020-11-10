@@ -34,7 +34,7 @@ class Home extends Component {
 		this.hotMeshArr = []; this.stepArr = []; this.mask_A_Arr = []; this.mask_B_Arr = []; this.hotBuildingArr = [];
 		this.totalModelCount = modelArr.length + gameInfoArr.length; this.loadModelNum = 0;
 		this.transError = {clash:0, quality:0};
-		this.mouseCapture = false;
+		window.mouseCapture = false;
 		this.timer = null; this.hoverDirection = 1;
 	}
 	
@@ -200,12 +200,12 @@ class Home extends Component {
 
 	mouseDown = (event) => {
 		this.mouseStatus = "down";
-		this.mouseCapture = true;
+		window.mouseCapture = true;
 		if (this.state.gameStatus !== "process") return;
 	}
 
 	mouseMove = (event) => {
-		if (this.mouseCapture) {
+		if (window.mouseCapture) {
 			if (this.state.maskAShow || this.state.maskBShow) {
 				this.setState({maskAShow:false, maskBShow:false})
 			}
@@ -254,7 +254,7 @@ class Home extends Component {
 	}
 
 	mouseUp = (event) => {
-		this.mouseCapture = false;
+		window.mouseCapture = false;
 		if (this.state.gameStatus !== "process") return;
 		if ((typeof event.target.className === "string") && event.target.className.indexOf("mesh-control") > -1) return;
 		if (this.mouseStatus === "down" && this.state.transChange === false) {
@@ -743,8 +743,8 @@ class Home extends Component {
 					<div style={{zIndex: 1}}>
 						{mask_A_PosArr.map((pos, idx) =>
 							<div className={`mask-item ${maskAShow?'fade-in':''}`} key={idx} style={{left:pos.x, top:pos.y}} 
-								onMouseDown={()=>this.mouseCapture?this.mouseCapture=false:''} 
-								onTouchStart={()=>this.mouseCapture?this.mouseCapture=false:''} 
+								onMouseDown={()=>window.mouseCapture?window.mouseCapture=false:''} 
+								onTouchStart={()=>window.mouseCapture?window.mouseCapture=false:''} 
 								onClick={()=>this.clickMask(capabilities[mask_A_PosArr.length - idx - 1])}>
 								<div className={`item-icon ${idx < 7 ? 'left':'right'}`} data-detail={capabilities[mask_A_PosArr.length - idx - 1].title}>
 									{ capabilities[mask_A_PosArr.length - idx - 1].icon ? 
@@ -756,8 +756,8 @@ class Home extends Component {
 						)}
 						{mask_B_PosArr.map((pos, idx) =>
 							<div className={`mask-item ${maskBShow?'fade-in':''}`} key={idx} style={{left:pos.x, top:pos.y}}
-								onMouseDown={()=>this.mouseCapture?this.mouseCapture=false:''}  
-								onTouchStart={()=>this.mouseCapture?this.mouseCapture=false:''} 
+								onMouseDown={()=>window.mouseCapture?window.mouseCapture=false:''}  
+								onTouchStart={()=>window.mouseCapture?window.mouseCapture=false:''} 
 								onClick={()=>this.clickMask(products[mask_B_PosArr.length - idx - 1])}>
 								<div className={`item-icon ${[0,1,2,3,8].indexOf(idx) !== -1 ? 'left':'right'}`} data-detail={products[mask_B_PosArr.length - idx - 1].title}>
 									{ products[mask_B_PosArr.length - idx - 1].icon ? 

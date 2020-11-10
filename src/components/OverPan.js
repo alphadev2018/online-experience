@@ -394,7 +394,7 @@ class OverPan extends Component {
 					}}/>
 				}
 				{modalInfo === "product" &&
-					<div className="modal-wrapper product">
+					<div className="modal-wrapper product" onMouseDown={()=>window.mouseCapture?window.mouseCapture=false:''} >
 						<div className="title">
 							{ this.props.modalDetailInfo.logo === undefined ? this.props.modalDetailInfo.title : <img src={this.props.modalDetailInfo.logo}></img> }
 						</div>
