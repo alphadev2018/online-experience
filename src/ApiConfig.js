@@ -1,1 +1,1 @@
-export const API_CONFIG = "http://localhost:8888";
+export const API_CONFIG = window.API_CONFIG ? window.API_CONFIG : "http://localhost:8888";
