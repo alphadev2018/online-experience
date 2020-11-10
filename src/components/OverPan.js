@@ -76,7 +76,7 @@ class OverPan extends Component {
 			setTimeout(() => { this.props.callClickButton(str); }, 500);
 		}
 		if (str === "first" && !isIOS()) {
-			document.getElementById('background_music').volume = 0.1;
+			document.getElementById('background_music').volume = 0.033;
 			document.getElementById('background_music').play();
 		}
 		this.setState({modalInfo:str});
@@ -390,7 +390,7 @@ class OverPan extends Component {
 				{modalInfo === "hotSpot" &&
 					<Hotspot details={hotStr} onClose={()=>{
 						this.clickButton("", true);
-						document.getElementById('background_music').volume = 0.1;
+						document.getElementById('background_music').volume = 0.033;
 					}}/>
 				}
 				{modalInfo === "product" &&

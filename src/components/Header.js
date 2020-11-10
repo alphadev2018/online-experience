@@ -25,10 +25,10 @@ export default class Header extends Component {
 	
 	mute = () => {
 		let element = document.getElementById('background_music');
-		if (element.volume === 0.1) {
+		if (element.volume === 0.033) {
 			element.volume = 0;
 		} else {
-			element.volume = 0.1;
+			element.volume = 0.033;
 		}
 	}
 	fullScreen = () => {
