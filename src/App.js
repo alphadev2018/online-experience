@@ -39,6 +39,7 @@ class App extends Component {
 
 	callHotSpot=(str, land)=>{
 		if (str === "") return;
+		document.getElementById('background_music').volume = 0;
 		this.setState({modalInfo:"hotSpot", modalDetailInfo:{ hotspot: str, land: land }});
 	}
 

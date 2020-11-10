@@ -267,7 +267,7 @@
 .home .mask-item.fade-in {  
   opacity: 100%;
   visibility: visible;  
-  transition:opacity 0.5s
+  transition:opacity 0.3s
 }
 .home .mask-item .item-icon.right:hover {
   background: #0577B1;

@@ -388,7 +388,10 @@ class OverPan extends Component {
 					</div>
 				}
 				{modalInfo === "hotSpot" &&
-					<Hotspot details={hotStr} onClose={()=>this.clickButton("", true)}/>
+					<Hotspot details={hotStr} onClose={()=>{
+						this.clickButton("", true);
+						document.getElementById('background_music').volume = 0.1;
+					}}/>
 				}
 				{modalInfo === "product" &&
 					<div className="modal-wrapper product">

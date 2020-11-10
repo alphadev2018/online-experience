@@ -175,7 +175,7 @@ class Home extends Component {
 					this.setState({
 					maskAShow: intersect.object.name !== "hot_building_1", 
 					maskBShow: intersect.object.name === "hot_building_1"
-				}) }, 1000);
+				}) }, 500);
 			}
 		}
 		// var hotInfo;
@@ -732,7 +732,9 @@ class Home extends Component {
 				{ this.selLandName === "media" &&
 					<div style={{zIndex: 1}}>
 						{mask_A_PosArr.map((pos, idx) =>
-							<div className={`mask-item ${maskAShow?'fade-in':''}`} key={idx} style={{left:pos.x, top:pos.y}} onClick={()=>this.clickMask(capabilities[mask_A_PosArr.length - idx - 1])}>
+							<div className={`mask-item ${maskAShow?'fade-in':''}`} key={idx} style={{left:pos.x, top:pos.y}} 
+								onMouseDown={()=>this.mouseCapture?this.mouseCapture=false:''} 
+								onClick={()=>this.clickMask(capabilities[mask_A_PosArr.length - idx - 1])}>
 								<div className={`item-icon ${idx < 7 ? 'left':'right'}`} data-detail={capabilities[mask_A_PosArr.length - idx - 1].title}>
 									{ capabilities[mask_A_PosArr.length - idx - 1].icon ? 
 										<img src={capabilities[mask_A_PosArr.length - idx - 1].icon} /> :
@@ -742,7 +744,9 @@ class Home extends Component {
 							</div>
 						)}
 						{mask_B_PosArr.map((pos, idx) =>
-							<div className={`mask-item ${maskBShow?'fade-in':''}`} key={idx} style={{left:pos.x, top:pos.y}} onClick={()=>this.clickMask(products[mask_B_PosArr.length - idx - 1])}>
+							<div className={`mask-item ${maskBShow?'fade-in':''}`} key={idx} style={{left:pos.x, top:pos.y}}
+								onMouseDown={()=>this.mouseCapture?this.mouseCapture=false:''}  
+								onClick={()=>this.clickMask(products[mask_B_PosArr.length - idx - 1])}>
 								<div className={`item-icon ${[0,1,2,3,8].indexOf(idx) !== -1 ? 'left':'right'}`} data-detail={products[mask_B_PosArr.length - idx - 1].title}>
 									{ products[mask_B_PosArr.length - idx - 1].icon ? 
 										<img src={products[mask_B_PosArr.length - idx - 1].icon} /> :
