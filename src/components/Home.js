@@ -5,7 +5,7 @@ import {FBXLoader} from "three/examples/jsm/loaders/FBXLoader";
 import {OrbitControls} from 'three/examples/jsm/controls/OrbitControls';
 import {TransformControls} from 'three/examples/jsm/controls/TransformControls';
 
-import {modelArr, gameInfoArr, easeTime, gameReadyTime, SetTween, AnimateReturn, AnimateRotate, AnimatePlane, GotoIsland, GetRayCastObject, CheckGameModel, GetStepInfo, CheckClash, modalInfo, CheckRoundVal, Get2DPos, controlsMin, controlsMax} from "./common";
+import {modelArr, gameInfoArr, easeTime, gameReadyTime, SetTween, AnimateReturn, AnimateRotate, AnimatePlane, GotoIsland, GetRayCastObject, CheckGameModel, GetStepInfo, CheckClash, modalInfo, CheckRoundVal, Get2DPos, controlsMin, controlsMax, isIOS} from "./common";
 import '../assets/styles/home.css';
 import '../assets/styles/overPan.css';
 
@@ -78,7 +78,7 @@ class Home extends Component {
 				// island.visible = (island.islandName === "game");
 			});
 			this.controls.minDistance = 0.1;
-			SetTween(this.camera, "position", {x:-10, y:this.camera.position.y, z:0}, easeTime);
+			SetTween(this.camera, "position", {x:-10, y:this.camera.position.y, z: isIOS() ? -10:0}, easeTime);
 			setTimeout(() => { this.controls.minDistance = controlsMin; }, easeTime);
 			this.gameGroup.visible = true;
 			var gamePlaneCol = 0x268000, transRotCol = "#0000FF";
@@ -178,7 +178,7 @@ class Home extends Component {
 						this.setState({
 						maskAShow: intersect.object.name !== "hot_building_1", 
 						maskBShow: intersect.object.name === "hot_building_1"
-					}) }, 500);
+					}) }, 1000);
 				}
 			}
 		}
