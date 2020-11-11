@@ -77,7 +77,7 @@
     position: absolute;
     width: 100%;    
     color: white;
-    font-family: calibri_bold;
+    font-family: Artifakt_Bold;
     text-align: center;
 }
 .over-pan .first-button .enter-label{
@@ -304,7 +304,7 @@
     font-size: 20px;
 }
 .modal-wrapper.game-rule .game-rule-item .text{
-    font-family: 'calibri_light';
+    font-family: 'Artifakt';
 }
 @media (max-width: 767px) {
     .modal-wrapper.game-rule{
@@ -320,7 +320,7 @@
 }
 .modal-wrapper.game-rule .game-rule-item .text p{
     margin: 10px 0;
-    font-family: 'calibri_light';
+    font-family: 'Artifakt';
 }
 .modal-wrapper.game-rule .game-rule-item.show{
     display: block;
@@ -405,7 +405,7 @@
     text-align: center;
 }
 .modal-wrapper.game-end .game-result .sub-title{
-    font-family: calibri_bold;
+    font-family: Artifakt_Bold;
     font-size: 24px;
     font-weight: 700;
     margin-bottom: 10px;
@@ -438,7 +438,7 @@
 .modal-wrapper.game-end .game-result .half-left{
     text-align: right;
     font-weight: 300;
-    font-family: 'calibri_light';
+    font-family: 'Artifakt';
 }
 .modal-wrapper.game-end .game-result .half-right{
     text-align: left;
@@ -577,7 +577,7 @@
     padding: 1rem;
 }
 .modal-wrapper.product .body p{
-    font-family: 'calibri_light';
+    font-family: 'Artifakt';
 }
 .modal-wrapper.product .body label{
     font-size: 1.2em;
@@ -588,7 +588,7 @@
     border-radius: 10px;
     color: white;
     text-decoration: none;
-    font-family: 'calibri_light';
+    font-family: 'Artifakt';
 }
 .modal-wrapper.product .close-btn{
     position: absolute;

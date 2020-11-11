@@ -414,7 +414,7 @@ class OverPan extends Component {
 									<label>Products</label>
 									<p>
 									{this.props.modalDetailInfo.products.split(', ').map((product, idx, arr) => {
-										return <span key={idx} style={{fontFamily: 'calibri_light', fontSize: '18px', cursor: 'pointer'}} onClick={()=>this.gotoProduct(product)}>
+										return <span key={idx} style={{fontFamily: 'Artifakt', fontSize: '18px', cursor: 'pointer'}} onClick={()=>this.gotoProduct(product)}>
 											{` ${product}${idx != arr.length - 1 ? ',':''}`}
 										</span>
 									})}
