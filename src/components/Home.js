@@ -72,6 +72,9 @@ class Home extends Component {
 			this.totalGroup.children.forEach(island => {
 				if (island.islandName !== "game") {
 					island.children.forEach(child => {
+						if (child instanceof THREE.Group) {
+							child.children.map(mesh => mesh.visible = false)
+						}
 						if (child instanceof THREE.Mesh) child.visible = false;
 					});
 				}
@@ -327,6 +330,9 @@ class Home extends Component {
 		this.gameGroup.visible = false;
 		this.totalGroup.children.forEach(island => { 
 			island.children.forEach(child => {
+				if (child instanceof THREE.Group) {
+					child.children.map(mesh => mesh.visible = true);
+				}
 				child.visible = true;
 			});
 		});
@@ -464,7 +470,14 @@ class Home extends Component {
 		// console.log(info.file);
 		new FBXLoader().load(info.file, (object)=>{
 			object.children.forEach(child => {
-				// console.log(child);
+				if (child instanceof THREE.Group) {
+					if (child.name.indexOf('movi_shot') > -1) {
+						child.children.map(mesh => {
+							mesh.landChildName = info.islandName;
+							this.meshArr.push(mesh)
+						});
+					}
+				}
 				if (child instanceof THREE.Mesh) {
 					child.landChildName = info.islandName; this.meshArr.push(child);
 					if (info.islandName === "game" && child.name.indexOf("sea_trans") > -1) {child.receiveShadow = true; this.gameIslandPlane = child;}

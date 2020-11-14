@@ -82,7 +82,7 @@ class OverPan extends Component {
 		this.setState({modalInfo:str});
 		if (str === "rule") this.setState({gameRuleNum:0});
 		if (str === "leader") {
-			fetch(`${API_CONFIG}/score`, {
+			fetch(`${API_CONFIG}`, {
 				method: 'GET',
 				headers: {
 					'Content-Type': 'application/json'
@@ -149,7 +149,7 @@ class OverPan extends Component {
 	saveName = () => {
 		this.props.setUserName(this.state.username);
 		
-		fetch(`${API_CONFIG}/score?name=${this.state.username}&score=${this.props.modalDetailInfo.gameTime+this.props.modalDetailInfo.gamePro}`, {
+		fetch(`${API_CONFIG}?name=${this.state.username}&score=${this.props.modalDetailInfo.gameTime+this.props.modalDetailInfo.gamePro}`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'

@@ -49,7 +49,7 @@ class App extends Component {
 
 	callGameResult=(status, totalTime, gameTime, gamePro, transError)=>{
 		if (this.props.app.app.user_name) {
-			fetch(`${API_CONFIG}/score?name=${this.props.app.app.user_name}&score=${gameTime+gamePro}`, {
+			fetch(`${API_CONFIG}?name=${this.props.app.app.user_name}&score=${gameTime+gamePro}`, {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json'
