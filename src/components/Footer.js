@@ -48,7 +48,7 @@ export default class Footer extends Component {
 						<div className="life-btn-wrapper">
 							{this.footerBtnArr.map((item, index) =>
 								<div id={"footer_"+item.value} className={`life-item `} onClick={()=>this.clickItem(item.value)} key={item.value}>
-									<label style={{lineHeight: index ? 'normal' : '0.9'}}>{item.label}</label>
+									<label style={{lineHeight: index ? 'normal' : '1'}}>{item.label}</label>
 								</div>
 							)}
 						</div>

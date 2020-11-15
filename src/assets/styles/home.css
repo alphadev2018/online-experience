@@ -216,7 +216,7 @@
 @media (min-width: 767px) {  
   .game-ready{
     position: absolute;
-    bottom: 100px;
+    bottom: 140px;
     height: 100px;
     transform: translateX(-50%);
     left: 50%;

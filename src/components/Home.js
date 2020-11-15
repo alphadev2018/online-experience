@@ -185,13 +185,6 @@ class Home extends Component {
 				}
 			}
 		}
-		// var hotInfo;
-		// if (this.device === "web") hotInfo = this.state.selHot;
-		// else {
-		// 	const hotIntersect = GetRayCastObject(this, mouseX, mouseY, this.hotMeshArr);
-		// 	hotInfo = (hotIntersect)?hotIntersect.object.name.substring(4):"";
-		// }
-		// this.props.callHotSpot(hotInfo, this.selLandName);
 		const hotIntersect = GetRayCastObject(this, mouseX, mouseY, this.hotMeshArr);
 		if (hotIntersect) {
 			this.props.callHotSpot(hotIntersect.object.name, this.selLandName);
@@ -216,10 +209,6 @@ class Home extends Component {
 		this.mouseStatus = "move";
 		if (this.selLandName === "media") {
 			const intersect = GetRayCastObject(this, event.clientX, event.clientY, this.hotBuildingArr);
-
-			// if (intersect) {
-			// 	console.log(intersect.object.name)
-			// }
 			
 			this.hotBuildingArr.forEach(hotBuilding => {
 				let buildingCol = 0xFFFFFF;

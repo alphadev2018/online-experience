@@ -17,10 +17,10 @@
     }
 }
 .life-lines .title{
-    font-size: 30px;
+    font-size: 26px;
     font-weight: 700;
     color: white;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
     /* margin-left: 80px; */
     text-align: center;
     position: relative;
@@ -39,7 +39,7 @@
     width: 68px;
     height: 68px;
     color: white;
-    font-size: 15px;
+    font-size: 13px;
     border-radius: 50%;
     background-color: #2A9BCE;
     background-image: linear-gradient(rgb(55, 167, 219), rgb(11, 105, 146));
